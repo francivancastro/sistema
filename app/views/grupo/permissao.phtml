@@ -1,0 +1,56 @@
+<form method="post" action="/sistema/grupo/permissao/id/<?php echo $view_id_grupo; ?>">
+<div class="row">
+    <section class="col-md-12">
+    <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Permissões ao Grupo de <?php echo $view_grupo; ?></h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <button type="submit" class="btn btn-primary " data-toggle="tooltip" title="Salvar" data-original-title="Salvar"><i class="fa fa-save"></i></button>
+                    <a class="btn btn-default" href="/sistema/grupo/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+            
+            <?php foreach ($view_sql as $sql){ 
+            $act = new ActionModel();
+            $action = $act->listarPorController($sql['id_controller']);
+            ?>
+            <div class="accordion" id="accordion2">
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#<?php echo $sql['controller'];?>">
+                            Controller: <?php echo $ult = UtilHelper::maiuscula($sql['controller']); ?> <i class="icon-download"></i>
+                        </a>
+                    </div>
+                    <div id="<?php echo $sql['controller'];?>" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <ul>
+                                <?php
+                                $prm = new PermissaoModel();
+                                foreach ($action as $value){
+                                $checked = "";
+                                if($prm->possuiPermissao($view_id_grupo, $value['id_action'])){
+                                    $checked = "checked";
+                                }
+                                ?>
+                                <li>
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="id_action[]" value="<?php echo $value['id_action'];?>" <?php echo $checked;?>>
+                                        <?php echo $value['action'];?>
+                                    </label>
+                                </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+        </div>
+         </section>
+</div>
+</form> 

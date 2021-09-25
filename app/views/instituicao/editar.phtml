@@ -1,0 +1,81 @@
+<?php 
+    $ins = new InstituicaoModel($view_sql["id_instituicao"]);
+    $sta = new InstituicaostatusModel($view_sql["id_instituicao_status"]);
+?>
+<form method="post" action="/sistema/instituicao/editar/id/<?php echo $view_sql["id_instituicao"]; ?>/" class="form-horizontal" name="form1" id="form1">
+    <input type="hidden" name="id_instituicao" value="<?php echo $view_sql["id_instituicao"]; ?>" />
+    <div class="row">
+<div class="span5">
+    <ul class="breadcrumb">
+        <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+        <li><a href="/sistema/instituicao/index/"><i class="fa fa-building-o"></i> Instituicao</a> <span class="divider">/</span></li>
+        <li class="active">Editar</li>
+    </ul>
+</div>
+<div class="pull-right">
+    <a class="btn" href="/sistema/instituicao/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+</div>
+    </div>
+<div class="well">
+    <legend>Dados da Instituição <div class="span4 pull-right" style="font-size: 14px;">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div></legend>
+    <br /><hr />
+    <div class="control-group">
+        <label for="nome" class="control-label">Nome da Instituição:</label>
+        <div class="controls">
+            <input type="text" name="nome" id="nome" value="<?php echo $view_sql["nome"]; ?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="cnpj" class="control-label">CNPJ:</label>
+        <div class="controls">
+            <input type="text" name="cnpj" class="span2 cnpj" value="<?php echo UtilHelper::formataCNPJ($view_sql["cnpj"]); ?>" placeholder="__.___.___/____-__">
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="inscricao_estadual" class="control-label">Inscrição Estadual:</label>
+        <div class="controls">
+            <input type="text" name="inscricao_estadual"  value="<?php echo UtilHelper::formataIE($view_sql["inscricao_estadual"]); ?>" class="span2 ie" maxlength="11" placeholder="___/_______" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="id_estado" class="control-label">Estado:</label>
+        <div class="controls">
+            <select name="id_estado" class="span2">
+                <option value="">=> Selecione <=</option>
+                <?php foreach ($view_est as $est){ ?>
+                    <option value="<?php echo $est["id_estado"]; ?>"<?php ($est["id_estado"] == $ins->id_estado) ? print " selected" : print ""; ?>><?php echo $est["nome"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="id_municipio" class="control-label">Municipio:</label>
+        <div class="controls">
+           <select name="id_municipio" class="span2">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mun as $mun){ ?>
+                    <option value="<?php echo $mun["id_municipio"]; ?>"<?php ($mun["id_municipio"] == $ins->id_municipio) ? print " selected" : print ""; ?>><?php echo $mun["nome"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="id_instituicao_status" class="control-label">Status:</label>
+        <div class="controls">
+           <select name="id_instituicao_status" class="span2">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_iss as $iss){ ?>
+                    <option value="<?php echo $iss["id_instituicao_status"]; ?>"<?php ($iss["id_instituicao_status"] == $sta->id_instituicao_status) ? print " selected" : print ""; ?>><?php echo $iss["descricao"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="" class="control-label"></label>
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
+</div>
+</form>

@@ -1,0 +1,89 @@
+<?php
+date_default_timezone_set('America/Belem');
+$date = date('Y-m-d H:i:s');
+?>
+<form method="post" action="/sistema/matriculaespera/editaraluno/id/<?php echo $view_sql['id_m_aluno']; ?>" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_turma" value="<?php echo $_SESSION['turma']; ?>"/>
+    <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']; ?>"/>
+    <input type="hidden" name="data" value="<?php echo $date; ?>"/>
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Inserir Espera</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/matriculaespera/turma/id/<?php echo $_SESSION['turma']; ?>"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-address-card"></i>
+                      <h3 class="box-title">Visitante</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" name="nome" class="form-control" placeholder="Nome Completo">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Grau Parentesco:</label>
+                                    <input type="text" name="nome" class="form-control" placeholder="Ex: Pai, Mãe, Tio..">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                               <div class="form-group">
+                                   <label for="">Ja é Cliente?:</label>
+                                    <div class="radio">
+                                      <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">
+                                        Sim
+                                      </label>
+                                    </div>
+                                    <div class="radio">
+                                      <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">
+                                        Não
+                                      </label>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Escola Anterior:</label>
+                                    <input type="text" name="nome" class="form-control" placeholder="Nome Completo">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Como Conheceu:</label>
+                                    <input type="text" name="nome" class="form-control" placeholder="Ex: Amigo, ">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Observação:</label>
+                                    <textarea class="form-control" rows="1" placeholder="..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>

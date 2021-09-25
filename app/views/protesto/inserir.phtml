@@ -1,0 +1,210 @@
+<form method="post" action="/sistema/protesto/inserir/" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Cadastro de Protesto</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/protesto/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">Dados do Protesto</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+
+                    
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group " id="ftipo">
+                    <label for="" class="col-sm-2 control-label">Responsável:</label>
+                    <div class="col-sm-6">
+                      <div class="input-group input-group-sm">
+                          <input type="hidden" name="id_responsavel" id="id_responsavel"/>
+                          <input type="text" class="form-control" id="nome_responsavel" disabled="">
+                          <span class="input-group-btn">
+                            <a href="#myModal" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-plus-square-o"></i></a>
+                          </span>
+                      </div>
+                    </div>
+                    <p class="text-red"><?php echo $view_erro['id_responsavel'];?></p>
+                  </div>
+                    <div id="load_endereco"></div>
+                    
+                    <div class="form-group <?php ($view_erro["id_aluno"]) ? print " has-error" : print ""; ?>">
+                        <label for="aluno" class="col-sm-2 control-label">Aluno:</label>
+                        <div class="col-sm-6">
+                            <select name="id_aluno" class="form-control" id="load_aluno">
+                                <option>=> Selecione <=</option>
+                            </select>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['id_aluno'];?></p>
+                    </div> 
+                    
+                    <div class="form-group <?php ($view_erro["id_empresa"]) ? print " has-error" : print ""; ?>">
+                        <label for="empresa" class="col-sm-2 control-label">Empresa:</label>
+                        <div class="col-sm-6">
+                            <select name="id_empresa" class="form-control" id="load_empresa">
+                                <option>=> Selecione <=</option>
+                                 <?php
+                                    $emp_resp = new EmpresaresponsavelModel();
+                                    $er = $emp_resp->listarPorResponsavel($view_val['id_responsavel']);
+                                    foreach ($er as $empr){
+                                      $empresa = new EmpresaModel($empr["id_empresa"]);
+                                      ?>
+                                      <option value="<?php echo $empr["id_empresa"]; ?>"<?php ($view_val["id_empresa"] && $view_val["id_empresa"] == $empr["id_empresa"]) ? print " selected" : print ""; ?>><?php echo $empresa->empresa_nome; ?></option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['id_empresa'];?></p>
+                        
+                    </div> 
+                    <div id="load_infoempresa"></div>
+                    <div class="form-group <?php ($view_erro["id_protesto_tipo"]) ? print " has-error" : print ""; ?>">
+                        <label for="protestotipo" class="col-sm-2 control-label">Espécie:</label>
+                        <div class="col-sm-6">
+                            <select name="id_protesto_tipo" class=" form-control" id="protestotipo">
+                                  <option value="">=> Selecione <=</option>
+                                <?php foreach ($view_prot as $prot){ ?>
+                                    <option value="<?php echo $prot["id_protesto_tipo"]; ?>"<?php ($view_val["id_protesto_tipo"] && $view_val["id_protesto_tipo"] == $prot["id_protesto_tipo"]) ? print " selected" : print ""; ?>><?php echo $prot["descricao"]; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>    
+                        <p class="text-red"><?php echo $view_erro['id_protesto_tipo'];?></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="hidden" name="id_protesto_status" value="1">
+                    <div class="form-group <?php ($view_erro["numero"]) ? print " has-error" : print ""; ?>">
+                        <label for="numero" class="col-sm-2 control-label">Número:</label>
+                        <div class="col-sm-6">
+                            <input type="text" value="<?php echo $view_val['numero'];?>"  class="form-control" name="numero" placeholder="Ex: 123456...">
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['numero'];?></p>
+                    </div>
+                    <div class="form-group <?php ($view_erro["valor_contrato"]) ? print " has-error" : print ""; ?>">
+                        <label for="valor_contrato" class="col-sm-2 control-label">Valor do Contrato:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            <input type="text" value="<?php echo $view_val['valor_contrato'];?>" name="valor_contrato" class="form-control moeda" placeholder="0,00">
+                          </div>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['valor_contrato'];?></p>
+                    </div>
+                    <div class="form-group <?php ($view_erro["valor_protesto"]) ? print " has-error" : print ""; ?>">
+                        <label for="valor_protesto" class="col-sm-2 control-label">Valor a Protestar:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            <input type="text" value="<?php echo $view_val['valor_protesto'];?>" name="valor_protesto" class="form-control moeda" placeholder="0,00">
+                          </div>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['valor_protesto'];?></p>
+                    </div>
+                    <div class="form-group <?php ($view_erro["data_emissao"]) ? print " has-error" : print ""; ?>">
+                        <label for="data_emissao" class="col-sm-2 control-label"> Emissão do contrato:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="<?php echo $view_val['data_emissao'];?>" name="data_emissao" class="form-control data calendario" placeholder="__/__/___">
+                          </div>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['data_emissao'];?></p>
+                    </div>
+                    <div class="form-group <?php ($view_erro["data_vencimento"]) ? print " has-error" : print ""; ?>">
+                        <label for="data_vencimento" class="col-sm-2 control-label"> Vencimento do Boleto:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="<?php echo $view_val['data_vencimento'];?>" name="data_vencimento" class="form-control data calendario" placeholder="__/__/___">
+                          </div>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['data_vencimento'];?></p>
+                    </div>
+                    <div class="form-group <?php ($view_erro["ano_base"]) ? print " has-error" : print ""; ?>">
+                        <label for="aluno" class="col-sm-2 control-label">Ano do Contrato:</label>
+                        <div class="col-sm-6">
+                            <select name="ano_base" class="form-control">
+                                <option>=> Selecione <=</option>
+                                <?php
+                                $ano_base = UtilHelper::anos();
+                                foreach ($ano_base as $ano){
+                                ?>
+                                <option value="<?php echo $ano; ?>"><?php echo $ano; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <p class="text-red"><?php echo $view_erro['id_aluno'];?></p>
+                    </div> 
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Responsáveis</h3>
+  </div>
+  <div class="modal-body">
+      <div class="form-group">
+        <label for="login" class="col-sm-3 control-label">Buscar Nome:</label>
+        <div class="col-sm-6">
+          <div class="input-group input-group-sm">
+              <input type="hidden" name="id_pessoa" id="id_orientador"/>
+              <input type="text" class="form-control" id="nome" type="text" placeholder="Digite um nome...">
+              <span class="input-group-btn">
+                <button class="btn btn-danger" id="btn_limpa" type="button"><i class="fa fa-trash-o"></i></button>
+              </span>
+          </div>
+        </div>
+        </div>
+        <table class="table table-bordered">
+            <tr class="titulo2">
+                <th></th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>RG</th>
+            </tr>
+            <tbody id="load_pessoas">
+            <?php foreach ($view_resp as $resp){ 
+                $pes =  new PessoaModel($resp['id_pessoa']);
+            ?>
+            <tr>
+                <td><input type="radio" value="<?php echo $resp['id_responsavel']; ?>" name="id_responsavel" class="modal_id_responsavel" title="<?php echo $pes->nome; ?>"  /></td>
+                <td><span class="badge badge-inverse"><?php echo $resp['id_responsavel']; ?></span></td>
+                <td><?php echo $pes->nome; ?></td>
+                <td><?php echo UtilHelper::formataCPF($pes->cpf); ?></td>
+                <td><?php echo $pes->rg; ?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+        </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-primary" id="modal_btn_salvar_responsavel">Salvar</button>
+  </div>
+</div>
+</div>
+</div>
+

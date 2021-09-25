@@ -1,0 +1,163 @@
+<?php
+    $pes = new PessoaModel($view_sql["id_pessoa"]);
+    $pref = new PessoarefModel();
+    $ref = $pref->listarPorPessoa($view_sql["id_pessoa"]);
+    $end = new EnderecoModel($ref[0]['id_endereco']);
+?>
+<form method="post" action="/sistema/orientador/editar/id/<?php echo $view_sql["id_orientador"]; ?>/" class="form-horizontal" name="form1" enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_orientador" value="<?php echo $view_sql["id_orientador"]; ?>" />
+    <input type="hidden" name="id_pessoa" value="<?php echo $pes->id_pessoa; ?>" />
+    <input type="hidden" name="id_endereco" value="<?php echo $end->id_endereco; ?>" />
+<div class="row">
+<div class="span10">
+    <ul class="breadcrumb">
+        <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+        <li><a href="/sistema/orientador/index/"><i class="fa fa-user"></i> Colaborador Efetivo</a> <span class="divider">/</span></li>
+        <li class="active">Editar</li>
+    </ul>
+</div>
+<div class="pull-right">
+    <a class="btn" href="/sistema/orientador/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+</div>
+</div>
+<?php 
+?>  
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Dados do Pessoais</h4></div>
+        <div class="span4 pull-right">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div>
+    </div>
+    <br /><hr />
+    <div class="control-group" id="mat">
+        <label for="matricula" class="control-label">Matricula:</label>
+        <div class="controls">
+            <input type="text" name="matricula" id="matricula" value="<?php echo $view_sql["matricula"];?>" class="span2" required=""> <span class="text-error">*</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="foto" class="control-label">Foto:</label>
+        <div class="controls">
+            <img id="blah" class="img-circle" src="/<?php echo $pes->foto;?>" alt="" style="width: 100px" />
+            <input type='file' id="imgInp" name="foto"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="nome" class="control-label">Nome Completo:</label>
+        <div class="controls">
+            <input type="text" name="nome" id="nome" value="<?php echo $pes->nome;?>" class="span5" required=""/> <span class="text-error">*</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="cpf" class="control-label">cpf:</label>
+        <div class="controls">
+            <input type="text" name="cpf" value="<?php echo $pes->cpf;?>"class="span2 cpf" maxlength="14" placeholder="___.___.___-___">
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="rg" class="control-label">Rg:</label>
+        <div class="controls">
+            <input type="text" name="rg" id="rg" value="<?php echo $pes->rg;?>" class="span2" />
+            UF:
+            <select name="id_estado" class="span1">
+                <option value="">=> Selecione <=</option>
+                <?php foreach ($view_est as $est){ ?>
+                    <option value="<?php echo $est["id_estado"]; ?>"<?php ($est["id_estado"] == $pes->id_estado) ? print " selected" : print ""; ?>><?php echo $est["sigla"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="email" class="control-label">Email:</label>
+        <div class="controls">
+            <input type="email" name="email" id="chave" value="<?php echo $pes->email;?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="telefone" class="control-label">Telefone:</label>
+        <div class="controls">
+            <input type="text" name="telefone" value="" class="span2 telefone" maxlength="14" placeholder="(__) ___-____"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="principal" class="control-label">Sexo:</label>
+        <div class="controls">
+            <label class="radio">
+                <input type="radio" name="sexo" id="principal" size="5" value="M" <?php ($pes->sexo == "M") ? print "checked" : print ""; ?> />
+                Masculino.
+            </label>
+        
+            <label class="radio">
+                <input type="radio" name="sexo" id="principal" size="5" value="F" <?php ($pes->sexo == "F") ? print "checked" : print ""; ?> />
+                Feminino.
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="data_nascimento" class="control-label">Data de Nascimento:</label>
+        <div class="controls">
+            <div class="input-append">
+                <input type="text" name="data_nascimento" id="data_nascimento" value="<?php echo UtilHelper::formatBr($pes->data_nascimento); ?>" class="span2 calendario data" />
+                <span class="add-on"><i class="fa fa-calendar"></i></span>
+            </div> <span class="text-error">*</span>
+        </div>
+    </div>
+</div>
+    <div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Endereço</h4></div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="endereco" class="control-label">Endereço:</label>
+        <div class="controls">
+            <input type="text" name="endereco" id="endereco" value="<?php echo $end->endereco; ?>" class="span5" />
+            Nº:
+            <input type="text" name="numero" id="numero" value="<?php echo $end->numero; ?>" class="span1" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="endereco" class="control-label">Municipio:</label>
+        <div class="controls">
+            <select name="id_municipio" class="span2" id="municipio" required="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mun as $mun){ ?>
+                    <option value="<?php echo $mun["id_municipio"]; ?>"<?php ($mun["id_municipio"] == $pes->id_municipio) ? print "selected" : print ""; ?>><?php echo $mun["nome"]; ?></option>
+                <?php } ?>
+            </select> <span class="text-error">*</span>
+            Bairro:
+
+            <select name="id_bairro" class="span2" id="load_bairro">
+                <?php foreach ($view_bai as $bai){ ?>
+                    <option value="<?php echo $bai["id_bairro"]; ?>"<?php ($bai["id_bairro"] == $end->id_bairro) ? print "selected" : print ""; ?>><?php echo $bai["nome"]; ?></option>
+                <?php } ?>>
+            </select>
+            
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="cep" class="control-label">CEP:</label>
+        <div class="controls">
+            <input type="text" name="cep" id="cep" value="<?php echo $end->cep; ?>" class="span2 cep" maxlength="10" placeholder="_____-___"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="complemento" class="control-label">Complemento:</label>
+        <div class="controls">
+            <input type="text" name="complemento" id="complemento" value="<?php echo $end->complemento; ?>" class="span5" placeholder="Ex.: Bloco A." />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="telefone" class="control-label">Telefone:</label>
+        <div class="controls">
+            <input type="text" name="telefone" value="" class="span2 telefone" maxlength="14" placeholder="(__) ___-____"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="telefone" class="control-label"></label>
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
+    </div>
+</form>

@@ -1,0 +1,33 @@
+<form method="post" action="/sistema/bairro/inserir/" class="form-horizontal">
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Bairro - <a href="/sistema/bairro/inserir/">Cadastro</a></h4></div>
+        <div class="navbar-inner pull-right">
+           
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/bairro/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+         
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+        <label for="municipio" class="control-label">Municipio:</label>
+        <div class="controls">
+            <select name="id_municipio" id="cur">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mun as $mun){ ?>
+                    <option value="<?php echo $mun["id_municipio"]; ?>"><?php echo $mun["nome"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        </div>
+        <div class="control-group">
+            <label for="nome" class="control-label">Bairro:</label>
+            <div class="controls">
+                <input type="text" name="nome" id="nome" value="" class="span2" />
+            </div>
+        </div>
+        
+</div>
+</form>

@@ -1,0 +1,219 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Turmas</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                  <?php if($view_desabilitadas){  ?>
+                    <a href="#desabilitadas" role="button" class="btn btn-default" data-toggle="modal"><i class="fa fa-times"></i> Turmas Desabilitadas</a>
+                  <?php }  ?>
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/turma/inserir/" data-toggle="tooltip" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+                    <a class="btn btn-default" href="/sistema/turma/selecioneano/" data-toggle="tooltip" title="Trocar ano"> <i class="fa fa-exchange"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+            <table class="table table-bordered">
+                
+                    <tr class="itemTitulo2">
+                        <th>ID</th>
+                        <th>Turma</th>
+                        <th>Serie</th>
+                        <th>Turno</th>
+                        <th>Vagas</th>
+                        <th class="text-right" style="width: 20%">Operações</th>
+                    </tr>
+                <?php if($view_sql){  ?>
+                    <?php foreach ($view_sql as $sql){
+                    $ser = new SerieModel($sql['id_serie']);  
+                    $matriculas = new MatriculaModel();
+                $listat = $matriculas->listarPorTurma($sql['id_turma']);
+              
+                $color = array(
+                        1 => "info",
+                        2 => "success",
+                        3 => "warning"
+                    );
+                $possui_desativado = false;
+                foreach ($listat as $entity){
+                    if($entity['situacao'] == "D"){
+                        $possui_desativado = true;
+                        break;
+                    }
+                }
+                    ?>
+                    
+                    <tr>
+                        <td><?php echo $sql['id_turma']; ?></td>
+                        <td><?php echo $sql['descricao']; ?></td>
+                        <td><?php echo $ser->descricao; ?></td>
+                        <td><?php echo $sql['turno'] ?></td>
+                        <td><?php echo $sql['vagas'] ?></td>
+                        <td >
+                            <div class="btn-group pull-right">
+                                <?php if($possui_desativado == true){ ?>
+                                <a href="#devolucao<?php echo "{$sql["id_turma"]}";?>" role="button" class="btn btn-default addTooltip" data-toggle="modal" title="Devolver Aluno"><i class="fa fa-refresh"></i></a>
+                                <?php } ?>
+                                <a href="#desativar<?php echo "{$sql["id_turma"]}";?>" role="button" class="btn btn-default" data-toggle="modal" title="Desativar"><i class="fa fa-ban"></i></a>
+                                <a class="btn btn-small btn-default" href="<?php echo "/sistema/turma/aluno/id/{$sql["id_turma"]}";?>" title="Alunos"><i class="fa fa-user"></i></a>
+                                <a class="btn btn-small btn-success" href="<?php echo "/sistema/turma/visualizar/id/{$sql["id_turma"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-small btn-warning" href="<?php echo "/sistema/turma/editar/id/{$sql["id_turma"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                                <a href="#id<?php echo "{$sql["id_turma"]}";?>" role="button" class="btn btn-danger" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                <?php } else { ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                Não existe turma cadastrada neste ano!
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
+                
+            </table>
+            </div>
+            <div class="box-footer">
+<?php if($view_sql){ $nun = count($view_sql); ?>
+<span class="label label-default"><?php echo $nun;?> Registros</span> 
+<?php }
+if($view_numero && (!count($view_numero) == 0)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+} ?>
+            </div>
+        </div>
+        </section>
+</div>
+<?php if($view_sql){  ?>
+<?php foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_turma"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_turma"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="myModalLabel">Deseja realmente apagar este Registro?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/turma/excluir/id/{$sql["id_turma"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="desativar<?php echo "{$sql["id_turma"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_turma"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-blue">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="myModalLabel">Deseja realmente remover a turma da lista?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro de turma será desabilitado!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-primary" href="<?php echo "/sistema/turma/desativar/id/{$sql["id_turma"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="devolucao<?php echo "{$sql['id_turma']}";?>" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-green">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title"  id="myModalLabel">Alunos Desativados</h4>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Nome do aluno</th>
+                    <th class="text-center">Matrícula</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-right"><i class="fa fa-cog" style="margin-right: 10px"></i></th>
+                </tr>
+                <?php 
+                $matriculas = new MatriculaModel();
+                $listat = $matriculas->listarPorTurma($sql['id_turma']);
+              
+                $color = array(
+                        1 => "info",
+                        2 => "success",
+                        3 => "warning"
+                    );
+                foreach ($listat as $entity){
+                    if($entity['situacao'] == "D"){
+                        $m_aluno = new MalunoModel($entity['id_m_aluno']);
+                        $usu = new UsuarioModel($entity['id_usuario']);
+                        $mts = new MatriculastatusModel($entity['id_matricula_status']);
+                ?>
+                <tr>
+                    <td><?php echo $m_aluno->nome; ?></td>
+                    <td class="text-center"><?php echo $m_aluno->matricula; ?></td>
+                    <td class="text-center"><span class="label label-<?= $color[$mts->id_matricula_status]; ?>"><?php echo $mts->descricao; ?></span></td>
+                    <td class="text-right"> <a href="<?php echo "/sistema/turma/devolucao/id/{$entity["id_matricula"]}";?>" data-toggle="tooltip" data-title="Ativar" class="btn btn-default btn-sm"> <i class="fa fa-upload"></i></a></td>
+                </tr>
+                <?php } ?>
+                <?php } ?>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+<?php } ?>
+
+<?php if($view_desabilitadas){  ?>
+<div class="modal fade" id="desabilitadas" tabindex="-1" role="dialog" >
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-blue">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="myModalLabel">Turmas Desabilitadas</h4>
+        </div>
+        
+            <table class="table table-bordered table-condensed">
+                <tr>
+                    <th>ID</th>
+                    <th>Turma</th>
+                    <th>Serie</th>
+                    <th>Turno</th>
+                    <th>Vagas</th>
+                    <th class="text-center"><i class="fa fa-cog"></i></th>
+                </tr>
+                <?php foreach ($view_desabilitadas as $desabilitadas){ 
+                    $ser = new SerieModel($desabilitadas['id_serie']); 
+                    ?>
+                <tr>
+                    <td><?php echo $desabilitadas['id_turma']; ?></td>
+                    <td><?php echo $desabilitadas['descricao']; ?></td>
+                    <td><?php echo $ser->descricao; ?></td>
+                    <td><?php echo $desabilitadas['turno'] ?></td>
+                    <td><?php echo $desabilitadas['vagas'] ?></td>
+                    <td class="text-center"><a href="<?php echo "/sistema/turma/ativar/id/{$desabilitadas["id_turma"]}";?>" data-toggle="tooltip" data-title="Habilitar" class="btn btn-default btn-sm"><i class="fa fa-check"></i></a></td>
+                </tr>
+                <?php } ?>
+            </table>
+            
+        <div class="modal-footer">
+            
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+

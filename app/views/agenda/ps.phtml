@@ -1,0 +1,203 @@
+<?php
+date_default_timezone_set('America/Belem');
+
+    $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+    $usu = new UsuariogrupoModel();
+    $lista_grupo = $usu->listarPorUsuario($_SESSION["userData"]["id_usuario"]);
+    $array = array();
+    foreach ($lista_grupo as $lp){
+        $array[] = $lp['id_grupo'];
+    }
+?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+    var initialLocaleCode = 'pt-br';
+
+    $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'listMonth,month,agendaWeek,agendaDay'
+            },
+            defaultView:'listMonth',
+            locale: initialLocaleCode,
+            buttonIcons: false, // show the prev/next text
+            weekNumbers: true,
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            events    : [
+        <?php foreach ($view_sql as $sql){
+            $data = new DateTime($sql['data_agendamento']);
+            $dia = $data->format('d');
+            $mes = $data->format('m')-1;
+            $ano = $data->format('Y');
+            $hi = date("H", strtotime($sql['hora_inicio']));
+            $him = date("i", strtotime($sql['hora_inicio']));
+            $hf = date("H", strtotime($sql['hora_fim']));
+            $hfm = date("i", strtotime($sql['hora_fim']));
+            
+            if($sql['aprovado'] == 'S'){
+                $b = "#00a65a";
+                $bg = "#00a65a";
+            } elseif ($sql['aprovado'] == 'N') {
+                $b = "#f56954";
+                $bg = "#f56954";
+            } else {
+                $b = "#3c8dbc";
+                $bg = "#3c8dbc";
+            }
+            $obs = '';
+            if($sql['obs_agenda']){
+                $obs = preg_replace('/\s/',' ',$sql['obs_agenda']);
+            }
+            
+            $obs_atendimento = '';
+            if($sql['obs_atendimento']){
+                $obs_atendimento = preg_replace('/\s/',' ',$sql['obs_atendimento']);
+            }
+        ?>  
+                        
+        {
+            title          : '<?php echo $sql['turma'].' - '. $sql['nome'] ?> ',
+            id_matricula_espera : '<?php echo $sql['id_matricula_espera'] ?>',
+            id_usuario : '<?php echo $sql['id_usuario'] ?>',
+            data_operacao : '<?php echo $sql['data_operacao'] ?>',
+            data_agendamento : '<?php echo $data->format('d/m/Y'); ?>',
+            data_conclusao : '<?php echo $sql['data_conclusao'] ?>',
+            hora_inicio : '<?php echo $sql['hora_inicio'] ?>',
+            hora_fim : '<?php echo $sql['hora_fim'] ?>',
+            aprovado : '<?php echo $sql['aprovado'] ?>',
+            tipo_agenda : '<?php echo $sql['tipo_agenda'] ?>',
+            obs_agenda : '<?php echo $obs ?>',
+            obs_atendimento : '<?php echo $obs_atendimento; ?>',
+            id_agenda : '<?php echo $sql['id_agenda'] ?>',
+            start          : new Date(<?php echo $ano ?>, <?php echo $mes ?>, <?php echo $dia ?>, <?php echo $hi ?>, <?php echo $him ?>),
+            end            : new Date(<?php echo $ano ?>, <?php echo $mes ?>, <?php echo $dia ?>, <?php echo $hf ?>, <?php echo $hfm ?>),
+            backgroundColor: '<?php echo $bg ?>', //Primary
+            borderColor    : '<?php echo $b ?>', //Primary
+            visitante    : '<?php echo $sql['vnome']; ?>',
+            turma    : '<?php echo $sql['turma']; ?>',
+            turno    : '<?php echo $sql['turno']; ?>',
+            aluno    : '<?php echo $sql['nome']; ?>'
+        },
+        <?php } ?>
+      ],
+      eventClick:  function(event, jsEvent, view) {
+            <?php if (in_array(1, $array)) { ?>
+                $('#aprovado').val(event.aprovado);
+            <?php } else { ?>
+                if(event.aprovado){
+                    return false;
+                }
+            <?php } ?>
+            $('#data').html(event.data_agendamento);
+            
+            $('#visitante').html(event.visitante);
+            $('#turma').html(event.turma);
+            $('#turno').html(event.turno);
+            $('#aluno').html(event.aluno);
+            $('#obs_atendimento').html(event.obs_atendimento);
+            $('#id_matricula_espera').val(event.id_matricula_espera);
+            $('#id_usuario').val(event.id_usuario);
+            $('#data_operacao').val(event.data_operacao);
+            $('#data_agendamento').val(event.data_agendamento);
+            if(event.data_conclusao){
+                $('#data_conclusao').val(event.data_conclusao);
+            }
+            $('#hora_inicio').val(event.hora_inicio);
+            $('#hora_fim').val(event.hora_fim);
+            
+            $('#tipo_agenda').val(event.tipo_agenda);
+            $('textarea#obs_agenda').val(event.obs_agenda);
+            $('#id_agenda').val(event.id_agenda);
+            $('#formaction').attr('action', '/sistema/agenda/editar/id/'+event.id_agenda);
+            $('#calendarModal').modal();
+        },
+    });
+
+    // build the locale selector's options
+    $.each($.fullCalendar.locales, function(localeCode) {
+            $('#locale-selector').append(
+                    $('<option/>')
+                            .attr('value', localeCode)
+                            .prop('selected', localeCode == initialLocaleCode)
+                            .text(localeCode)
+            );
+    });
+
+    // when the selected option changes, dynamically change the calendar option
+    $('#locale-selector').on('change', function() {
+            if (this.value) {
+                    $('#calendar').fullCalendar('option', 'locale', this.value);
+            }
+    });
+});
+
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-body no-padding">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php 
+date_default_timezone_set('America/Belem');
+$date = date('Y-m-d H:i:s');
+?>
+<div id="calendarModal" class="modal fade">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form action="" id="formaction" method="post">
+            <input type="hidden" name="id_matricula_espera" id="id_matricula_espera" value=""/>
+            <input type="hidden" name="id_usuario" id="id_usuario" value=""/>
+            <input type="hidden" name="data_operacao" id="data_operacao" value=""/>
+            <input type="hidden" name="data_agendamento" id="data_agendamento" value=""/>
+            <input type="hidden" name="hora_inicio" id="hora_inicio" value=""/>
+            <input type="hidden" name="hora_fim" id="hora_fim" value=""/>
+            <input type="hidden" name="tipo_agenda" id="tipo_agenda" value=""/>
+            <input type="hidden" name="id_agenda" id="id_agenda" value=""/>
+            <input type="hidden" name="data_conclusao" id="data_conclusao" value="<?php echo $date;?>" />
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title"><i class="fa fa-calendar"></i> Agendamento Processo Seletivo <span id="data" class="pull-right"></span></h4>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <th style="width: 10px">Visitante:</th>
+                        <td><small id="visitante"></small></td>
+                    </tr>
+                    <tr>
+                        <th>Aluno:</th>
+                        <td><small id="aluno"></small></td>
+                    </tr>
+                    <tr>
+                        <th>Turma:</th>
+                        <td><small id="turma"></small> <strong>Turno:</strong> <small id="turno"></small></td>
+                    </tr>
+                    <tr>
+                        <th>Obs At.:</th>
+                        <td><small id="obs_atendimento"></small></td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                  <label>O aluno foi aprovado?</label>
+                  <span class="pull-right"><input type="checkbox" id="aprovado" name="aprovado" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Sim" data-off="Não" value="S"></span>
+                </div>
+                <div class="form-group">
+                  <label>Observação</label>
+                  <textarea id="obs_agenda" name="obs_agenda" class="form-control" rows="3" placeholder="..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" ><i class="fa fa-save"></i> Salvar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>

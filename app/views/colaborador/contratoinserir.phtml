@@ -1,0 +1,78 @@
+<?php 
+    $col = new ColaboradorModel($_SESSION["colaborador"]);
+    $pes = new PessoaModel($col->id_pessoa);
+?>
+
+<form method="post" action="/sistema/colaborador/contratoinserir/" class="form-horizontal">
+    <div class="row">
+        <div class="span5">            
+            <ul class="breadcrumb">
+                <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/contrato/"><i class="fa fa-clipboard"></i> Contrato</a> <span class="divider">/</span></li>
+                <li class="active">Inserir</li>
+            </ul>
+        </div>
+        <div class="pull-right">
+            <a class="btn" href="/sistema/colaborador/contrato/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+        </div>
+    </div>
+    <div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Informações de Contrato</h4></div>
+        <div class="span4 pull-right">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div>
+    </div>
+        <br /><hr />
+        <div class="control-group">
+            <label for="chave" class="control-label">Colaborador:</label>
+            <div class="controls">
+                <input type="text" value="<?php echo $pes->nome; ?>" disabled=""class="span4"/>
+                <input type="hidden" name="id_colaborador"  value="<?php echo $col->id_colaborador; ?>"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_area_atuacao" class="control-label">Área de Atuação:</label>
+            <div class="controls">
+                <select name="id_area_atuacao">
+                        <option value="">=> Selecione <=</option>
+                    <?php foreach ($view_atc as $atc){ ?>
+                        <option value="<?php echo $atc["id_area_atuacao"]; ?>"><?php echo $atc["descricao"]; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="projeto" class="control-label">Projeto:</label>
+            <div class="controls">
+                <input type="text" name="projeto" id="projeto" value="" class="span4" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="data" class="control-label">Periodo de Contrato:</label>
+            <div class="controls">
+            <div class="input-daterange" id="datepicker">
+                <input type="text" name="data_inicio" id="data" value="" class="span2 calendario" required="" placeholder="__/__/___"/> 
+                <span class="add-on">à</span>
+                <input type="text" name="data_final" id="data" value="" class="span2 calendario" required="" placeholder="__/__/___"/> <span class="text-error">*</span>
+            </div> 
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="valor" class="control-label">Valor da Bolsa:</label>
+            <div class="controls">
+                <div class="input-prepend input-append">
+                    <span class="add-on">R$</span>
+                    <input type="text" name="valor" id="valor" value="" class="span2"/>
+                    <span class="add-on">.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="valor" class="control-label"></label>
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            </div>
+        </div>
+</div>
+</form>

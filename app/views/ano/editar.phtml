@@ -1,0 +1,42 @@
+<form method="post" action="/sistema/ano/editar/id/<?php echo $view_sql['id_ano']; ?>" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_ano" value="<?php echo $view_sql['id_ano']; ?>"/>
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Cadastro de Ano</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/ano/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">Ano</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Ano:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text"  class="form-control" name="descricao" value="<?php echo $view_sql['descricao']; ?>" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>

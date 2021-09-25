@@ -1,0 +1,53 @@
+<?php 
+    $pes = new PessoaModel($view_sql["id_pessoa"]);
+
+    $p_ref = new PessoarefModel();
+
+    $referencia = $p_ref->listarPorPessoa($view_sql["id_pessoa"]);
+
+    $end = new EnderecoModel($referencia[0]['id_endereco']);
+?>
+<div class="row">
+    <div class="span10">
+        <ul class="breadcrumb">
+            <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+            <li><a href="/sistema/orientador/index/"><i class="fa fa-user"></i> Colaborador Efetivo</a> <span class="divider">/</span></li>
+            <li class="active">Visualizar</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/orientador/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <thead>
+    <th colspan="2" class="titulo2">Orientador</th>
+    </thead>
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>Foto:</strong></div></td>
+        <td><img src="/<?php echo $pes->foto;?>" alt="" style="width: 100px" /></td>
+    </tr>
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>Matricula:</strong></div></td>
+        <td><?php echo $view_sql['matricula']; ?></td>
+    </tr>
+    
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>Nome:</strong></div></td>
+        <td><?php echo $pes->nome;?></td>
+    </tr>
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>CPF:</strong></div></td>
+        <td><?php echo UtilHelper::formataCPF($pes->cpf);?></td>
+    </tr>
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>RG:</strong></div></td>
+        <td><?php echo $pes->rg;?></td>
+    </tr>
+    <tr>
+        <td width="20%"><div class="pull-right"><strong>Endereco:</strong></div></td>
+        <td><?php echo $end->endereco; ?></td>
+    </tr>
+        
+</table>
+

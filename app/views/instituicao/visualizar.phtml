@@ -1,0 +1,47 @@
+<?php 
+    $ins = new InstituicaoModel($view_sql["id_instituicao"]);
+    $sta = new InstituicaostatusModel($view_sql["id_instituicao_status"]);
+    $est = new EstadoModel($view_sql['id_estado']);
+    $mun = new MunicipioModel($view_sql['id_municipio']);
+    $iss = new InstituicaostatusModel($view_sql['id_instituicao_status']);
+?>
+<div class="row">
+<div class="span5">
+    <ul class="breadcrumb">
+        <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+        <li><a href="/sistema/instituicao/index/"><i class="fa fa-building-o"></i> Instituicao</a> <span class="divider">/</span></li>
+        <li class="active">Editar</li>
+    </ul>
+</div>
+<div class="pull-right">
+    <a class="btn" href="/sistema/instituicao/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+</div>
+</div>
+<div class="well">
+    <legend>DADOS DA INSTITUIÇÃO</legend>
+    
+    <dl class="dl-horizontal">
+        <dt>Nome da Instituição:</dt>
+        <dd><?php echo $view_sql["nome"]; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>CNPJ:</dt>
+        <dd><?php echo UtilHelper::formataCNPJ($view_sql["cnpj"]); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Inscrição Estadual<dt>
+        <dd><?php echo UtilHelper::formataIE($view_sql["inscricao_estadual"]); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Estado:</dt>
+        <dd><?php echo $est->nome; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Municipio:</dt>
+        <dd><?php echo $mun->nome; ?></dd>
+    </dl> 
+    <dl class="dl-horizontal">
+        <dt>Status:</dt>
+        <dd><?php echo $iss->descricao; ?></dd>
+    </dl>
+</div>

@@ -1,0 +1,106 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#ano').change(function(){
+        var ano = $('#ano').val();
+        
+        if(ano){
+            var url = '/sistema/turma/buscarserie/id/'+ano;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {id:ano},
+                dataType: "html",
+                success: function(data){
+                   $("#load_serie").html(data);
+                }
+            });
+        }
+    });
+});
+</script>
+<form method="post" action="/sistema/turma/editar/id/<?php echo $view_sql['id_turma']; ?>" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_turma" value="<?php echo $view_sql['id_turma']; ?>"/>
+    <input type="hidden" name="situacao" value="<?php echo $view_sql['situacao']; ?>"/>
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Cadastro de Segmento</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/turma/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">Ano Segmento</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4 col-md-offset-1">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Ano: </label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="ano">
+                                       
+                                        <option>-> Selecione <- </option>
+                                        <?php foreach ($view_ano as $ano){ ?>
+                                        <option value="<?php echo $ano['id_ano'];?>" <?php ($ano['id_ano'] == $_SESSION['anobase'])? print "selected" : print ""; ?>> <?php echo $ano['descricao'];?> </option>
+                                        <?php } ?>
+                                        
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Serie: </label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="load_serie" name="id_serie">
+                                            <option>-> Selecione <- </option>
+                                            <?php foreach ($view_serie as $serie){ ?>
+                                                <option value="<?php echo $serie['id_serie'];?>"<?php ($view_sql['id_serie'] == $serie['id_serie'])? print "selected" : print ""; ?>> <?php echo $serie['descricao'];?> </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Turno: </label>
+                                    <div class="col-sm-6">
+                                    <select class="form-control" name="turno">
+                                       
+                                        <option>-> Selecione <- </option>
+                                        <?php foreach ($view_turno as $turno){ ?>
+                                        <option value="<?php echo $turno;?>" <?php ($view_sql['turno'] == $turno)? print "selected" : print ""; ?>> <?php echo $turno;?> </option>
+                                        <?php } ?>
+                                        
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="control-label col-sm-3">Turma:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="descricao" id="nome" size="5" value="<?php echo $view_sql['descricao'] ?>" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vagas" class="control-label col-sm-3">Vagas:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="vagas" id="nome" size="5" value="<?php echo $view_sql['vagas'] ?>" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>

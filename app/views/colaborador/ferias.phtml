@@ -1,0 +1,58 @@
+<?php 
+    $col = new ColaboradorModel($_SESSION["colaborador"]);
+    $pes = new PessoaModel($col->id_pessoa);
+?>
+<div class="row">
+    <div class="span5">            
+        <ul class="breadcrumb">
+            <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+            <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+            <li class="active"><i class="fa fa-plane"></i> Férias</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/colaborador/feriasinserir/" title="Novo"><i class="fa fa-plus-circle"></i> Novo </a>
+        <a class="btn" href="/sistema/colaborador/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar </a>
+    </div>
+</div>
+<table class="table table-bordered table-striped">
+    <thead class="titulo2">
+    <th colspan="4">Ferias do Colaborador: <?php echo $pes->nome;?></th>
+    </thead>
+    <tr>
+        <th>Descrição</th>
+        <th>Período de Férias</th>
+        <th>Operações</th>
+    </tr>
+    <?php foreach ($view_sql as $sql){?>
+    <tr class="item2">
+        <td><?php echo $sql['descricao'];?></td>
+        <td><?php echo UtilHelper::formatBr($sql['data_inicio']);?> a <?php echo UtilHelper::formatBr($sql['data_fim']);?></td>
+        <td>		   
+            <div class="btn-group">
+                <a class="btn btn-success btn-small" href="<?php echo "/sistema/colaborador/feriasvisualizar/id/{$sql["id_ferias"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                <a class="btn btn-warning btn-small" href="<?php echo "/sistema/colaborador/feriaseditar/id/{$sql["id_ferias"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                <a href="#id<?php echo "{$sql["id_ferias"]}";?>" role="button" class="btn btn-danger btn-small" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+            </div>
+        </td>
+    </tr>
+    <?php } ?>
+</table>
+<?php
+    foreach ($view_sql as $sql){ ?>
+
+<div id="id<?php echo "{$sql["id_ferias"]}";?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Apagar?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O registro será apagado permanente!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/colaborador/feriasexcluir/id/{$sql["id_ferias"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+<?php } ?>

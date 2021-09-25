@@ -1,0 +1,240 @@
+<script type="text/javascript">
+        $(document).ready(function() 
+            { 
+                $("#tbaluno").tablesorter(); 
+            } 
+        ); 
+</script>
+<?php 
+    $count_alu  = count($view_sql);
+    $matri = new MatriculaModel();
+    $turma = new TurmaModel($view_id);
+    
+    $mt = $matri->listarPorTurmaMatricula($view_id);
+    $rmt = $matri->listarPorTurmaRematricula($view_id);
+    $rv = $matri->listarPorTurmaReserva($view_id);
+    
+    $cmt = count($mt);
+    $crmt = count($rmt);
+    $crv = count($rv);
+    
+    $matricula = 0;
+    $rematricula = 0;
+    $reserva = 0;
+    $vaga= 0;
+    
+    if($count_alu){
+        $vaga = $turma->vagas - $count_alu;
+        $matricula = $cmt * 100 / $turma->vagas;
+        $rematricula = $crmt * 100 / $turma->vagas;
+        $reserva = $crv * 100 / $turma->vagas;
+    }
+    
+    $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+    $usu = new UsuariogrupoModel();
+    $lista_grupo = $usu->listarPorUsuario($_SESSION["userData"]["id_usuario"]);
+    $array = array();
+    foreach ($lista_grupo as $lp){
+        $array[] = $lp['id_grupo'];
+    }
+?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <!-- Tabs within a box -->
+            <ul class="nav nav-tabs ui-sortable-handle">
+              <li class="active"><a href="#prot" data-toggle="tab">Turma - <?php echo $turma->descricao; ?></a></li>
+              <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/turma/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+              <?php if (in_array(1, $array)) { ?>
+              <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/acompanhamento/index/"data-toggle="tooltip" title="Acompanhamento"><i class="fa fa-list"></i></a>              
+              <?php } ?>
+            </ul>
+        </div>
+    </div>
+        <div class="col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-user-plus"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Matricula</span>
+              <span class="info-box-number">
+                  <?php echo $cmt;?><br />
+              </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-handshake-o"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Rematrícula</span>
+              <span class="info-box-number"><?php echo $crmt;?><br /></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-yellow"><i class="fa fa-calendar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Reserva</span>
+              <span class="info-box-number"><?php echo $crv;?><br /></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-purple"><i class="fa fa-vcard-o"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">VAGAS DISPONÍVEIS</span>
+              <span class="info-box-number"><?php echo $vaga;?><br /></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+      </div>
+<div class="row">
+    <section class="col-md-12">
+        
+        
+        
+        
+        
+        <div class="box box-info">
+                
+            <table id="tbaluno" class="tablesorter table  table-bordered ">
+                    <thead>
+                    <tr>
+                        <th><i class="fa fa-arrows-v"></i> ID</th>
+                        <th>Nome do aluno</th>
+                        <th>Matrícula</th>
+                        <th>Tipo</th>
+                        <th>Usuário</th>
+                        <th>Data e hora</th>
+                        <th><center>Operações</center></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $cont = 0;
+                    
+                    $color = array(
+                        1 => "info",
+                        2 => "success",
+                        3 => "warning"
+                    );
+                    foreach ($view_sql as $sql){ 
+                        if($sql['situacao'] == "A"){
+                        $m_esp = new MatriculaesperaModel();
+                        $l_esp = $m_esp->listarPorPagina("id_m_aluno = {$sql['id_m_aluno']} AND (id_turma = {$sql['id_turma']})");
+                        $cont++;
+                        $m_aluno = new MalunoModel($sql['id_m_aluno']);
+                        $date = new DateTime($sql['data_cadastro']);
+                        $usu = new UsuarioModel($sql['id_usuario']);
+                        $pes = new PessoaModel($usu->id_pessoa);
+                        $mts = new MatriculastatusModel($sql['id_matricula_status']);
+                    ?>
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $m_aluno->nome; ?></td>
+                        <td><?php echo $m_aluno->matricula; ?></td>
+                        <td class="text-center"><span class="label label-<?= $color[$mts->id_matricula_status]; ?>"><?php echo $mts->descricao; ?></span></td>
+                        <td><?php echo $pes->nome; ?></td>
+                        <td><?php echo $date->format('d-m-Y H:i:s'); ?></td>
+                        <td>
+                            
+                            <div class="btn-group pull-right">
+                                <?php if($l_esp[0]){ ?>
+                                <a href="#devolver<?php echo "{$sql["id_matricula"]}";?>" role="button" class="btn btn-small btn-default btn-sm addTooltip" data-toggle="modal" title="Devolver"><i class="fa fa-user-times"></i></a>
+                                <?php } else { ?>
+                                <a href="#situacao<?php echo "{$sql["id_matricula"]}";?>" role="button" class="btn btn-small btn-default btn-sm addTooltip" data-toggle="modal" title="Desativar"><i class="fa fa-ban"></i></a>
+                                <?php } ?>
+                                <a class="btn btn-small btn-success btn-sm" href="<?php echo "/sistema/turma/visualizaraluno/id/{$sql["id_matricula"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-small btn-warning btn-sm" href="<?php echo "/sistema/turma/editaraluno/id/{$sql["id_matricula"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                                <a href="#id<?php echo "{$sql["id_matricula"]}";?>" role="button" class="btn  btn-danger btn-sm" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <?php }} ?>
+                </tbody>
+            </table>
+        </div>
+        </section>
+</div>
+<?php foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_matricula"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_matricula"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-red">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 id="myModalLabel">Deseja realmente apagar esta matricula?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/turma/excluiraluno/id/{$sql["id_matricula"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php 
+    $l_esp = $m_esp->listarPorPagina("id_m_aluno = {$sql['id_m_aluno']} AND (id_turma = {$sql['id_turma']})");
+    if($l_esp[0]){
+?>
+    <div class="modal fade" id="devolver<?php echo "{$sql["id_matricula"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_matricula"]}";?>">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-green">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="myModalLabel">Deseja realmente devolver aluno para lista de espera?</h4>
+              </div>
+              <div class="modal-body">
+                  <p>O registro de matricula será apagado!</p>
+              </div>
+              <div class="modal-footer">
+                  <a class="btn btn-danger" href="<?php echo "/sistema/turma/devolver/id/{$sql["id_matricula"]}";?>" title="Excluir">Sim</a>
+                  <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+              </div>
+          </div>
+        </div>
+    </div>
+<?php } else{ ?>
+<div class="modal fade" id="situacao<?php echo "{$sql["id_matricula"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_matricula"]}";?>">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-green">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 id="myModalLabel">Deseja remover aluno da turma?</h4>
+          </div>
+          <div class="modal-body">
+              <p>O registro de matricula será dasativado!</p>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-danger" href="<?php echo "/sistema/turma/situacao/id/{$sql["id_matricula"]}";?>" title="Excluir">Sim</a>
+              <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+          </div>
+      </div>
+    </div>
+</div>
+<?php }} ?>

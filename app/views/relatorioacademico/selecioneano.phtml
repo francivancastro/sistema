@@ -1,0 +1,18 @@
+<div class="row">
+<?php foreach ($view_ano as $ano){ ?>
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-aqua">
+        <div class="inner">
+            <h3><?php echo $ano['descricao']; ?></h3>
+            <p>Matrícula</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-calendar"></i>
+        </div>
+        <a href="/sistema/relatorioacademico/selecioneano/ano/<?php echo $ano['id_ano']; ?>" class="small-box-footer">Entrar <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+
+<?php } ?>
+</div>

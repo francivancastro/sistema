@@ -1,0 +1,114 @@
+<?php
+    if($login){
+        $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+        $usu = new UsuariogrupoModel();
+        $lista_grupo = $usu->listarPorUsuario($_SESSION["userData"]["id_usuario"]);
+        $array = array();
+        foreach ($lista_grupo as $lp){
+            $array[] = $lp['id_grupo'];
+        }
+        
+?>
+<aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel 
+          <div class="user-panel">
+            <div class="pull-left image">
+                <img src="/<?php echo $pes->foto;?>" class="img-circle" alt="User Image" />
+            </div>
+            <div class="pull-left info">
+                <p><?php echo UtilHelper::formataNome($pes->nome);?></p>
+
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+          </div
+          -->
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Search..."/>
+              <span class="input-group-btn">
+                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+          
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="sidebar-menu">
+        <?php if (in_array(1, $array) || in_array(2, $array) || in_array(3, $array)) { ?>
+            <li><a href="/sistema/index/" title="Home"><i class="fa fa-home"></i> <span>Home</span></a></li>
+            <?php if (in_array(1, $array)) { ?>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-user-circle"></i>
+                <span>Acesso ao Sistema</span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="/sistema/usuario/index/" title="Usuários"><i class="fa fa-user"></i> <span>Usuários</span></a></li>
+                <li><a href="/sistema/grupo/index/" title="Grupos"><i class="fa fa-group"></i> <span>Grupos</span></a></li>
+                <li><a href="/sistema/fichamento/" title="Fichamento"><i class="fa fa-clipboard"></i> <span>Fichamento</span></a></li>
+              </ul>
+            </li>
+            
+            <?php } ?>
+            <?php if (in_array(1, $array) || in_array(2, $array)) { ?>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-legal"></i>
+                <span>Protestos</span>
+              </a>
+              <ul class="treeview-menu">
+                    <li><a href="/sistema/responsavel/index/" title="Responsáveis"><i class="fa fa-vcard"></i> <span> Responsáveis</span></a></li>
+                    <li><a href="/sistema/protesto/index/" title="Protestos"><i class="fa fa-legal"></i> <span> Protestos</span></a></li>
+                    <li><a href="/sistema/taxas/index/" title="Taxas"><i class="fa fa-dollar"></i> <span> Taxas</span></a></li>
+                    <li><a href="/sistema/recibo/index" title="Taxas"><i class="fa fa-file-text"></i> <span> Recibo</span></a></li>
+                    <li><a href="/sistema/relatorio/index/" title="Taxas"><i class="fa fa-file-text-o"></i> <span> Relatórios</span></a></li>
+              </ul>
+            </li>
+            <?php } ?>
+            <?php if (in_array(1, $array) || in_array(3, $array)) { ?>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-graduation-cap"></i>
+                <span>Acadêmico</span>
+              </a>
+              <ul class="treeview-menu">
+                <?php if (in_array(1, $array)) { ?>
+                <li><a href="/sistema/ano/index/" title="Ano"><i class="fa fa-calendar"></i> <span>Ano</span></a></li>
+                <li><a href="/sistema/matriculastatus/index/" title="Status de Matricula"><i class="fa fa-check"></i> <span>Status Matrícula</span></a></li>
+                <li><a href="/sistema/segmento/index/" title="Segmento"><i class="fa fa-align-justify"></i> <span>Segmento</span></a></li>
+                <li><a href="/sistema/anoletivo/index/" title="Ano Letivo"><i class="fa fa-calendar-check-o"></i> <span>Ano Letivo</span></a></li>
+                <li><a href="/sistema/turma/index/" title="Turma"><i class="fa fa-book"></i> <span>Turmas</span></a></li>
+                <?php } ?>
+                <li><a href="/sistema/matricula/index/" title="Matricula"><i class="fa fa-pencil"></i> <span>Matrícula</span></a></li>
+                <li><a href="/sistema/matriculaespera/index/" title="Lista de Espera"><i class="fa fa-edit"></i> <span>Lista de Espera</span></a></li>
+                <?php if (in_array(1, $array)) { ?>
+                <li><a href="/sistema/acompanhamento/index/" title="Acompanhamento"><i class="fa fa-paste"></i> <span>Acompanhamento</span></a></li>
+                <li><a href="/sistema/relatorioacademico/index/" title="Relatório"><i class="fa fa-file-text"></i> <span>Relatório</span></a></li>
+                <?php } ?>
+                </ul>
+            </li>
+            <?php } ?>
+            
+            <?php if (in_array(1, $array) || in_array(3, $array)) { ?>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-calendar"></i>
+                <span>Agendamento</span>
+                <span class="label label-success pull-right">New</span>
+              </a>
+                <ul class="treeview-menu">
+                   <li><a href="/sistema/agenda/nap/"><i class="fa fa-calendar"></i> <span>NAP</span></a></li>
+                    <li><a href="/sistema/agenda/vp/"><i class="fa fa-calendar-check-o"></i> <span>Visita Pedagógica</span></a></li>
+                    <li><a href="/sistema/agenda/ps/"><i class="fa fa-calendar-plus-o"></i> <span>Processo Seletivo</span></a></li>
+                </ul>
+            </li>
+            <?php } ?>
+        <?php } ?>
+         
+        </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+    <?php } ?>

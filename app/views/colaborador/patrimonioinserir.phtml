@@ -1,0 +1,57 @@
+<?php 
+    $col = new ColaboradorModel($_SESSION["colaborador"]);
+    $pes = new PessoaModel($col->id_pessoa);
+?>
+<form method="post" action="/sistema/colaborador/patrimonioinserir/" class="form-horizontal">
+    <div class="row">
+        <div class="span5">            
+            <ul class="breadcrumb">
+                <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/patrimonio/"><i class="fa fa-barcode"></i> Bem Patrimonial</a> <span class="divider">/</span></li>
+                <li class="active">Inserir</li>
+            </ul>
+        </div>
+        <div class="pull-right">
+            <a class="btn" href="/sistema/colaborador/patrimonio/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+        </div>
+    </div>
+    <div class="well">
+    <legend>Bem patrimonial <div class="span4 pull-right" style="font-size: 14px;">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div></legend>
+        <div class="control-group">
+            <label for="chave" class="control-label">Colaborador:</label>
+            <div class="controls">
+                <input type="text" value="<?php echo $pes->nome; ?>" disabled=""class="span4"/>
+                <input type="hidden" name="id_colaborador"  value="<?php echo $col->id_colaborador; ?>"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="nome" class="control-label">Nome:</label>
+            <div class="controls">
+                <input type="text" name="nome" id="descricao" value="" class="span4" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="codigo" class="control-label">Código:</label>
+            <div class="controls">
+                <input type="text" name="codigo" id="descricao" value="" class="span4" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descrição:</label>
+            <div class="controls">
+                <input type="text" name="descricao" id="descricao" value="" class="span4" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="" class="control-label"></label>
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            </div>
+        </div>
+    
+    
+            
+</div>
+</form>

@@ -1,0 +1,43 @@
+<div class="well">
+<div class="navbar">
+    <div class="span4"><h4>Estado - <a href="/sistema/estado/">Listar</a></h4></div>
+    <div class="navbar-inner pull-right">
+        <div class="">
+        <a class="btn" href="/sistema/estado/inserir/" title="Adicionar">Adicionar <i class="icon-plus-sign"></i></a>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"> Voltar <i class="icon-circle-arrow-left"></i></a>
+    </div>
+    </div>
+</div>
+    <br />
+    <hr />
+    <table class="table table-bordered">
+        <tr>
+            <th colspan="7" class="titulo2">Pais</th>
+        </tr>
+        <tbody>
+            <tr class="itemTitulo2">
+                <td>País</td>
+                <td>Estado</td>
+                <td>Sigla</td>
+                <td>Operações</td>
+            </tr>
+            <?php 
+                foreach ($view_sql as $sql){
+                    $pa = new PaisModel($sql['id_pais']);
+            ?>
+            <tr class="item2">
+                <td><strong><?php echo $pa->nome ;?></strong></td>
+                <td><?php echo $sql['nome'];?></td>
+                <td><?php echo $sql['sigla'];?></td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="<?php echo "/sistema/estado/visualizar/id/{$sql["id_estado"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                        <a class="btn btn-warning" href="<?php echo "/sistema/estado/editar/id/{$sql["id_estado"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-danger" href="<?php echo "/sistema/estado/excluir/id/{$sql["id_estado"]}";?>" title="Excluir"><i class="fa fa-trash-o"></i></a>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+    </tbody>
+</table>
+</div>

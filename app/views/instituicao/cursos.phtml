@@ -1,0 +1,65 @@
+<?php $ins = new InstituicaoModel($_SESSION["instituicao"]); ?>
+<div class="row">
+<div class="span5">            
+<ul class="breadcrumb">
+  <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+  <li><a href="/sistema/instituicao/index/"><i class="fa fa-building-o"></i> Instituicao</a><span class="divider">/</span></li>
+  <li class="active"><i class="fa fa-list"></i> Cursos</li>
+</ul>
+</div>
+<div class="pull-right">
+    <a class="btn" href="/sistema/instituicao/cursoinserir/" title="Adicionar"><i class="fa fa-plus-circle"></i> Novo Curso</a>
+    <a class="btn" href="/sistema/instituicao/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+</div>
+</div>
+
+    <table class="table table-bordered">
+        <tr class="titulo2">
+            <td colspan="4"><?php echo $ins->nome; ?> - Cursos</td>
+        </tr>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Turno</th>
+            <th><center>Operações</center></th>
+        </tr>
+        <?php  
+            foreach ($view_sql as $sql){
+                $tur = new TurnoModel($sql['id_turno']);
+                $ctp = new CursotipoModel($sql['id_curso_tipo']);
+        ?>
+        <tr>
+            <td><?php echo $sql['descricao']; ?></td>
+            <td><?php echo $ctp->descricao ?></td>
+            <td><?php echo $tur->descricao ?></td>
+            <td>
+            <center>
+                <div class="btn-group mod">
+                    <a class="btn btn-small btn-success" href="<?php echo "/sistema/instituicao/cursovisualizar/id/{$sql["id_curso"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-small btn-warning" href="<?php echo "/sistema/instituicao/cursoeditar/id/{$sql["id_curso"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                    <a href="#id<?php echo "{$sql["id_curso"]}";?>" role="button" class="btn btn-danger btn-small" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                </div>
+            </center>
+            </td>
+        </tr>
+             <?php } ?>
+</table>
+
+<?php
+    foreach ($view_sql as $sql){ ?>
+
+<div id="id<?php echo "{$sql["id_curso"]}";?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Apagar?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O registro será apagado permanente!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/instituicao/cursoexcluir/id/{$sql["id_curso"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+<?php } ?>

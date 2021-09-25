@@ -1,0 +1,165 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-user"></i>
+              <h3 class="box-title">Lista de Usuários</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#"  data-toggle="tooltip" title="Pesquisar"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" data-toggle="tooltip" href="/sistema/usuario/inserir/" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" data-toggle="tooltip" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i></a>
+              </div><!-- /. tools -->
+            </div>
+            <div class="box-body">
+    <div class="col-md-4 well-sm areapesquisa">
+    <form class="form-horizontal" action="/sistema/usuario/index/" method="post">
+        <div class="input-group input-group-sm">
+            <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+              <a class="btn btn-danger" href="/sistema/usuario/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+            </span>
+        </div>
+    </form>
+    </div>
+<table class="table table-bordered">
+        <tbody>
+            <tr class="itemTitulo2">
+                <td>Foto</td>
+                <td>Nome</td>
+                <td>Usuario</td>
+                <td>Ativo</td>
+                <td><center>Operações</center></td>
+            </tr>
+            <?php 
+                foreach ($view_sql as $sql){
+                    $usu = new UsuarioModel($sql['id_usuario']);
+                    $pes = new PessoaModel($usu->id_pessoa);
+                    $img = "/sistema/public/img/user-default.png";
+                    if(!$pes->foto){
+                        $pes->foto = $img;
+                    }
+            ?>
+            <tr>
+                <td width="5%">
+                    <a href="<?php echo $pes->foto;?>" class="swipebox" title="<?php echo $pes->nome;?>">
+                    <img style="width: 100%" src="<?php echo $pes->foto;?>" alt="" />
+                    </a>
+                </td>
+                <td><?php echo $pes->nome;?></td>
+                <td><?php echo $usu->login;?></td>
+                <td><?php echo $usu->getUsuarioHabilitado(); ?></td>
+                <td>
+                    <center>
+                    <div class="btn-group mod">
+                        <a class="btn btn-small btn-default" href="<?php echo "/sistema/usuario/grupo/id/{$sql["id_usuario"]}";?>" title="Grupo"><i class="fa fa-group"></i></a>
+                    <?php if($usu->habilitado == "S"){ ?>
+                        <a href="#block<?php echo "{$sql["id_usuario"]}";?>" role="button" class="btn btn-default" data-toggle="modal"><i class="fa fa-lock"></i></a>
+                    <?php } ?>
+                    <?php if($usu->habilitado == "N"){ ?>
+                        <a href="#desblock<?php echo "{$sql["id_usuario"]}";?>" role="button" class="btn btn-default" data-toggle="modal"><i class="fa fa-lock"></i></a>
+                    <?php } ?> 
+                        <a class="btn btn-small btn-success" href="<?php echo "/sistema/usuario/visualizar/id/{$sql["id_usuario"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                        <a class="btn btn-small btn-warning" href="<?php echo "/sistema/usuario/editar/id/{$sql["id_usuario"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                        <a href="#id<?php echo "{$sql["id_usuario"]}";?>" role="button" class="btn btn-danger" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                    </div>
+                    </center>
+                </td>
+            </tr>
+             <?php } ?>
+    </tbody>
+</table>
+            </div>
+            <div class="box-footer">
+                  
+<?php
+if($view_sql){
+    $nun = count($view_sql);
+    ?>
+<span class="label label-default"><?php echo $nun;?> Registros</span> 
+    <?php
+}
+
+if($view_numero && (!count($view_numero) == 0)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+}
+?>
+
+            </div>
+        </div>
+</div>
+<?php
+    foreach ($view_sql as $sql){
+        $usu = new UsuarioModel($sql['id_usuario']);
+   ?>
+
+<div class="modal fade" id="id<?php echo "{$sql["id_usuario"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_usuario"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar <?php echo $usu->login;?> ?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/usuario/excluir/id/{$sql["id_usuario"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+<?php
+    foreach ($view_sql as $sql){
+        $usu = new UsuarioModel($sql['id_usuario']);
+?>
+
+  <div class="modal fade" id="block<?php echo "{$sql["id_usuario"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_usuario"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Bloquear <?php echo $usu->login;?> ?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O Usuário ficará Impossibilitado de Logar Sistema!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/usuario/bloquear/id/{$sql["id_usuario"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+  </div>
+  </div>
+</div>
+<?php } ?>
+<?php
+    foreach ($view_sql as $sql){
+        $usu = new UsuarioModel($sql['id_usuario']);
+?>
+
+   <div class="modal fade" id="desblock<?php echo "{$sql["id_usuario"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_usuario"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Desloquear <?php echo $usu->login;?> ?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O usuário Voltaŕa a Logar no Sistema!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-success" href="<?php echo "/sistema/usuario/desbloquear/id/{$sql["id_usuario"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+</div>
+</div>
+<?php } ?>

@@ -1,0 +1,39 @@
+<form method="post" action="/sistema/modulo/editar/id/<?php echo $view_sql["id_action"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_action" value="<?php echo $view_sql["id_action"]; ?>"/>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Modulo - <a href="/sistema/modulo/editar/id/<?php echo $view_sql["id_action"]; ?>">Editar</a></h4></div>
+        <div class="navbar-inner pull-right span4">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/action/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+            <label for="controller" class="control-label">Controller:</label>
+            <div class="controls">
+                <select name="id_controller" id="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_con as $con){ ?>
+                    <option value="<?php echo $con["id_controller"]; ?>"><?php echo $con["controller"]; ?></option>
+                <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="action" class="control-label">Action:</label>
+            <div class="controls">
+                <input type="text" name="action" id="nome" size="5" value="<?php echo $view_sql["action"]; ?>" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="principal" class="control-label">Principal:</label>
+            <div class="controls">
+                 <input type="checkbox" name="principal" id="principal" size="5" value="<?php echo $view_sql["principal"]; ?>" />
+            </div>
+        </div>
+</div>
+</form>

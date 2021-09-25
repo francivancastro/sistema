@@ -1,0 +1,87 @@
+<?php 
+    $col = new ColaboradorModel($_SESSION["colaborador"]);
+    $pes = new PessoaModel($col->id_pessoa);
+    $stt = new SegurostatusModel($view_sql["id_seguro_status"]);
+    $sti = new SegurotipoModel($view_sql["id_seguro_tipo"]);
+?>
+<form method="post" action="/sistema/colaborador/seguroeditar/id/<?php echo $view_sql["id_seguro"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_seguro" value="<?php echo $view_sql["id_seguro"]; ?>" />
+    <div class="row">
+        <div class="span5">            
+            <ul class="breadcrumb">
+                <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+                <li><a href="/sistema/colaborador/seguro/"><i class="fa fa-check-circle-o"></i> seguro</a> <span class="divider">/</span></li>
+                <li class="active">Editar</li>
+            </ul>
+        </div>
+        <div class="pull-right">
+            <a class="btn" href="/sistema/colaborador/seguro/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+        </div>
+    </div>
+    <div class="well">
+    <legend>Seguro <div class="span4 pull-right" style="font-size: 14px;">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div></legend>
+        <div class="control-group">
+            <label for="chave" class="control-label">Colaborador:</label>
+            <div class="controls">
+                <input type="text" value="<?php echo $pes->nome; ?>" disabled=""class="span4"/>
+                <input type="hidden" name="id_colaborador"  value="<?php echo $col->id_colaborador; ?>"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_seguro_status" class="control-label">Status:</label>
+            <div class="controls">
+                <select name="id_seguro_status">
+                        <option value="">=> Selecione <=</option>
+                    <?php foreach ($view_sst as $sst){ ?>
+                        <option value="<?php echo $sst["id_seguro_status"]; ?>"<?php ($sst["id_seguro_status"] == $stt->id_seguro_status) ? print "selected" : print ""; ?>><?php echo $sst["descricao"]; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_seguro_tipo" class="control-label">Tipo:</label>
+            <div class="controls">
+                <select name="id_seguro_tipo">
+                        <option value="">=> Selecione <=</option>
+                    <?php foreach ($view_stp as $stp){ ?>
+                        <option value="<?php echo $stp["id_seguro_tipo"]; ?>"<?php ($stp["id_seguro_tipo"] == $sti->id_seguro_tipo) ? print "selected" : print ""; ?>><?php echo $stp["descricao"]; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descricão:</label>
+            <div class="controls">
+                <input type="text" name="descricao" id="descricao" value="<?php echo $view_sql["descricao"];?>" class="span4" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="data_seguro" class="control-label">Data do Seguro</label>
+            <div class="controls">
+            <div class="input-daterange" id="datepicker">
+                <input type="text" name="data_seguro" id="data" value="<?php echo UtilHelper::formatBr($view_sql["data_seguro"]);?>" class="span2 calendario" required="" placeholder="__/__/___"/> 
+            </div> 
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="valor" class="control-label">Valor:</label>
+            <div class="controls">
+                <div class="input-prepend input-append">
+                    <span class="add-on">R$</span>
+                    <input type="text" name="valor" id="valor" value="<?php echo $view_sql["valor"];?>" class="span2"/>
+                    <span class="add-on">.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="" class="control-label"></label>
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+                <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            </div>
+        </div>
+            
+</div>
+</form>
+

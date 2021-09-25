@@ -1,0 +1,118 @@
+<div class="login-logo">
+    <a href="#"><b>Acesso</b> School</a>
+</div><!-- /.login-logo -->
+<div class="login-box-body">
+<p class="login-box-msg">
+    <img src="/sistema/public/img/fd_logo.png" alt="" />
+</p>
+<?php
+    $aut = new AuthHelper();
+    $sessao = $aut->checkRecup("boolean");
+    if(!$sessao){
+?>
+    
+        
+             <form class="form-signin" method="post" action="/sistema/auth/login/acao/logar">
+                <div class="form-group has-feedback">
+                    <input name="login" type="text" placeholder="Nome de Usuário" class="form-control">
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input name="senha" placeholder="Senha" type="password" class="form-control">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Entrar" name="btn_enviar" class="btn btn-info form-control"/>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-warning form-control" data-toggle="modal" data-target="#myModal">Esqueci minha senha</button>
+                    
+                </div>
+                 <div class="row text-center">
+                    <hr>
+                    <small class="text-center"><strong>Copyright © 2015 <a href="#">School</a> </strong> - Todos os direitos reservados.</small>
+                </div>
+            </form>
+    </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Recuperar senha</h4>
+      </div>
+        <form action="/sistema/auth/login/acao/recup/" method="post" class="form-horizontal">
+      <div class="modal-body">
+        <div class="control-group">
+            <label for="nome" class="control-label">Nome Completo:</label>
+            <div class="controls">
+                <input type="text" name="nome" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="cpf" class="control-label">CPF:</label>
+            <div class="controls">
+                <input type="text" name="cpf" class="cpf" placeholder="___.___.___-__" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="data" class="control-label">Data de Nascimento:</label>
+            <div class="controls">
+                <input type="text" name="data" class="calendario data" />
+            </div>
+        </div>
+      </div>
+        
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        <button class="btn btn-primary" type="submit" >Recuperar</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<?php } ?>
+<?php
+
+
+if($sessao){ 
+    
+    $pes = new PessoaModel($_SESSION["userPes"]["id_pessoa"]);
+    $usu = new UsuarioModel();
+    $usuario = $usu->pegaUsuarioPorPessoa($pes->id_pessoa);
+    //print_r($usuario);
+?>
+        
+        <div class="well">
+            <form action="/sistema/auth/login/acao/recuperar/" class="form-horizontal" method="post">
+                
+                <input type="hidden" name="id_usuario" value="<?php echo $usuario[0]["id_usuario"];?>"/>
+                <input type="hidden" name="login" value="<?php echo $usuario[0]["login"];?>"/>
+                <input type="hidden" name="habilitado" value="<?php echo $usuario[0]["habilitado"];?>"/>
+                <input type="hidden" name="id_pessoa" value="<?php echo $usuario[0]["id_pessoa"];?>"/>
+                <legend>Digite a Nova senha</legend>
+                <div class="control-group">
+                    <label for="senha" class="control-label">Senha:</label>
+                    <div class="controls">
+                        <input type="password" name="senha" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="senhaconf" class="control-label">Confirme a Senha:</label>
+                    <div class="controls">
+                        <input type="password" name="senhaconf" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                      <input type="submit" value="Logar" name="btn_enviar" class="btn btn-primary " />
+                      <a href="/sistema/auth/logout" class="btn btn-danger">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+<?php } ?>
+</div>

@@ -1,0 +1,28 @@
+<form method="post" action="/sistema/pais/editar/id/<?php echo $view_sql["id_pais"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_pais" value="<?php echo $view_sql["id_pais"]; ?>"/>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Pais - <a href="/sistema/segurotipo/editar/id/<?php echo $view_sql["id_pais"]; ?>">Editar</a></h4></div>
+        <div class="navbar-inner pull-right">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/pais/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+            <label for="nome" class="control-label">Nome:</label>
+            <div class="controls">
+                <input type="text" name="nome" id="nome" value="<?php echo $view_sql["nome"]; ?>" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="chave" class="control-label">Sigla:</label>
+            <div class="controls">
+                <input type="text" name="chave" id="chave" value="<?php echo $view_sql["chave"]; ?>" class="span2" />
+            </div>
+        </div>
+</div>
+</form>

@@ -1,0 +1,93 @@
+<div class="row">
+<div class="span5">            
+<ul class="breadcrumb">
+  <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+  <li class="active"><i class="fa fa-building-o"></i> Instituicao</li>
+</ul>
+</div>
+<div class="pull-right">
+    <a class="btn pesquisar" href="#" title="Voltar"><i class="fa fa-search"></i> Pesquisar</a>
+    <a class="btn" href="/sistema/instituicao/inserir/" title="Adicionar"><i class="fa fa-plus-circle"></i> Nova Instituição</a>
+    <a class="btn" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+</div>
+</div>
+<div class="well areapesquisa">
+    <form class="form-horizontal" action="/sistema/instituicao/index/" method="post">
+    <legend>Pesquisar Por:</legend>
+    <div class="control-group">
+      <label class="control-label" for="nome">Nome:</label>
+      <div class="controls">
+        <input type="text" class="input-large" name="nome"placeholder="Buscar Nome...">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="">CNPJ:</label>
+      <div class="controls">
+          <input type="text" placeholder="Digite o CNPJ..." class="cnpj">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for=""></label>
+      <div class="controls">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+          <a class="btn btn-danger" href="/sistema/usuario/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+    <table class="table table-bordered">
+        <tr class="titulo2">
+            <td>Nome</td>
+            <td>CNPJ</td>
+            <td>Localidade</td>
+            <td><center>Operações</center></td>
+        </tr>
+        <?php 
+            foreach ($view_sql as $sql){
+                $mun = new MunicipioModel($sql["id_municipio"]);
+                $est = new EstadoModel($sql["id_estado"]);
+        ?>
+        <tr>
+            <td><?php echo $sql['nome']; ?></td>
+            <td><?php echo UtilHelper::formataCNPJ($sql['cnpj']); ?></td>
+            <td><?php echo $mun->nome ." - ". $est->sigla; ?></td>
+            <td>
+            <center>
+                <div class="btn-group mod">
+                    <a class="btn btn-small" href="<?php echo "/sistema/instituicao/cursos/id/{$sql["id_instituicao"]}";?>" title="Curso"><i class="fa fa-list"></i></a>
+                    <a class="btn btn-small btn-success" href="<?php echo "/sistema/instituicao/visualizar/id/{$sql["id_instituicao"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-small btn-warning" href="<?php echo "/sistema/instituicao/editar/id/{$sql["id_instituicao"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                    <a href="#id<?php echo "{$sql["id_instituicao"]}";?>" role="button" class="btn btn-danger btn-small" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                </div>
+            </center>
+            </td>
+        </tr>
+             <?php } ?>
+</table>
+<?php
+if($view_sql){
+    $nun = count($view_sql);
+    ?>
+<div class="btn active pull-right"><span class="badge badge-inverse"><?php echo $nun;?></span> Registros</div>
+    <?php
+}
+?>
+<?php
+    foreach ($view_sql as $sql){ ?>
+
+<div id="id<?php echo "{$sql["id_instituicao"]}";?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Apagar?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O registro será apagado permanente!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/instituicao/excluir/id/{$sql["id_instituicao"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+<?php } ?>

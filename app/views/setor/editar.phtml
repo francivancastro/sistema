@@ -1,0 +1,28 @@
+<form method="post" action="/sistema/setor/editar/id/<?php echo $view_sql["id_setor"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_setor" value="<?php echo $view_sql["id_setor"]; ?>"/>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Setor - <a href="/sistema/setor/editar/id/<?php echo $view_sql["id_setor"]; ?>">Editar</a></h4></div>
+        <div class="navbar-inner pull-right span4">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/setor/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descrição:</label>
+            <div class="controls">
+                <input type="text" name="descricao" id="descricao" value="<?php echo $view_sql["descricao"]; ?>" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="chave" class="control-label">Chave:</label>
+            <div class="controls">
+                <input type="text" name="chave" id="chave" value="<?php echo $view_sql["chave"]; ?>" class="span2" />
+            </div>
+        </div>
+</div>
+</form>

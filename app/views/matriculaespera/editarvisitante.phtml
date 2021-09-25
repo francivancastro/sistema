@@ -1,0 +1,190 @@
+<?php 
+    $aluno = new MalunoModel($view_sql['id_m_aluno']);
+    $visi = new VisitanteModel($view_sql['id_visitante']);
+    $txt_data_nasc = "";
+    if($aluno->data_nascimento){
+        $txt_data_nasc = UtilHelper::formatBr($aluno->data_nascimento);
+    }
+?>
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $(".ip").keyup(function(){
+    $(this).val($(this).val().toUpperCase());
+  });
+});
+</script>
+<form method="post" action="/sistema/matriculaespera/editarvisitante/id/<?php echo $view_sql['id_matricula_espera']; ?>"  name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_matricula_espera" value="<?php echo $view_sql['id_matricula_espera']; ?>"/>
+    <input type="hidden" name="id_m_aluno" value="<?php echo $view_sql['id_m_aluno']; ?>"/>
+    <input type="hidden" name="id_turma" value="<?php echo $view_sql['id_turma']; ?>"/>
+    <input type="hidden" name="id_usuario" value="<?php echo $view_sql['id_usuario']; ?>"/>
+    <input type="hidden" name="status" value="<?php echo $view_sql['status']; ?>"/>
+    <input type="hidden" name="data" value="<?php echo $view_sql['data_cadastro']; ?>"/>
+    <input type="hidden" name="id_visitante" value="<?php echo $view_sql['id_visitante']; ?>"/>
+    <input type="hidden" name="troca" value="<?php echo $visi->troca; ?>"/>
+    
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Editar Aluno</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/matriculaespera/visitante/id/<?php echo $view_sql['id_turma']; ?>"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">Editar Visitante</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Visitante:</label>
+                        <input type="text" value="<?php echo $visi->nome; ?>" name="nome_visitante" class="form-control ip" placeholder="Nome completo">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="">Já é cliente?</label>
+                          <div class="radio">
+                            <label>
+                                <input type="radio" name="cliente"  value="S" <?php ($visi->cliente == "S") ? print "checked" : print ""; ?>>
+                              Sim
+                            </label>
+                            <label>
+                              <input type="radio" name="cliente"  value="N" <?php ($visi->cliente == "N") ? print "checked" : print ""; ?> >
+                              Não
+                            </label>
+                          </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nome do Aluno:</label>
+                        <input type="text" name="nome" value="<?php echo $aluno->nome;?>" class="form-control ip" placeholder="Aluno">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Data de Nasc.:</label>
+                        <input type="text" name="data_nascimento" value="<?php echo $txt_data_nasc;?>" class="form-control data calendario" placeholder="__/__/___">
+                    </div>
+                </div>
+                
+                  <div class="col-md-2">
+                      <div class="form-group">
+                        <label>Grau Parentesco:</label>
+                        <select class="form-control" name="grau_parentesco">
+                        <option value="">Selecione</option>
+                        <?php
+                        $listParente = UtilHelper::listaParentes();
+                        foreach ($listParente as $lp) { ?>
+                        <option value="<?php echo $lp;?>" <?php ($visi->grau_parentesco == $lp) ? print "selected" : print ""; ?>><?php echo $lp;?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                  </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Endereço:</label>
+                        <input type="text" value="<?php echo $visi->endereco;?>" name="endereco" class="form-control ip">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Bairro:</label>
+                        <input type="text" value="<?php echo $visi->bairro;?>" name="bairro" class="form-control ip">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Cidade:</label>
+                        <input type="text" name="cidade" value="<?php echo $visi->cidade;?>" class="form-control ip">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>UF:</label>
+                        <select class="form-control" name="uf">
+                            <option value="">Selecione</option>
+                            <?php
+                        $listEstados = UtilHelper::listaEstados();
+                        foreach ($listEstados as $key => $value) { ?>
+                        <option value="<?php echo $key;?>" <?php ($visi->uf == $key) ? print "selected" : print ""; ?>><?php echo $value;?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>CEP:</label>
+                        <input type="text" name="cep" value="<?php echo $visi->cep;?>"  class="form-control cep " placeholder="__.___-___">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Telefone:</label>
+                        <input type="text" value="<?php echo $visi->telefone;?>"  name="telefone" class="form-control telefone" placeholder="(__) ____-____">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Celular 1:</label>
+                        <input type="text" name="celular1" value="<?php echo $visi->celular1;?>"  class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Celular 2:</label>
+                        <input type="text" name="celular2" value="<?php echo $visi->celular2;?>"  class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="text" name="email" id="email" value="<?php echo $visi->email;?>"  class="form-control" placeholder="email@email.com">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Escola Anterior:</label>
+                            <input type="text" name="escola_anterior" value="<?php echo $visi->escola_anterior;?>"  class="form-control ip" placeholder="Nome Completo">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        <label>Como conheceu a nossa escola?</label>
+                        <select class="form-control" name="como_conheceu">
+                        <option value="">Selecione</option>
+                          <?php
+                        $listConheceu = UtilHelper::listaConheceu();
+                        foreach ($listConheceu as $lc) { ?>
+                        <option value="<?php echo $lc;?>" <?php ($visi->como_conheceu == $lc) ? print "selected" : print ""; ?>><?php echo $lc;?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                  <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Observação:</label>
+                            <textarea name="obs" class="form-control" rows="3" placeholder="..."><?php echo $visi->obs;?></textarea>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>

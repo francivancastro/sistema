@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="imagetoolbar" content="no" />
+    
+    <!-- CSS -->
+        <link rel="stylesheet" href="/sistema/public/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/sistema/public/css/AdminLTE.css">
+        <link rel="stylesheet" href="/sistema/public/css/AdminLTE.min.css">
+        
+        <link rel="stylesheet" href="/sistema/public/plugins/fullcalendar/fullcalendar.min.css">
+        <link rell="stylesheet" href="/sistema/public/plugins/fullcalendar/fullcalendar.print.css" media="print">
+        <link rel="stylesheet" href="/sistema/public/plugins/timepicker/bootstrap-timepicker.min.css">
+        <link href="/sistema/public/plugins/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
+        
+        <link rel="stylesheet" href="/sistema/public/css/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="/sistema/public/css/flat/blue.css">
+        
+        
+        <link rel="stylesheet" href="/sistema/public/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css"> 
+        
+        <link rel="stylesheet" href="/sistema/public/css/font-awesome.css"> 
+        <link rel="stylesheet" href="/sistema/public/css/datepicker.css" />
+        <link rel="stylesheet" href="/sistema/public/css/datepicker3.css" />
+        <link rel="stylesheet" href="/sistema/public/css/bootstrap-submenu.min.css">
+        <link rel="stylesheet" href="/sistema/public/css/config.css" />
+        
+        
+        <link type="text/css" rel="stylesheet" media="all" href="/sistema/public/plugins/chat/css/chat.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="/sistema/public/plugins/swipebox/css/swipebox.css" />
+        <link type="text/css" rel="stylesheet" href="/sistema/public/fonts/gothic/font.css" />
+        <!-- JS -->
+        
+        <script type="text/javascript" src="/sistema/public/js/jquery-2.2.3.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/plugins/tablesorter/jquery.tablesorter.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/bootstrap.min.js"></script>
+        
+        <script type="text/javascript" src="/sistema/public/js/jquery.slimscroll.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/app.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/bootstrap-filestyle.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/protesto.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/controller.js"></script>
+        <script type="text/javascript" src="/sistema/public/plugins/swipebox/js/jquery.swipebox.js"></script>
+        
+        <script src="/sistema/public/plugins/fullcalendar/lib/moment.min.js"></script>
+        <script src="/sistema/public/plugins/fullcalendar/fullcalendar.min.js"></script>
+        <script src="/sistema/public/plugins/fullcalendar/locale-all.js"></script>
+        <script src="/sistema/public/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+        
+        <script src="/sistema/public/plugins/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+        
+        <script type="text/javascript" src="/sistema/public/js/jquery-mask.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/jquery.maskMoney.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/mascara.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/bootstrap-datepicker.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/bootstrap-datepicker.pt.js" charset="UTF-8"></script>
+        
+        <script type="text/javascript" src="/sistema/public/js/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+        <script type="text/javascript" src="/sistema/public/js/bootstrap-submenu.min.js" ></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('[data-submenu]').submenupicker();
+            });
+        </script>
+        
+         <!-- img -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="apple-touch-icon" href="/sistema/public/img/glyphicons-halflings-white.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/sistema/public/img/glyphicons-halflings.png">
+        <title>Sistema</title>
+    </head>
+<?php
+    $autenticar = new AuthHelper();
+    $login = $autenticar->checkLogin('boolean');
+    $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+    $sidemenu = '';
+    
+    $pagemenu = 'login-page';
+    $conteiner = 'login-box';
+    if($login){
+        $conteiner = 'wrapper';
+        $pagemenu = 'skin-blue';
+        $sidemenu = 'sidebar-mini sidebar-collapse';
+    }
+        
+?> 
+<body class="<?php echo $sidemenu .' '. $pagemenu;?>">
+    <div class="<?php echo $conteiner;?>">
+    <?php if($login){ include 'topo.phtml'; }?>
+    <?php if($login){ include 'menu.phtml'; ?>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <?php echo $this->breadcrumbs; ?>
+            </section>
+            <section class="content">
+                <div id="msg_alert"></div>
+            <?php } ?>
+            <?php 
+            if($view_msg){ 
+                if(is_array($view_msg)){
+                    foreach ($view_msg as $msg){
+                        if ($msg[0] == "alert-danger" || $msg[0] == "alert-success" || $msg[0] == "alert-info" || $msg[0] == "alert-warning"){ 
+            ?>
+                        <div class="alert <?php echo $msg[0];?>" role="alert">  
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <?php echo $msg[1];?>
+                        </div>
+            <?php }}}} ?>
+            <?php echo $this->_content; ?>   
+            <?php if($login){ ?>
+            </section>
+        </div>
+<?php } ?>
+    
+    <?php if($login){ ?>
+<!--        
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+          <b>Versão</b> 1.0
+        </div>
+        <strong>Copyright © 2014-2015 <a href="http://conexaoaquarela.com.br">School</a>.</strong> Todos os direitos reservados.
+    </footer>
+-->
+ <script type="text/javascript" src="/sistema/public/plugins/chat/js/chat.js"></script>
+ <script src="/sistema/public/plugins/morris/morris.min.js"></script>
+    <!-- Sparkline -->
+<script src="/sistema/public/plugins/sparkline/jquery.sparkline.min.js"></script>
+<script src="/sistema/public/plugins/chartjs/Chart.min.js"></script>
+<script src="/sistema/public/js/pages/dashboard.js"></script>
+
+    <script src="/sistema/public/plugins/fileupload/js/jquery.knob.js"></script>
+    <script src="/sistema/public/plugins/fileupload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/sistema/public/plugins/fileupload/js/jquery.iframe-transport.js"></script>
+    <script src="/sistema/public/plugins/fileupload/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/sistema/public/js/conf.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/sistema/public/js/demo.js"></script>
+    <?php } ?>
+    </div>
+</body>
+</html>

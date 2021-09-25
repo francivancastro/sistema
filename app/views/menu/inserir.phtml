@@ -1,0 +1,72 @@
+<form method="post" action="/sistema/menu/inserir/" class="form-horizontal">
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Menu - <a href="/sistema/menu/inserir/">Inserir</a></h4></div>
+        <div class="navbar-inner pull-right span4">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/menu/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descrição:</label>
+            <div class="controls">
+                <input type="text" name="descricao" size="5" value="" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ordem" class="control-label">Ordem:</label>
+            <div class="controls">
+                <input type="text" name="ordem" size="5" value="" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="url" class="control-label">Url:</label>
+            <div class="controls">
+                <input type="text" name="url" size="5" value="" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="icon" class="control-label">Icone:</label>
+            <div class="controls">
+                <input type="text" name="icon" id="nome" size="5" value="" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_menu_tipo" class="control-label">Tipo:</label>
+            <div class="controls">
+                <select name="id_menu_tipo" id="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mts as $mts){ ?>
+                    <option value="<?php echo $mts["id_menu_tipo"]; ?>"><?php echo $mts["descricao"]; ?></option>
+                <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_menu_posicao" class="control-label">Posição:</label>
+            <div class="controls">
+                <select name="id_menu_posicao" id="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mps as $mps){ ?>
+                    <option value="<?php echo $mps["id_menu_posicao"]; ?>"><?php echo $mps["descricao"]; ?></option>
+                <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="id_menu_superior" class="control-label">Tipo:</label>
+            <div class="controls">
+                <select name="id_menu_superior" id="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mss as $mss){ ?>
+                    <option value="<?php echo $mss["id_menu_superior"]; ?>"><?php echo $mss["descricao"]; ?></option>
+                <?php } ?>
+                </select>
+            </div>
+        </div>
+</div>
+</form>

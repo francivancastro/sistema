@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <i class=" fa fa-file-text-o"></i>
+              <h3 class="box-title">Buscar por:</h3>
+            </div>
+            <form method="post" action="" target="_blank">
+                <div class="box-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Ano Base:</label>
+                        <?php 
+                        $anobase = UtilHelper::anos();
+                        ?>
+                        <select class="form-control" name="ano">
+                            <option value="">Selecione</option>
+                          <?php foreach ($anobase as $ano){ ?>
+                            <option value="<?php echo $ano; ?>"><?php echo $ano; ?></option>
+                          <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Empresa:</label>
+                        <?php 
+                            $empresas = new EmpresaModel();
+                            $empre = $empresas->listar();
+                        ?>
+                        <select class="form-control" name="id_empresa">
+                            <option value="">Selecione</option>
+                          <?php foreach ($empre as $empresa){ ?>
+                            <option value="<?php echo $empresa['id_empresa']; ?>"><?php echo $empresa['empresa_nome']; ?></option>
+                          <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="aluno">Nome do Aluno:</label>
+                        
+                        <input type="text" name="aluno" class="form-control" id="aluno" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="responsavel">Nome do Responsável:</label>
+                        <input type="text" name="responsavel" class="form-control" id="responsavel" placeholder="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="">Período de Vencimento:</label>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" name="data1" class="form-control calendario" placeholder="__/__/___">
+                            </div>
+                        </div>
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" name="data2" class="form-control calendario" placeholder="__/__/___">
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            </div>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-print"></i> Gerar</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>

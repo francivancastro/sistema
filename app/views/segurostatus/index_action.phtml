@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="span10">
+        <ul class="breadcrumb">
+          <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+          <li class="active"><i class="fa fa-cog"></i> Status de Seguro</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/segurostatus/inserir/" title="Adicionar"><i class="fa fa-plus-circle"></i> Novo</a>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+    </div>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <th colspan="7" class="titulo2">Status de Seguro</th>
+    </tr>
+
+    <tr>
+        <th>ID</th>
+        <th>Descrição</th>
+        <th>Chave</th>
+        <th>Operações</th>
+    </tr>
+    <tbody>
+        <?php foreach ($view_sql as $sql){?>
+        <tr class="item2">
+            <td><span class="badge badge-inverse"><?php echo $sql['id_seguro_status'];?></span></td>
+            <td><?php echo $sql['descricao'];?></td>
+            <td><?php echo $sql['chave'];?></td>
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-success btn-small" href="<?php echo "/sistema/segurostatus/visualizar/id/{$sql["id_seguro_status"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-warning btn-small" href="<?php echo "/sistema/segurostatus/editar/id/{$sql["id_seguro_status"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-danger btn-small" href="<?php echo "/sistema/segurostatus/excluir/id/{$sql["id_seguro_status"]}";?>" title="Excluir" onclick="exclui(event);"><i class="fa fa-trash-o"></i></a>
+                </div>
+            </td>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table>

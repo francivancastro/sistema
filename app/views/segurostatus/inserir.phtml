@@ -1,0 +1,32 @@
+<form method="post" action="/sistema/segurostatus/inserir/" class="form-horizontal">
+<div class="row">
+    <div class="span10">            
+        <ul class="breadcrumb">
+            <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+            <li><a href="/sistema/segurostatus/index/"><i class="fa fa-cog"></i> Status de Seguro</a> <span class="divider">/</span></li>
+            <li class="active">Inserir</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+        <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+        <a class="btn" href="/sistema/segurostatus/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+    </div>
+</div>
+<div class="well">
+    <legend>Status de Seguro <div class="span4 pull-right" style="font-size: 14px;">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div></legend>
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descrição:</label>
+            <div class="controls">
+                <input type="text" name="descricao" id="descricao" value="" class="span2" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="chave" class="control-label">Chave:</label>
+            <div class="controls">
+                <input type="text" name="chave" id="chave" value="" class="span2" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        
+</div>
+</form>

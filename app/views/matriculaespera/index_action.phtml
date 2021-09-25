@@ -1,0 +1,478 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-list"></i>
+              <h3 class="box-title">Vagas</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+                    <a class="btn btn-default" href="/sistema/matriculaespera/selecioneano/" data-toggle="tooltip" title="Trocar ano"> <i class="fa fa-exchange"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+                <div class="col-md-4 well-sm areapesquisa" style="display: none">
+            <form class="form-horizontal" action="/sistema/matriculaespera/index/" method="post">
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                      <a class="btn btn-danger" href="/sistema/matriculaespera/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+                    </span>
+                </div>
+            </form>
+            </div>
+                <table class="table table-condensed">
+                <thead>
+                    
+                <tr>
+                  <th style="text-align: left">Turma</th>
+                  <th style="text-align: center">Visitantes</th>
+                  <th style="text-align: center">Troca de turmas</th>
+                  <th style="text-align: center">Total </th>
+                  <th></th>
+                </tr>
+                </thead>
+        <?php if($view_turma){  ?>
+                <tbody>
+                
+                 <?php foreach ($view_turma as $turma){
+                            $mat = new MatriculaesperaModel();
+                            $listMat = $mat->listarPorTurma($turma['id_turma']);
+                            $vst = array();
+                            $troca = array();
+                            foreach ($listMat as $vt){
+                                if($vt['status'] == 'A'){
+                                    $visita = new VisitanteModel($vt['id_visitante']);
+                                    if($visita->troca == 'N'){
+
+                                        $vst[] = $visita->troca;
+                                    }
+                                    if($visita->troca == 'S'){
+
+                                        $troca[] = $visita->troca;
+                                    }
+                                }
+
+                            }
+
+                            $txt_troca = count($troca); 
+                            $txt_vst = count($vst); 
+                            $count = $txt_troca + $txt_vst;
+                       ?>
+                <tr>
+                  <td align='left'><span class="badge"><?php echo $turma['descricao']; ?></span></td>
+                  <td align='center'><span class="badge bg-green"><?php echo $txt_vst; ?></span></td>
+                  <td align='center'><span class="badge bg-yellow"><?php echo $txt_troca; ?></span></td>
+                  <td align='center'><span class="badge"><?php echo $count ?></span></td>
+                  <td>
+                    <div class="dropdown pull-right">
+                        <button class="btn btn-info" type="button" data-toggle="dropdown" data-submenu="" aria-expanded="false">
+                          <i class="fa fa-bars"></i>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="#" data-toggle="modal" data-target="#matricula<?php echo $turma['id_turma'];?>"><i class="fa fa-plus-square-o"></i> Visitante</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#troca<?php echo $turma['id_turma'];?>"><i class="fa fa-refresh"></i> Espera - Troca de Turma</a></li>
+                            <li class="divider"></li>
+
+                            <li class="dropdown-submenu">
+                                <a tabindex="0"><i class="fa fa-list"></i> Alunos em Espera </a>
+                                <ul class="dropdown-menu">
+                                  <li><a tabindex="-1" href="<?php echo "/sistema/matriculaespera/turma/id/{$turma["id_turma"]}";?>"><i class="fa fa-graduation-cap"></i> Troca Turma</a></li>
+                                  <li><a tabindex="-1" href="<?php echo "/sistema/matriculaespera/visitante/id/{$turma["id_turma"]}";?>"><i class="fa fa-cogs"></i> Visitante</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    </td>
+                </tr>
+                <?php } ?>
+                </tbody>
+                <?php } else { ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            Não existe turma cadastrada neste ano!
+                        </td>
+                    </tr>
+                </tfoot>
+                <?php } ?>
+                </table>
+            
+            </div>
+        </div>
+        </section>
+</div>
+<?php foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_ano"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_ano"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar esta Taxa?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/ano/excluir/id/{$sql["id_ano"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $(".ip").keyup(function(){
+    $(this).val($(this).val().toUpperCase());
+  });
+});
+</script>
+<?php if($view_turma){ 
+date_default_timezone_set('America/Belem');
+
+$date = date('Y-m-d H:i:s');
+
+foreach ($view_turma as $turma){ 
+
+?>
+<div class="modal fade" id="matricula<?php echo $turma['id_turma'];?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-green">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Visitante - Turma <?php echo $turma['descricao'];?></h4>
+      </div>
+        <form method="post" action="/sistema/matriculaespera/inserir">
+            <input type="hidden" name="troca" value="N" />
+            <input type="hidden" name="id_matricula_status" value="1" />
+            <input type="hidden" name="id_turma" value="<?php echo $turma['id_turma'];?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data" value="<?php echo $date;?>" />
+            <input type="hidden" name="status" value="A" />
+          <div class="modal-body">
+              <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Visitante:</label>
+                        <input type="text" name="nome_visitante" class="form-control ip" placeholder="Nome completo">
+                    </div>
+                </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="">Já é cliente?</label>
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="cliente"  value="S" checked="">
+                              Sim
+                            </label>
+                            <label>
+                              <input type="radio" name="cliente"  value="N" checked="">
+                              Não
+                            </label>
+                          </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nome do Aluno:</label>
+                        <input type="text" name="nome" class="form-control ip" placeholder="Aluno">
+                    </div>
+                </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Data de Nasc.:</label>
+                        <input type="text" name="data_nascimento" class="form-control data calendario" placeholder="__/__/___">
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-2">
+                      <div class="form-group">
+                        <label>Grau Parentesco:</label>
+                        <select class="form-control" name="grau_parentesco">
+                        <option value="">Selecione</option>
+                        <option value="Pai">Pai</option>
+                        <option value="Mãe">Mãe</option>
+                        <option value="Irmão(ã)">Irmão(ã)</option>
+                        <option value="Padrasto">Padrasto</option>
+                        <option value="Madrasta">Madrasta</option>
+                        <option value="Padrinho">Padrinho</option>
+                        <option value="Madrinha">Madrinha</option>
+                        <option value="Tio(a)">Tio(a)</option>
+                        <option value="Avô(ó)">Avô(ó)</option>
+                        </select>
+                      </div>
+                  </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Endereço:</label>
+                        <input type="text" name="endereco" class="form-control ip">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Bairro:</label>
+                        <input type="text" name="bairro" class="form-control ip">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Cidade:</label>
+                        <input type="text" name="cidade" class="form-control ip">
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>UF:</label>
+                        <select class="form-control" name="uf">
+                            <option value="">Selecione</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espirito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                      </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>CEP:</label>
+                        <input type="text" name="cep" class="form-control cep " placeholder="__.___-___">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Telefone:</label>
+                        <input type="text" name="telefone" class="form-control telefone" placeholder="(__) ____-____">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Celular 1:</label>
+                        <input type="text" name="celular1" class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Celular 2:</label>
+                        <input type="text" name="celular2" class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="text" name="email" id="email" class="form-control" placeholder="email@email.com">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Escola Anterior:</label>
+                            <input type="text" name="escola_anterior" class="form-control ip" placeholder="Nome Completo">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                        <label>Como conheceu a nossa escola?</label>
+                        <select class="form-control" name="como_conheceu">
+                        <option value="">Selecione</option>
+                          <option value="TV">TV</option>
+                          <option value="Jornal">Jornal</option>
+                          <option value="Internet">Internet</option>
+                          <option value="Outdoor">Outdoor</option>
+                          <option value="Indicação de Terceiro">Indicação de Terceiro</option>
+                          <option value="Outros">Outros</option>
+                        </select>
+                      </div>
+                    </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Observação:</label>
+                            <textarea name="obs" class="form-control" rows="3" placeholder="..."></textarea>
+                        </div>
+                    </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <a href="/sistema/matriculaespera/index" class="btn btn-default" ><i class="fa fa-close"></i></a>
+            <button type="submit" class="btn btn-default"><i class="fa fa-save"></i></button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<?php } ?>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#sele_turma').change(function(){
+        var id_turma = $(this).val();
+        
+        if(id_turma){
+            var url = '/sistema/matriculaespera/buscarturma/id/'+id_turma;
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {id:id_turma},
+                dataType: "html",
+                success: function(data){
+                   $("#list_aluno").html(data);
+                }
+            });
+        }
+    });
+});
+</script>
+<?php foreach ($view_turma as $turma){ ?>
+<div class="modal fade" id="troca<?php echo $turma['id_turma'];?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-yellow">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Espera para troca de aluno - Turma <?php echo $turma['descricao'];?></h4>
+      </div>
+        <form method="post" action="/sistema/matriculaespera/troca">
+            <input type="hidden" name="troca" value="S" />
+            <input type="hidden" name="cliente" value="S" />
+            <input type="hidden" name="id_turma" value="<?php echo $turma['id_turma'];?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data" value="<?php echo $date;?>" />
+            <input type="hidden" name="status" value="A" />
+        <div class="modal-body">
+            <?php $matriculas = new MatriculaModel();
+
+            $listat = $matriculas->listarPorTurmaAtivos($turma['id_turma']);
+            
+            $cl = count($listat);
+
+            if($cl < $turma['vagas']){ 
+                  
+            ?>
+                <table class="table table-condensed">
+                  <tr>
+                      <td class="bg-green">Ha vagas disponíveis nesta turma!</td>
+                  </tr>
+              </table>
+                 <?php } else {   ?>
+              <div class="row">
+                  <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Turma Anterior:</label>
+                        <select class="form-control" id="sele_turma">
+                            <option value=""> Selecione </option>
+                            <?php foreach($view_turma as $trm){ ?>
+                            <option value="<?php echo $trm['id_turma'];?>"><?php echo $trm['descricao'];?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Aluno:</label>
+                      <select class="form-control" name="id_m_aluno" id="list_aluno">
+                          <option value="">Selecione</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Visitante:</label>
+                        <input type="text" name="nome_visitante" class="form-control ip" placeholder="Nome completo">
+                    </div>
+                </div>
+                  <div class="col-md-2">
+                      <div class="form-group">
+                        <label>Grau Parentesco:</label>
+                        <select class="form-control" name="grau_parentesco">
+                        <option value="">Selecione</option>
+                        <option value="Pai">Pai</option>
+                        <option value="Mãe">Mãe</option>
+                        <option value="Irmão(ã)">Irmão(ã)</option>
+                        <option value="Padrasto">Padrasto</option>
+                        <option value="Madrasta">Madrasta</option>
+                        <option value="Padrinho">Padrinho</option>
+                        <option value="Madrinha">Madrinha</option>
+                        <option value="Tio(a)">Tio(a)</option>
+                        <option value="Avô(ó)">Avô(ó)</option>
+                        </select>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="text" name="email" id="email" class="form-control" placeholder="email@email.com">
+                    </div>
+                </div>
+               
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Telefone:</label>
+                        <input type="text" name="telefone" class="form-control telefone" placeholder="(__) ____-____">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Celular 1:</label>
+                        <input type="text" name="celular1" class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Celular 2:</label>
+                        <input type="text" name="celular2" class="form-control celular" placeholder="(__) _____-____">
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Observação:</label>
+                            <textarea name="obs" class="form-control" rows="3" placeholder="..."></textarea>
+                        </div>
+                    </div>
+              </div>
+              <?php } ?>
+          </div>
+          <div class="modal-footer">
+            <a href="/sistema/matriculaespera/index" class="btn btn-default" ><i class="fa fa-close"></i></a>
+            <button type="submit" class="btn btn-default"><i class="fa fa-save"></i></button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>    
+<?php } ?>
+<?php } ?>

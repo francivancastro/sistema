@@ -1,0 +1,111 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Lista de Recibos</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/recibo/inserir/" data-toggle="tooltip" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" href="/sistema/recibo/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+    <div class="col-md-4 well-sm areapesquisa">
+    <form class="form-horizontal" action="/sistema/recibo/index/" method="post">
+        <div class="input-group input-group-sm">
+            <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+              <a class="btn btn-danger" href="/sistema/protesto/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+            </span>
+        </div>
+    </form>
+    </div>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="itemTitulo2">
+                        <th>Responsável</th>
+                        <th>CPF</th>
+                        <th>Taxa</th>
+                        <th>Valor</th>
+                        <th>Data de Inclusão</th>
+                        <th>Descrição</th>
+                        <th><center>Operações</center></th>
+                    </tr>
+                    <?php
+                    foreach ($view_sql as $sql){
+                        $txt_descricao = '--';
+                        $protesto = new ProtestoModel($sql['id_protesto']);
+                        $respon = new ResponsavelModel($protesto->id_responsavel);
+                        $aluno = new AlunoModel($protesto->id_aluno);
+                        $p_resp = new PessoaModel($respon->id_pessoa);
+                        $a_resp = new PessoaModel($aluno->id_pessoa);
+                        $txt_emissao = UtilHelper::formatBr($protesto->data_emissao);
+                        $txt_vencimento = UtilHelper::formatBr($protesto->data_vencimento);    
+                        $txt_inclusao= UtilHelper::formatBr($sql['data_inclusao']);
+                        $txt_valor = UtilHelper::formatoReal($sql['valor']);
+                        $taxa = new TaxasModel($sql['id_taxas']);
+                        $txt_cpf = UtilHelper::formataCPF($p_resp->cpf);
+                        if($sql['descricao']){
+                            $txt_descricao = UtilHelper::limitartexto($sql['descricao'], 50);
+                        }
+                        
+                    ?>                  
+                    <tr>
+                        <td><?php echo $p_resp->nome;?></td>
+                        <td><?php echo $txt_cpf;?></td>
+                        <td><span class="label label-info"><?php echo $taxa->descricao;?></span></td>
+                        <td><?php echo $txt_valor;?></td>
+                        <td><?php echo $txt_inclusao; ?></td>
+                        <td><?php echo $txt_descricao; ?></td>
+                        <td>
+                            <center>
+                            <div class="btn-group mod">
+                                <a class="btn btn-small btn-info" target="_blank" href="/sistema/recibo/imprimir/id/<?php echo $sql['id_recibo']; ?>" title=""><i class="fa fa-print"></i></a>
+                                <a class="btn btn-small btn-warning" href="/sistema/recibo/editar/id/<?php echo $sql['id_recibo']; ?>" title=""><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-small btn-danger" role="button" data-toggle="modal" href="#id<?php echo "{$sql["id_recibo"]}";?>" title=""><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            </center>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            </div>
+            <div class="box-footer">
+<?php if($view_sql){ ?>
+<span class="label label-default"><?php echo $view_totalreg;?> Registros</span> 
+<?php }
+if($view_numero && (!count($view_numero) == 0)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+} ?>
+            </div>
+        </div>
+        </section>
+</div>
+<?php
+if($view_sql){
+foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_recibo"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_protesto"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar este Recibo?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/recibo/excluir/id/{$sql["id_recibo"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php }} ?>
+
+

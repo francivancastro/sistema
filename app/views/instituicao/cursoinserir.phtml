@@ -1,0 +1,66 @@
+<?php $ins = new InstituicaoModel($_SESSION["instituicao"]); ?>
+<form method="post" action="/sistema/instituicao/cursoinserir/" class="form-horizontal" name="forminst" id="forminst">
+<div class="row">
+    <div class="span5">
+    <ul class="breadcrumb">
+      <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+      <li><a href="/sistema/instituicao/index/"><i class="fa fa-building-o"></i> Instituicao</a><span class="divider">/</span></li>
+      <li><a href="/sistema/instituicao/cursos/"><i class="fa fa-list"></i> Cursos</a><span class="divider">/</span></li>
+      <li class="active">Cadastro</li>
+    </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/instituicao/cursos/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+        </div>
+    </div>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Cadastro de Cursos</h4></div>
+        <div class="span4 pull-right">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="descricao" class="control-label">Instituição:</label>
+        <div class="controls">
+            <span><strong><?php echo $ins->nome; ?></strong></span>
+            <input type="hidden" name="id_instituicao" id="id_instituicao" value="<?php echo $ins->id_instituicao; ?>" class="span4" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="descricao" class="control-label">Nome do Curso:</label>
+        <div class="controls">
+            <input type="text" name="descricao" id="descricao" value="" class="span4" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="id_curso_tipo" class="control-label">Tipo de Curso:</label>
+        <div class="controls">
+            <select name="id_curso_tipo" class="span2">
+                <option value="">=> Selecione <=</option>
+                <?php foreach ($view_ctp as $ctp){ ?>
+                    <option value="<?php echo $ctp["id_curso_tipo"]; ?>"><?php echo $ctp["descricao"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="id_turno" class="control-label">Tipo de Curso:</label>
+        <div class="controls">
+            <select name="id_turno" class="span2">
+                <option value="">=> Selecione <=</option>
+                <?php foreach ($view_tur as $tur){ ?>
+                    <option value="<?php echo $tur["id_turno"]; ?>"><?php echo $tur["descricao"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="" class="control-label"></label>
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
+</div>
+
+</form>

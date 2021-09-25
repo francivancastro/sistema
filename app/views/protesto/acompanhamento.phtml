@@ -1,0 +1,966 @@
+<form method="post" action="/sistema/protesto/editar/id/<?php echo $view_sql['id_protesto'];?>/" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li id="ab1" class=""><a href="#aba1" data-toggle="tab">Informações Protesto</a></li>
+          <li id="ab2" class="active"><a href="#aba2" data-toggle="tab">Acompanhamento do Protesto</a></li>
+          
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/protesto/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+        </ul>
+    </div>
+    <div class="tab-content no-padding">
+        <div class="tab-pane " id="aba1">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-envelope"></i>
+              <h3 class="box-title">Dados do protesto</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                
+              </div><!-- /. tools -->
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                    <input type="hidden" name="id_protesto" value="<?php echo $view_sql['id_protesto'];?>"/>
+                    <div class="form-group">
+                        <label for="responsavel" class="col-sm-2 control-label">Responsável:</label>
+                        <div class="col-sm-6">
+                            <select name="id_responsavel" class=" form-control" id="responsavel" disabled="">
+                                <option value="">=> Selecione <=</option>
+                                <?php foreach ($view_resp as $resp){ 
+                                    $pes =  new PessoaModel($resp['id_pessoa']);
+                                ?>
+                                <option value="<?php echo $resp["id_responsavel"]; ?>"<?php ($view_sql["id_responsavel"] == $resp["id_responsavel"]) ? print " selected" : print ""; ?>><?php echo $pes->nome; ?></option>
+                                <?php } ?>
+                        </select>
+                        </div>    
+                    </div>
+                    <div id="load_endereco"></div>
+                    <div class="form-group">
+                    <label for="empresa" class="col-sm-2 control-label">Empresa:</label>
+                    <div class="col-sm-6">
+                        <select name="id_empresa" class=" form-control" id="load_empresa" disabled="">
+                            <option value="">=> Selecione <=</option>
+                          <?php foreach ($view_empr as $empr){
+                              $empresa = new EmpresaModel($empr["id_empresa"]);
+                              ?>
+                              <option value="<?php echo $view_sql["id_empresa"]; ?>"<?php ($view_sql["id_empresa"] == $empr["id_empresa"]) ? print " selected" : print ""; ?>><?php echo $empresa->empresa_nome; ?></option>
+                          <?php } ?>
+                        </select>
+                    </div>
+                    </div>   
+                    <div id="load_infoempresa"></div>
+                    <div class="form-group">
+                        <label for="protestotipo" class="col-sm-2 control-label">Especie:</label>
+                        <div class="col-sm-6">
+                            <select name="id_protesto_tipo" class=" form-control" id="protestotipo" disabled="">
+                                  <option value="">=> Selecione <=</option>
+                                <?php foreach ($view_prot as $prot){ ?>
+                                    <option value="<?php echo $prot["id_protesto_tipo"]; ?>"<?php ($view_sql["id_protesto_tipo"] == $prot["id_protesto_tipo"]) ? print " selected" : print ""; ?>><?php echo $prot["descricao"]; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>    
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="numero" class="col-sm-2 control-label">Numero:</label>
+                        <div class="col-sm-6">
+                            <input type="text"  class="form-control" name="numero" value="<?php echo $view_sql['numero'];?>" placeholder="Ex: 123456..." disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_contrato" class="col-sm-2 control-label">Valor do Contrato:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            <input type="text" name="valor_contrato" class="form-control moeda" value="<?php echo UtilHelper::formatoRs($view_sql['valor_contrato']);?>" placeholder="0,00" disabled>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_protesto" class="col-sm-2 control-label">Valor Protestado:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            <input type="text" name="valor_protesto" class="form-control moeda" value="<?php echo UtilHelper::formatoRs($view_sql['valor_protesto']);?>" placeholder="0,00" disabled="">
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="data_emissao" class="col-sm-2 control-label">Data de emissão:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" name="data_emissao" class="form-control data calendario" value="<?php echo UtilHelper::formatBr($view_sql['data_emissao']);?>" placeholder="__/__/___" disabled>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="data_vencimento" class="col-sm-2 control-label">Data de Vencimento:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" name="data_vencimento" class="form-control data calendario" value="<?php echo UtilHelper::formatBr($view_sql['data_vencimento']);?>" placeholder="__/__/___" disabled>
+                          </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer clearfix">
+                <a href="#aba2" data-toggle="tab" class="pull-right btn btn-default proximo">Proximo <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        </div>   
+            
+        <div class="tab-pane active" id="aba2">
+            <div class="row">
+                <div class="col-md-4">
+                <div class="box box-info">
+                <div class="box-header ui-sortable-handle" style="cursor: move;">
+                  <i class="ion ion-clipboard"></i>
+                  <i class="fa fa-server"></i>
+                  <h3 class="box-title">Taxas</h3>
+                  <div class="pull-right box-tools">
+                      
+                  <a href="#" class="btn btn-sm  btn-default pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i> Add Taxas</a>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                <ul class="todo-list ui-sortable">
+                    <?php foreach ($view_ptx as $ptx){
+                        $taxa = new TaxasModel($ptx['id_taxas']);
+                        $vt += $ptx['valor'];
+                    ?>
+                        <li>
+                            <span class="handle ui-sortable-handle">
+                              <i class="fa fa-money"></i>
+                            </span>
+                            <span class="text"><?php echo $taxa->descricao;?></span>
+                            <small> <?php echo UtilHelper::formatoReal($ptx['valor']); ?> </small>
+                            <div class="tools">
+                                <a href="#id<?php echo "{$ptx["id_protesto_taxas"]}";?>" role="button" data-toggle="modal" class="text-danger"><i class="fa fa-trash-o text-danger"></i></a> 
+                            </div>
+                        </li>
+                        
+                    <?php } ?>
+                </ul>
+                </div>
+                <?php
+                    $valorPagar = $view_sql['valor_protesto'] + $vt;
+                ?>
+                <div class="box-footer clearfix">
+                    Valor Protestado:<span class="badge pull-right"><?php echo UtilHelper::formatoReal($view_sql['valor_protesto']);?></span><br />
+                    <?php if($vt){ ?>
+                    Valor Total de taxas:<span class="badge  pull-right"><?php echo UtilHelper::formatoReal($vt); ?></span><br />
+                    <?php } ?>
+                    Valor Total:<span class="badge bg-red pull-right"><?php echo UtilHelper::formatoReal($valorPagar); ?></span>
+                    
+                </div>
+                
+                </div>
+                    <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" style="cursor: move;">
+                      <i class="fa fa-pencil"></i>
+                      <h3 class="box-title">Detalhes da negociação</h3>
+                      <div class="pull-right box-tools">
+                        <a href="#" class="btn btn-sm  btn-default pull-right" data-toggle="modal" data-target="#ocorrencia" ><i class="fa fa-plus-circle"></i> Adicionar</a>
+                      </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Data</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($view_oco as $oco){ ?>
+                                <tr>
+                                    <td><?php echo $oco['titulo'];?></td>
+                                    <td><?php echo UtilHelper::formatBr($oco['data'])?></td>
+                                    <td>
+                                        <div class="btn-group pull-right">
+                                            <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#ver<?php echo $oco['id_ocorrencia_protesto'];?>" ><i class="fa fa-search"></i></button>
+                                            <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#ex<?php echo $oco['id_ocorrencia_protesto'];?>" ><i class="fa fa-trash-o"></i></button>
+                                        </div> 
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" style="cursor: move;">
+                      <i class="fa fa-upload"></i>
+                      <h3 class="box-title">Anexos</h3>
+                      <div class="pull-right box-tools">
+                        <a href="#" class="btn btn-sm  btn-default pull-right" data-toggle="modal" data-target="#anexos" ><i class="fa fa-paperclip"></i> Add Anexo</a>
+                      </div>
+                    </div><!-- /.box-header -->
+                <div class="box-body">
+                <ul class="todo-list ui-sortable">
+                    <?php foreach ($view_anx as $anx){
+                        $arquivo = new ArquivoModel($anx['id_arquivo']);
+                        $arq_tipo = "";
+                        if($arquivo->tipo){
+                            if($arquivo->tipo == "image/png"){
+                                $arq_tipo = 'fa-file-image-o';
+                            }
+                            if($arquivo->tipo == "application/pdf"){
+                                $arq_tipo = 'fa-file-pdf-o';
+                            }
+                            if($arquivo->tipo == "application/vnd.openxmlformats-officedocument.word"){
+                                $arq_tipo = 'fa-file-word-o';
+                            }
+                            if($arquivo->tipo == "application/vnd.ms-powerpoint"){
+                                $arq_tipo = 'fa-file-powerpoint-o';
+                            }
+                        }
+                    ?>
+                    <li>
+                      <span class="handle ui-sortable-handle">
+                        <i class="fa <?php echo $arq_tipo; ?>"></i>
+                      </span>
+                      <span class="text"><?php echo $arquivo->descricao; ?></span>
+                      <small class="label label-info"><i class="fa fa-calendar"></i> <?php echo UtilHelper::formatBr($arquivo->data_envio); ?> </small>
+                      <div class="tools">
+                          <a href="/sistema/protesto/anexodownload/id/<?php echo "{$anx["id_arquivo"]}";?>" target="_blank" class="text-green" data-toggle="tooltip" title="Baixar Anexo"><i class="fa fa-download"></i></a>
+                        &nbsp;
+                        <a href="#id<?php echo "{$anx["id_arquivo"]}";?>" role="button" data-toggle="modal" class="text-danger"><i  data-toggle="tooltip" title="Excluir" class="fa fa-trash-o text-danger"></i></a> 
+                      </div>
+                    </li>
+                    <?php } ?>
+                </ul>
+                </div><!-- /.box-body -->
+                </div>
+                    
+                
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-pencil-square-o"></i>
+              <h3 class="box-title">Negociação</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                
+                <button type="button" class="btn btn-default btn-sm" role="button" data-toggle="modal" data-target="#modalPagamento" title="Pagar"><i class="fa fa-money"></i> Pagar</button>
+                
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#negociacao" title="Add Negociacao"><i class="fa fa-plus-circle"> Add Negociação</i></button>
+              </div><!-- /. tools -->
+            </div>
+            <div class="box-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ano Base</th>
+                            <th>Parcela</th>
+                            <th>Valor Parcela</th>
+                            <th>Multa</th>
+                            <th>Juros</th>
+                            <th>Desconto</th>
+                            <th>Total Negociado</th>
+                            <th><i class="fa fa-cog"></i></th>
+                        </tr>
+                    </thead>
+                    <?php if($view_neg){ ?>
+                    <tbody>
+                        <?php foreach ($view_neg as $neg){
+                            $txt_desconto = UtilHelper::formatoReal($neg['desconto']);
+                            $txt_multa = UtilHelper::formatoReal($neg['multa']);
+                            $txt_juros = UtilHelper::formatoReal($neg['juros']);
+                            $valTotalParcela += $neg['valor_parcela'];
+                            $valTotalMulta += $neg['multa'];
+                            $valTotalJuros += $neg['juros'];
+                            $valTotalDesconto += $neg['desconto'];
+                            
+                            $ptotal = $neg['valor_parcela'] + $neg['multa'] + $neg['juros'] - $neg['desconto'];
+                             
+                            $tn += $ptotal;
+                            
+                            if($neg['desconto'] == 0){
+                                $txt_desconto = "--";
+                            }
+                            if($neg['multa'] == 0){
+                                $txt_multa = "--";
+                            }
+                            if($neg['juros'] == 0){
+                                $txt_juros = "--";
+                            }
+                            $txt_mes = '';
+                            $messes = UtilHelper::meses();
+                            foreach ($messes as $nMes => $txtMes){ 
+                                if($nMes == $neg['parcela']){
+                                    $txt_mes = $nMes.' - '.$txtMes;
+                                }
+                            }
+                        ?>
+                        <tr>
+                            <td><?php echo $neg['id_negociacao']; ?></td>
+                            <td><?php echo $neg['ano_base']; ?></td>
+                            <td><?php echo $txt_mes; ?></td>
+                            <td><?php echo UtilHelper::formatoReal($neg['valor_parcela']); ?></td>
+                            <td><?php echo $txt_multa;?></td>
+                            <td><?php echo $txt_juros;?></td>
+                            <td><?php echo $txt_desconto; ?></td>
+                            <td><?php echo UtilHelper::formatoReal($ptotal); ?></td>
+                            <td>
+                                <a href="#id<?php echo "{$neg["id_negociacao"]}";?>" role="button" data-toggle="modal"><i class="fa fa-trash-o text-red"></i></a>
+                            </td>
+                            
+                        </tr>
+                        <?php }
+                            $vtp = $tn;
+                        ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Totais</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalParcela);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalMulta);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalJuros);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalDesconto);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($vtp);?></strong></td>
+                        </tr>
+                    </tfoot>
+                    <?php } ?>
+                </table>
+            </div>
+        </div>
+<?php if($view_propago){ ?>
+                    <?php if($view_propago){ 
+     foreach ($view_propago as $propag){
+        $dinheiro = new DinheiroModel();
+        $cartao =  new CartaoModel();
+        $transferencia = new TransferenciaModel();
+        $dinh = $dinheiro->listarPorPagamento($propag['id_pagamento']);
+        $cart = $cartao->listarPorPagamento($propag['id_pagamento']);
+        $trans = $transferencia->listarPorPagamento($propag['id_pagamento']);
+        foreach ($dinh as $din){
+            $valordoDin += $din['valor'];
+        }
+        foreach ($cart as $car){
+            $valordoCart += $car['valor'];
+        }
+        foreach ($trans as $tra){
+            $valordoTrans += $tra['valor'];
+        }
+        
+        $valorTotalPago = $valordoDin + $valordoCart + $valordoTrans;
+        
+        if(!$valorTotalPago){
+            $valorTotalPago = "0,00";
+        }
+     }
+ }
+?>
+ 
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-credit-card"></i>
+                      <h3 class="box-title">Pagamento</h3>
+                      <!-- tools box -->
+                      <div class="box-tools">
+                          
+                          <strong>A pagar:</strong> 
+                            <span class="label label-danger" style="font-size: 14px">
+                                <?php
+                                    $valorFinal =  $vtp + $valorPagar;
+                                    echo UtilHelper::formatoReal($valorFinal);
+                                ?>
+                            </span>
+                            &nbsp;
+                            &nbsp;
+                            <strong>Pago:</strong> 
+                            <span class="label label-success" style="font-size: 14px">
+                                <?php
+                                    echo UtilHelper::formatoReal($valorTotalPago);
+                                ?>
+                            </span>
+                                
+
+                      </div>
+                    </div>
+                    <div class="box-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>Dinheiro</th>
+                        <th>Cartão</th>
+                        <th>Transferência</th>
+                    </thead>
+                    <tbody>
+
+    <tr>
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $dinheiro = new DinheiroModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $dinh = $dinheiro->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($dinh as $di){
+                $totalDinheiro += $di['valor'];
+        ?>
+            <div class="box box-success collapsed-box">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($di['valor']) ?></h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#excluiPagamento<?php echo $propag['id_pagamento'];?>" ><i class="fa fa-trash-o"></i></button>
+                  </div><!-- /.box-tools -->
+                </div><!-- /.box-header -->
+                <div class="box-body" style="display: none;">
+                  <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($di['data_dinheiro']); ?><br />
+                </div><!-- /.box-body -->
+            </div>
+            <?php } ?>
+            <?php } ?>
+        </td>
+        
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $cartao = new CartaoModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $cart = $cartao->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($cart as $ca){
+                $ctp = new CartaotipoModel($ca['id_cartao_tipo']);
+                $parcela = $ca['valor'] / $ca['parcelas'];
+                $totalCartao += $ca['valor'];
+        ?>
+            <div class="box box-warning collapsed-box">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($ca['valor']) ?></h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#excluiPagamento<?php echo $propag['id_pagamento'];?>" ><i class="fa fa-trash-o"></i></button>
+                  </div><!-- /.box-tools -->
+                </div><!-- /.box-header -->
+                <div class="box-body" style="display: none;">
+                <?php echo $pgtipo->descricao; ?> de  <?php echo $ctp->descricao ?> -  <?php echo $ca['bandeira'] ?> <br />
+                <strong>Nº do Documento:</strong> <?php echo $ca['codigo']; ?> <br />
+                <strong>Parcelas:</strong> <?php echo $ca['parcelas']; ?> de <?php echo UtilHelper::formatoReal($parcela); ?> <br />
+                <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($ca['data_cartao']); ?><br />
+                </div><!-- /.box-body -->
+            </div>
+            <?php } ?>
+        
+        <?php } ?>
+        </td>
+        
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $transferencia = new TransferenciaModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $trans = $transferencia->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($trans as $ta){
+                $totalTrans += $ta['valor'];
+        ?>
+            <div class="box box-info collapsed-box">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($ta['valor']) ?></h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#excluiPagamento<?php echo $propag['id_pagamento'];?>" ><i class="fa fa-trash-o"></i></button>
+                  </div><!-- /.box-tools -->
+                </div><!-- /.box-header -->
+                <div class="box-body" style="display: none;">
+                    <strong>Banco: </strong><?php echo $ta['banco_cliente'] ?><br />
+                    <strong>AG - Conta (Cliente)</strong><br />
+                    <?php echo $ta['agencia_cliente'].' - '.$ta['conta_cliente'];?> <br />
+                    <strong>Banco: </strong><?php echo $ta['banco_empresa']; ?><br />
+                    <strong>AG - Conta (Empresa)</strong><br />
+                    <?php echo $ta['agencia_empresa'].' - '.$ta['conta_empresa'];?> <br />
+                    <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($ta['data_transferencia']); ?><br />
+                </div>
+            </div>
+            
+            <?php } ?>
+        
+        <?php } ?>
+        </td>
+    </tr>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+<?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+</form>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header form-inline">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Adicionar Taxas</h4>
+      <div id="alerta"></div>
+      <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_taxas">Taxas: &nbsp;</label>
+                <select name="id_taxas" class="form-control" id="taxa">
+                    <option value="">=> Selecione <=</option>
+                    <?php foreach ($view_taxa as $txt){?>
+                    <option value="<?php echo $txt["id_taxas"]; ?>"><?php echo $txt["descricao"]; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="valor">Valor: &nbsp;</label>
+                    <div class="input-group">
+                    <span class="input-group-addon">R$</span>
+                    <input type="text" id="valTaxa" class="form-control moeda" placeholder="0,00">
+                  </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <form action="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>/" class="form-inline" method="POST">
+    <div class="modal-body">
+        <input type="hidden" name="id_protesto" value="<?php echo $view_sql['id_protesto'];?>"/>
+        <ul class="todo-list ui-sortable" id="ulTaxas">
+        </ul>
+    </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+            <button type="button" id="addTaxa" class="btn btn-success"><i class="fa fa-plus-circle"></i></button>
+            <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>"class="btn btn-danger"><i class="fa fa-close"></i></a>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<?php foreach ($view_neg as $neg){ ?>
+
+<div class="modal fade" id="id<?php echo $neg["id_negociacao"];?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo $ptx["id_protesto_taxas"];?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 id="myModalLabel">Deseja Realmente apagar a negociação dessa parcela?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/negociacaoexcluir/id/{$neg["id_negociacao"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+
+<?php foreach ($view_ptx as $ptx){ ?>
+
+<div class="modal fade" id="id<?php echo $ptx["id_protesto_taxas"];?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo $ptx["id_protesto_taxas"];?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 id="myModalLabel">Deseja Realmente Apagar Taxa ?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/taxasexcluir/id/{$ptx["id_protesto_taxas"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+<?php foreach ($view_anx as $anx){ ?>
+
+<div class="modal fade" id="id<?php echo $anx["id_arquivo"];?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo $ptx["id_protesto_taxas"];?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar este Anexo ?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/arquivoexcluir/id/{$anx["id_arquivo"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+<?php foreach ($view_propago as $anx){ ?>
+
+<div class="modal fade" id="excluiPagamento<?php echo $anx["id_pagamento"];?>" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar este Pagamento ?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/pagamentoexcluir/id/{$anx["id_pagamento"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+
+<div class="modal fade" id="anexos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Adicionar Anexos</h4>
+      <div id="alert"></div>
+      </div>
+      <div class="modal-body">
+        <form id="upload" method="post" action="/sistema/protesto/anexos" enctype="multipart/form-data">
+            <div id="drop">
+                <input style="display:none;" type="file" name="upl" multiple />
+            </div>
+            <ul class="todo-list ui-sortable">
+                    <!-- The file uploads will be shown here -->
+            </ul>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>" class="btn btn-primary"><i class="fa fa-save"></i></a>
+        <a id="up-anexo" href="#" class="btn btn-info"><i class="fa fa-upload"></i></a>
+        <button type="button" id="addAnexos" class="btn btn-success"><i class="fa fa-plus-circle"></i></button>
+        <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>"class="btn btn-danger"><i class="fa fa-close"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="negociacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Adicionar Negociação</h4>
+      </div>
+        <form action="/sistema/protesto/negociacao/id/<?php echo $view_sql['id_protesto'];?>/" method="POST">
+            <div class="modal-body">
+                <div class="row">
+                    <div id="msg"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Ano Base:</label>
+                            <select class="form-control" id="ano">
+                                <option>--> Selecione <--</option>
+                            <?php
+                                $anos = UtilHelper::anos();
+                                foreach ($anos as $ano){ ?>
+                                <option value="<?php echo $ano;  ?>"><?php echo $ano; ?></option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Parcela:</label>
+                            <select class="form-control" id="nParcela">
+                                <option>--> Selecione <--</option>
+                            <?php
+                                $messes = UtilHelper::meses();
+                                foreach ($messes as $nMes => $txtMes){ ?>
+                                <option value="<?php echo $nMes; ?>"><?php echo $nMes. ' - ' . $txtMes; ?></option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor da Parcela:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input type="text" id="valParcela" class="form-control moeda" placeholder="0,00">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Multa:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input type="text" id="valMulta" class="form-control moeda" placeholder="0,00">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Juros:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input type="text" id="valJuros" class="form-control moeda" placeholder="0,00">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Desconto:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input type="text" id="desconto" class="form-control moeda" placeholder="0,00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                  <th>Ano Base</th>
+                                  <th>Parcela</th>
+                                  <th>Valor Parcela</th>
+                                  <th>Multa</th>
+                                  <th>Juros</th>
+                                  <th>Desconto</th>
+                                  <th>Total Negociado</th>
+                                  <th><i class="fa fa-cog"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbnegociacao"></tbody>
+                            <tfoot id="mostraNegociacao"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <button type="button" id="addNegociacao" class="btn btn-success"><i class="fa fa-plus-circle"></i></button>
+                <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>"class="btn btn-danger"><i class="fa fa-close"></i></a>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalPagamento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Pagar Negociação</h4>
+        <div id="mostraTotal" class=""></div>
+      </div>
+        <form action="/sistema/protesto/pagamento/id/<?php echo $view_sql['id_protesto'];?>/" method="POST" id="pgForm">
+            <div class="modal-body">
+                <div class="row">
+                    <div id="msg"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Forma de Pagamento:</label>
+                            <select class="form-control" id="pgTipo">
+                                <option>--> Selecione <--</option>
+                            <?php
+                                foreach ($view_pgtp as $pgtp){ ?>
+                                <option value="<?php echo $pgtp['id_pagamento_tipo'];  ?>"><?php echo $pgtp['descricao']; ?></option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-group ">
+                            <label for="data_emissao" > Data:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" value="" id="dataPag" name="data" class="form-control data calendario" placeholder="__/__/___">
+                            </div>
+                            <p class="text-red"></p>
+                        </div>
+                        <div id="load_campos"></div>
+                        <div class="form-group">
+                            <label>Valor Pago:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input type="text" id="vpago" class="form-control moeda" placeholder="0,00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">                      
+<?php
+    $tudoPagar = $valorPagar + $vtp;
+?>  
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>À Pagar:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">R$</span>
+                                        <input type="text" class="form-control" value="<?php echo UtilHelper::formatoRs($tudoPagar);?>" disabled=""/>
+                                        <input type="hidden" id="valorTotal" name="valor_total" value="<?php echo UtilHelper::formatoRs($tudoPagar);?>"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group has-success" id="mostraSoma">
+                                   
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group has-error" id="mostrafalta">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                  <th class="col-md-4"><i class="fa fa-money"></i> Dinheiro</th>
+                                  <th class="col-md-4"><i class="fa fa-credit-card"></i> Cartão</th>
+                                  <th class="col-md-4"><i class="fa fa-random"></i> Transferência</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <div id="dinheiroDiv"></div>
+                                    </td>
+                                    <td>
+                                        <div id="cartaoDiv"></div>
+                                    </td>
+                                    <td>
+                                        <div id="transferenciaDiv"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <button type="button" id="addPagamento" class="btn btn-success"><i class="fa fa-plus-circle"></i></button>
+                <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>"class="btn btn-danger"><i class="fa fa-close"></i></a>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ocorrencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Detalhes da negociação</h4>
+        <div id="mostraTotal" class=""></div>
+      </div>
+        <form action="/sistema/protesto/detalhes/id/<?php echo $view_sql['id_protesto'];?>/" method="POST" id="">
+            <input type="hidden" name="id_protesto" value="<?php echo $view_sql['id_protesto'];?>" />
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Titulo</label>
+                            <input name="titulo" type="text" class="form-control" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>Texto</label>
+                            <textarea name="texto" class="form-control textarea" rows="3" placeholder=""></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="/sistema/protesto/acompanhamento/id/<?php echo $view_sql['id_protesto'];?>"class="btn btn-danger"><i class="fa fa-close"></i></a>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+<?php foreach ($view_oco as $oco){ ?>
+
+<div class="modal fade" id="ver<?php echo $oco["id_ocorrencia_protesto"];?>" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Detalhes do Protesto</h3>
+        </div>
+        <div class="modal-body">
+            <dl class="dl-horizontal">
+                <dt>Titulo:</dt>
+                <dd><?php echo $oco["titulo"];?></dd>
+                
+                <dt>Data:</dt>
+                <dd><?php echo UtilHelper::formatBr($oco["data"]);?></dd>
+                
+                <dt>Texto:</dt>
+                <dd><div class="well"><?php echo $oco["texto"];?></div></dd>
+            </dl>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Fechar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+
+<?php foreach ($view_oco as $oco){ ?>
+
+<div class="modal fade" id="ex<?php echo $oco["id_ocorrencia_protesto"];?>" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja realmente apagar este detalhe?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/excluirdetalhes/id/{$oco["id_ocorrencia_protesto"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+
+<script>
+    $(function () {
+      //bootstrap WYSIHTML5 - text editor
+      $(".textarea").wysihtml5();
+    });
+  </script>
+

@@ -1,0 +1,110 @@
+<div class="row">
+<section class="col-lg-12">
+<div class="box box-info">
+    <div class="box-header ui-sortable-handle" >
+      <i class="fa fa-envelope"></i>
+      <h3 class="box-title">Modelo 2</h3>
+      <!-- tools box -->
+      <div class="box-tools">
+        <a class="btn btn-default pesquisar" href="#" title="Voltar"><i class="fa fa-search"></i> Pesquisar</a>
+        <a class="btn btn-default" href="/sistema/colaborador/inserir/" title="Adicionar"><i class="fa fa-plus-circle"></i> Novo Colaborador</a>
+        <a class="btn btn-default" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+      </div><!-- /. tools -->
+    </div>
+    <div class="box-body">
+    <div class="col-md-4 well-sm areapesquisa">
+    <form class="form-horizontal " action="/sistema/colaborador/index/" method="post">
+        <div class="input-group input-group-sm">
+            <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+              <a class="btn btn-danger" href="/sistema/colaborador/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+            </span>
+        </div>
+    </form>
+    </div>
+<table class="table table-bordered">
+        <tr class="titulo2">
+            <th>Foto</th>
+            <th>Nome</th>
+            <th>Instituição / Curso</th>
+            <th>Orientador</th>
+            <th>Cargo</th>
+            <th><center>Operações</center></th>
+        </tr>
+        <?php foreach ($view_sql as $sql){
+                $pes = new PessoaModel($sql["id_pessoa"]);
+                $ctp = new ColaboradortipoModel($sql["id_colaborador_tipo"]);
+                $alu = new AlunoModel();
+                $aluno = $alu->pegaAlunoPorPessoa($sql["id_pessoa"]);
+                $ori = new OrientadorModel($sql["id_orientador"]);
+                $pessoa_orientador = new PessoaModel($ori->id_pessoa);
+                $cur = new CursoModel($aluno[0]["id_curso"]);
+                $ins = new InstituicaoModel($cur->id_instituicao);
+        ?>
+        <tr>
+            <td width="5%"><img style="width: 100%" src="/<?php echo $pes->foto; ?>" alt="" /></td>
+            <td><?php echo $pes->nome; ?></td>  
+            <td><?php echo $ins->nome ." / ". $cur->descricao; ?></td>
+            <td><?php echo $pessoa_orientador->nome; ?></td>
+            <td><?php echo $ctp->descricao; ?></td>
+            <td>
+                
+                <div class="btn-group">
+                    <a class="btn btn-success" href="<?php echo "/sistema/colaborador/visualizar/id/{$sql["id_colaborador"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-warning" href="<?php echo "/sistema/colaborador/editar/id/{$sql["id_colaborador"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                    <a href="#id<?php echo "{$sql["id_colaborador"]}";?>" role="button" class="btn btn-danger btn-small" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-wrench"></i></button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a  href="<?php echo "/sistema/colaborador/imprimir/id/{$sql["id_colaborador"]}";?>" title="Imprimir Ficha Completa"><i class="fa fa-print"></i> Imprimir Ficha</a></li>
+                      <li><a  href="<?php echo "/sistema/colaborador/patrimonio/id/{$sql["id_colaborador"]}";?>" title="Bem Patrimonial"><i class="fa fa-barcode"></i> Bem Patrimonial</a></li>
+                      <li><a href="<?php echo "/sistema/colaborador/seguro/id/{$sql["id_colaborador"]}";?>" title="Seguro"><i class="fa fa-check-circle-o"></i> Seguro</a></li>
+                      <li><a href="<?php echo "/sistema/colaborador/contrato/id/{$sql["id_colaborador"]}";?>" title="Contrato"><i class="fa fa-clipboard"></i> Contrato</a></li>
+                      <li><a href="<?php echo "/sistema/colaborador/ferias/id/{$sql["id_colaborador"]}";?>" title="Ferias"><i class="fa fa-plane"></i> Ferias</a></li>
+                    </ul>
+                    
+                </div>
+            </td>
+        </tr>
+         <?php } ?>
+</table>
+
+    </div>
+    <div class="box-footer clearfix">
+      <?php
+if($view_numero && (!count($view_numero) == 1)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+}
+
+if($view_sql){
+    $nun = count($view_sql);
+    ?>
+<div class="btn active pull-right"><span class="badge badge-inverse"><?php echo $nun;?></span> Registros</div>
+    <?php
+}
+?>
+    </div>
+</div>
+</section>
+</div>
+
+<?php foreach ($view_sql as $sql){ ?>
+<div id="id<?php echo "{$sql["id_colaborador"]}";?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Apagar?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O registro será apagado permanente!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/colaborador/excluir/id/{$sql["id_colaborador"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+<?php } 
+
+
+

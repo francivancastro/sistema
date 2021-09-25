@@ -1,0 +1,48 @@
+<form method="post" action="/sistema/controle/inserir/" class="form-horizontal">
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li id="ab1" class="active"><a href="#aba1" data-toggle="tab">Inserir Responsável</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/controle/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          
+        </ul>
+    </div>
+    <div class="tab-content no-padding">
+        <div class="tab-pane active" id="aba1">
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Inserir</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="descricao" class="control-label col-sm-3">Descrição:</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="descricao" id="nome" size="5" value="" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="controller" class="control-label col-sm-3">Controller:</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="controller" id="nome" size="5" value="" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-10">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="habilitado" id="padrao"  size="5" value="S"> Habilitado
+                      </label>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>   
+    </div>
+    </section>
+</div>
+</form>
+

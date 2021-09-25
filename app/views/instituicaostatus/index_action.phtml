@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="span10">
+        <ul class="breadcrumb">
+          <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+          <li class="active"><i class="fa fa-cog"></i> Status da Instituição</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/instituicaostatus/inserir/" title="Adicionar"><i class="fa fa-plus-circle"></i> Novo</a>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+    </div>
+</div>
+    <table class="table table-bordered">
+        <tr>
+            <th colspan="7" class="titulo2">Status de Seguro</th>
+        </tr>
+        <tbody>
+            <tr class="itemTitulo2">
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Chave</th>
+                <th>Operações</th>
+            </tr>
+            <?php foreach ($view_sql as $sql){?>
+            <tr class="item2">
+                <td><span class="badge badge-inverse"><?php echo $sql['id_instituicao_status'];?></span></td>
+                <td><?php echo $sql['descricao'];?></td>
+                <td><?php echo $sql['chave'];?></td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-success btn-small" href="<?php echo "/sistema/instituicaostatus/visualizar/id/{$sql["id_instituicao_status"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                        <a class="btn btn-warning btn-small" href="<?php echo "/sistema/instituicaostatus/editar/id/{$sql["id_instituicao_status"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                        <a href="#id<?php echo "{$sql["id_instituicao_status"]}";?>" role="button" class="btn btn-danger btn-small" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+    </tbody>
+</table>
+<?php foreach ($view_sql as $sql){ ?>
+<div id="id<?php echo "{$sql["id_instituicao_status"]}";?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Deseja Realmente Apagar?</h3>
+  </div>
+  <div class="modal-body">
+      <p>O registro será apagado permanente!</p>
+  </div>
+  <div class="modal-footer">
+      <a class="btn btn-danger" href="<?php echo "/sistema/instituicaostatus/excluir/id/{$sql["id_instituicao_status"]}";?>" title="Excluir">Sim</a>
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    
+  </div>
+</div>
+<?php } ?>

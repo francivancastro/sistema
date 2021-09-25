@@ -1,0 +1,187 @@
+<?php
+
+$aluno = new MalunoModel($view_sql['id_m_aluno']);
+$turma =  new TurmaModel($view_sql['id_turma']);
+$mts =  new MatriculastatusModel($view_sql['id_matricula_status']);
+$usu =  new UsuarioModel($view_sql['id_usuario']);
+$pes =  new PessoaModel($usu->id_pessoa);
+
+$txt_matricula = "--";
+$txt_data_nascimento = "--";
+$txt_data_matricula = "--";
+if($aluno->matricula){
+    $txt_matricula = $aluno->matricula;
+}
+if($aluno->data_nascimento){
+    $txt_data_nascimento = UtilHelper::formatBr($aluno->data_nascimento);
+}
+if($view_sql['data_cadastro']){
+    $date = new DateTime($view_sql['data_cadastro']);
+    $txt_data_matricula = $date->format('d/m/Y H:i:s');
+}
+?>
+
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Turma - <?php echo $turma->descricao;?></a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/turma/aluno/id/<?php echo $view_sql['id_turma']; ?>"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+        </ul>
+    </div>
+    </section>
+    <div class="col-md-4">
+    <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-graduation-cap"></i>
+                <h3 class="box-title">Aluno</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <dl class="dl-horizontal">
+                <dt>Nome</dt>
+                <dd><?php echo $aluno->nome; ?></dd>
+                <dt>Matricula</dt>
+                <dd><?php echo $txt_matricula; ?></dd>
+                <dt>Data de Nascimento</dt>
+                <dd><?php echo $txt_data_nascimento; ?></dd>
+              </dl>
+            </div>
+            <!-- /.box-body -->
+          </div>
+    </div>
+    <div class="col-md-4">
+    <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-graduation-cap"></i>
+                <h3 class="box-title">Matricula</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <dl class="dl-horizontal">
+                <dt>Cadastrado por</dt>
+                <dd><?php echo $pes->nome; ?></dd>
+                <dt>Status</dt>
+                <dd><?php echo $mts->descricao; ?></dd>
+                <dt>Data</dt>
+                <dd><?php echo $txt_data_matricula; ?></dd>
+              </dl>
+            </div>
+            <!-- /.box-body -->
+          </div>
+    </div>
+    <?php if($view_esp){
+        $visi = new VisitanteModel($view_esp['id_visitante']);
+        if($view_esp['data_cadastro']){
+            $txt_data_espera = new DateTime($view_esp['data_cadastro']);
+        }
+        if($visi->cliente == 'S'){
+            $txt_cliente = "Sim";
+        } else {
+            $txt_cliente = "Não";
+        }
+        if($visi->troca == 'S'){
+            $txt_troca = "Sim";
+        } else {
+            $txt_troca = "Não";
+        }
+        $txt_escola_anterior = "--";
+        if($visi->escola_anterior){
+            $txt_escola_anterior = $visi->escola_anterior;
+        }
+        $txt_como_conheceu ="--";
+        if($visi->como_conheceu){
+            $txt_como_conheceu = $visi->como_conheceu;
+        }
+        $txt_email = "--";
+        if($visi->email){
+            $txt_email = $visi->email;
+        }
+        $txt_telefone ="--";
+        if($visi->telefone){
+            $txt_telefone = $visi->telefone;
+        }
+        $txt_celular1 ="--";
+        if($visi->celular1){
+            $txt_celular1 = $visi->celular1;
+        }
+        $txt_celular2 ="--";
+        if($visi->celular2){
+            $txt_celular2 = $visi->celular2;
+        }
+        $txt_endereco = "--";
+        if($visi->endereco){
+            $txt_endereco = $visi->endereco;
+        }
+        $txt_bairro = "--";
+        if($visi->bairro){
+            $txt_bairro = $visi->bairro;
+        }
+        $txt_cidade = "--";
+        if($visi->cidade){
+            $txt_cidade = $visi->cidade;
+        }
+        $txt_uf = "--";
+        if($visi->uf){
+            $txt_uf = $visi->uf;
+        }
+        $txt_cep = "--";
+        if($visi->cep){
+            $txt_cep = $visi->cep;
+        }
+        $txt_obs = "--";
+        if($visi->obs){
+            $txt_obs = $visi->obs;
+        }
+    ?>
+    <div class="col-md-4">
+    <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-graduation-cap"></i>
+                <h3 class="box-title">Visitante</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <dl class="dl-horizontal">
+                <dt>Data:</dt>
+                <dd><?php echo $txt_data_espera->format("d/m/Y H:i:s"); ?></dd>
+                <dt>Nome do Visitante:</dt>
+                <dd><?php echo $visi->nome; ?></dd>
+                <dt>Grau Parentesco:</dt>
+                <dd><?php echo $visi->grau_parentesco; ?></dd>
+                <dt>É Cliente?</dt>
+                <dd><?php echo $txt_cliente; ?></dd>
+                <dt>Troca:</dt>
+                <dd><?php echo $txt_troca; ?></dd>
+                <dt>Escola Anterior:</dt>
+                <dd><?php echo $txt_escola_anterior; ?></dd>
+                <dt>Como Conheceu:</dt>
+                <dd><?php echo $txt_como_conheceu; ?></dd>
+                <dt>Email:</dt>
+                <dd><?php echo $txt_email; ?></dd>
+                <dt>Telefone:</dt>
+                <dd><?php echo $txt_telefone; ?></dd>
+                <dt>Celular 1:</dt>
+                <dd><?php echo $txt_celular1; ?></dd>
+                <dt>Celular 2:</dt>
+                <dd><?php echo $txt_celular2; ?></dd>
+                <dt>Endereço:</dt>
+                <dd><?php echo $txt_endereco; ?></dd>
+                <dt>Bairro:</dt>
+                <dd><?php echo $txt_bairro; ?></dd>
+                <dt>Cidade:</dt>
+                <dd><?php echo $txt_cidade; ?></dd>
+                <dt>UF:</dt>
+                <dd><?php echo $txt_uf; ?></dd>
+                <dt>CEP:</dt>
+                <dd><?php echo $txt_cep; ?></dd>
+                <dt>Observação:</dt>
+                <dd><?php echo $txt_obs; ?></dd>
+              </dl>
+            </div>
+            <!-- /.box-body -->
+          </div>
+    </div>
+    <?php } ?>
+</div>

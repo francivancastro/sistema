@@ -1,0 +1,45 @@
+<form method="post" action="/sistema/modulo/inserir/" class="form-horizontal">
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Modulo - <a href="/sistema/modulo/inserir/">Inserir</a></h4></div>
+        <div class="navbar-inner pull-right span4">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/modulo/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+            <label for="controller" class="control-label">Controller:</label>
+            <div class="controls">
+                <select name="id_controller" id="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_sql as $sql){ ?>
+                    <option value="<?php echo $sql["id_controller"]; ?>"><?php echo $sql["controller"]; ?></option>
+                <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="action" class="control-label">Action:</label>
+            <div class="controls">
+                <input type="text" name="action" id="nome" size="5" value="" class="span2" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="principal" class="control-label">Principal:</label>
+            <div class="controls">
+                <label class="radio">
+                <input type="radio" name="principal" id="principal" size="5" value="S" />
+                Sim
+                </label>
+                <label class="radio">
+                <input type="radio" name="principal" id="principal" size="5" value="N" />
+                Não
+                </label>
+            </div>
+        </div>
+</div>
+</form>

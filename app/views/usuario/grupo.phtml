@@ -1,0 +1,41 @@
+<div class="row">
+    <form action="/sistema/usuario/grupo/id/<?php echo $view_id; ?>" method="post" class="form-horizontal">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Grupos vinculado ao Usuário</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <button type="submit" class="btn btn-primary " data-toggle="tooltip" title="Salvar" data-original-title="Salvar"><i class="fa fa-save"></i></button>
+                    <a class="btn btn-default" href="/sistema/usuario/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+                <div class="col-md-3">
+                <?php
+                $ugp = new UsuariogrupoModel();
+                
+                foreach ($view_gp as $grupo){ 
+                    $checked = "";
+                    
+                    if($ugp->possuiGrupo($view_id, $grupo['id_grupo'])){
+                        $checked = "checked";
+                    }
+                ?>    
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="id_grupo[]" value="<?php echo $grupo['id_grupo']; ?>" <?php echo $checked; ?>>
+                          <?php echo $grupo['nome']; ?>
+                        </label>
+                    </div>
+                </div>
+                <?php } ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    </form>
+</div>

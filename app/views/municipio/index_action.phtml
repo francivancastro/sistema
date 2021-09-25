@@ -1,0 +1,41 @@
+<div class="well">
+<div class="navbar">
+    <div class="span4"><h4>Municipio - <a href="/sistema/municipio/">Listar</a></h4></div>
+    <div class="navbar-inner pull-right">
+        <div class="">
+        <a class="btn" href="/sistema/municipio/inserir/" title="Adicionar">Adicionar <i class="icon-plus-sign"></i></a>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"> Voltar <i class="icon-circle-arrow-left"></i></a>
+    </div>
+    </div>
+</div>
+    <br />
+    <hr />
+    <table class="table table-bordered">
+        <tr>
+            <th colspan="7" class="titulo2">Municipios</th>
+        </tr>
+        <tbody>
+            <tr class="itemTitulo2">
+                <td>Estado</td>
+                <td>Municipio</td>
+                <td>Operações</td>
+            </tr>
+            <?php 
+                foreach ($view_sql as $sql){
+                    $es = new EstadoModel($sql['id_estado']);
+            ?>
+            <tr class="item2">
+                <td><strong><?php echo $es->nome; ?></strong></td>
+                <td><?php echo $sql['nome'];?></td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="<?php echo "/sistema/municipio/visualizar/id/{$sql["id_municipio"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                        <a class="btn btn-warning" href="<?php echo "/sistema/municipio/editar/id/{$sql["id_municipio"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-danger" href="<?php echo "/sistema/municipio/excluir/id/{$sql["id_municipio"]}";?>" title="Excluir"><i class="fa fa-trash-o"></i></a>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+    </tbody>
+</table>
+</div>

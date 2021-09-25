@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="span5">            
+        <ul class="breadcrumb">
+          <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+          <li class="active"><i class="fa fa-list"></i> Resutado da Pesquisa</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <form class="form-inline" action="/sistema/index/resultado/" method="post">
+            <input type="text" class="input-large" name="nome"placeholder="Nome...">
+            <input type="text" class="input-large cpf" name="cpf" placeholder="CPF...">
+        <button type="submit" class="btn"><i class="fa fa-search"></i></button>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"><i class="fa fa-reply"></i> Voltar</a>
+      </form>
+        
+    </div>
+</div>
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>DATA DE NASCIMENTO</th>
+        <th>Quadro</th>
+        <th>Admin</th>
+    </thead>
+<?php 
+    foreach ($view_result as $sql){ 
+        $txt_ctipo = "";
+        $txt_col = "--";
+        $txt_usuario = "não";
+        $col = new ColaboradorModel();
+        $cola = $col->pegaPorPessoa($sql->id_pessoa);
+        if($cola){
+            $txt_col = "Colaborador";
+        }
+        $usu = new UsuarioModel();
+        $usuario = $usu->pegaUsuarioPorPessoa($sql->id_pessoa);
+        if($usuario){
+            $txt_usuario = 'Sim';
+        }
+        $ori = new OrientadorModel();
+        $orient = $ori->listarPorPessoa($sql->id_pessoa);
+        if($orient){
+            $txt_col = "Colaborador Efetivo";
+        }
+        $ctipo = new ColaboradortipoModel(@$cola[0]['id_colaborador_tipo']);
+        if($ctipo->descricao){
+            $txt_ctipo = $ctipo->descricao;
+        }
+?>
+    <tr>
+        <td><?php echo $sql->nome; ?></td>
+        <td><?php echo UtilHelper::formataCPF($sql->cpf);?></td>
+        <td><?php echo UtilHelper::formatBr($sql->data_nascimento);?></td>
+        <td><center><?php echo $txt_col." ".$txt_ctipo; ?></center></td>
+        <td><center><?php echo $txt_usuario; ?></center></td>
+    </tr>
+    <?php } ?>
+</table>

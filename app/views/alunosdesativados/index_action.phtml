@@ -1,0 +1,217 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Alunos duplicados Total</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Alunos duplicados Desativados</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Alunos duplicados Ativados</a></li>
+        <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Alunos Desativados</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+          <table class="table table-bordered">
+                <tr class="itemTitulo2">
+                    <th>*</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Nº Matrícula</th>
+                    <th>Data de Nascimento</th>
+                    <th>ID Matrícula / Turma</th>
+                    <th>ID Espera / Turma</th>
+                </tr>
+                <?php
+                if($view_sql){  
+                    $cont = 0;
+                    foreach ($view_sql as $sql){
+                    $matricula = new MatriculaModel();
+                    $mat = $matricula->listarPorAluno($sql['id_m_aluno']);
+                    
+                    $espera = new MatriculaesperaModel();
+                    $esp = $espera->listarPorAluno($sql['id_m_aluno']);
+                    $txt_idmat = $txt_idesp = $txt_turmamat = $txt_turmaesp = "----";
+                    if($mat[0]['id_matricula']){
+                        $turmamat = new TurmaModel($mat[0]['id_turma']); 
+                        $txt_turmamat = $turmamat->descricao;
+                        $txt_idmat = $mat[0]['id_matricula'];
+                    }
+                    if( $esp[0]['id_matricula_espera']){
+                        $turmaesp = new TurmaModel($esp[0]['id_turma']); 
+                        $txt_turmaesp = $turmaesp->descricao;
+                        $txt_idesp = $esp[0]['id_matricula_espera'];
+                    }
+                    $cont++;
+                    ?>
+                    
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $sql['id_m_aluno']; ?></td>
+                        <td><?php echo $sql['nome']; ?></td>
+                        <td><?php echo $sql['matricula']; ?></td>
+                        <td><?php echo $sql['data_nascimento']; ?></td>
+                        <td><?php echo $txt_idmat .' / '. $txt_turmamat; ?></td>
+                        <td><?php echo $txt_idesp . ' / '. $txt_turmaesp; ?></td>
+                    </tr>
+                    <?php } ?>
+                <?php } else { ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                Não existe aluno desativado
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
+                
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">
+          <table class="table table-bordered">
+                <tr class="itemTitulo2">
+                    <th>*</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Nº Matrícula</th>
+                    <th>Data de Nascimento</th>
+                    <th>ID Matrícula / Turma</th>
+                    <th>ID Espera / Turma</th>
+                </tr>
+                <?php
+                if($view_sql){  
+                    $cont = 0;
+                    foreach ($view_sql as $sql){
+                    $matricula = new MatriculaModel();
+                    $mat = $matricula->listarPorAluno($sql['id_m_aluno']);
+                    
+                    $espera = new MatriculaesperaModel();
+                    $esp = $espera->listarPorAluno($sql['id_m_aluno']);
+                    $turma = new TurmaModel($sql['id_turma']);   
+                    if(!$mat[0]['id_matricula'] && !$esp[0]['id_matricula_espera']){
+                        $cont++;
+                    ?>
+                    
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $sql['id_m_aluno']; ?></td>
+                        <td><?php echo $sql['nome']; ?></td>
+                        <td><?php echo $sql['matricula']; ?></td>
+                        <td><?php echo $sql['data_nascimento']; ?></td>
+                        <td> ---- / ---- </td>
+                        <td> ---- / ---- </td>
+                    </tr>
+                    <?php }} ?>
+                <?php } else { ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                Não existe aluno desativado
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
+                
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_3">
+          <table class="table table-bordered">
+                <tr class="itemTitulo2">
+                    <th>*</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Nº Matrícula</th>
+                    <th>Data de Nascimento</th>
+                    <th>ID Matrícula - Turma</th>
+                    <th>ID Espera / Turma</th>
+
+                </tr>
+                <?php
+                if($view_sql){  
+                    $cont = 0;
+                    foreach ($view_sql as $sql){
+                    $matricula = new MatriculaModel();
+                    $mat = $matricula->listarPorAluno($sql['id_m_aluno']);
+                    
+                    $espera = new MatriculaesperaModel();
+                    $esp = $espera->listarPorAluno($sql['id_m_aluno']);
+                      
+                    if($mat[0]['id_matricula'] || $esp[0]['id_matricula_espera']){
+                        $turmamat = new TurmaModel($mat[0]['id_turma']); 
+                        $turmaesp = new TurmaModel($esp[0]['id_turma']); 
+                        $cont++;
+                    ?>
+                    
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $sql['id_m_aluno']; ?></td>
+                        <td><?php echo $sql['nome']; ?></td>
+                        <td><?php echo $sql['matricula']; ?></td>
+                        <td><?php echo $sql['data_nascimento']; ?></td>
+                        <td><?php echo $mat[0]['id_matricula'] .' / '. $turmamat->descricao; ?></td>
+                        <td><?php echo $esp[0]['id_matricula_espera'] . ' / '. $turmaesp->descricao; ?></td>
+                    </tr>
+                    <?php }} ?>
+                <?php } else { ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                Não existe aluno desativado
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
+                
+            </table>
+        </div>
+          <div class="tab-pane" id="tab_4">
+              <table class="table table-bordered">
+                <tr class="itemTitulo2">
+                    <th>*</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Nº Matrícula</th>
+                    <th>Data de Nascimento</th>
+                    <th>ID Matrícula - Turma</th>
+                    <th>ID Espera / Turma</th>
+
+                </tr>
+                <?php
+                if($view_alunos){  
+                    $cont = 0;
+                    foreach ($view_alunos as $sql){
+                    $matricula = new MatriculaModel();
+                    $mat = $matricula->listarPorAluno($sql['id_m_aluno']);
+                    
+                    $espera = new MatriculaesperaModel();
+                    $esp = $espera->listarPorAluno($sql['id_m_aluno']);
+                      
+                    if(!$mat[0]['id_matricula'] && !$esp[0]['id_matricula_espera']){
+                        $turmamat = new TurmaModel($mat[0]['id_turma']); 
+                        $turmaesp = new TurmaModel($esp[0]['id_turma']); 
+                        $cont++;
+                    ?>
+                    
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $sql['id_m_aluno']; ?></td>
+                        <td><?php echo $sql['nome']; ?></td>
+                        <td><?php echo $sql['matricula']; ?></td>
+                        <td><?php echo $sql['data_nascimento']; ?></td>
+                        <td><?php echo $mat[0]['id_matricula'] .' / '. $turmamat->descricao; ?></td>
+                        <td><?php echo $esp[0]['id_matricula_espera'] . ' / '. $turmaesp->descricao; ?></td>
+                    </tr>
+                    <?php }} ?>
+                <?php } else { ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                Não existe aluno desativado
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
+                
+            </table>
+          </div>
+      </div>
+    </div>
+    </div>
+</div>

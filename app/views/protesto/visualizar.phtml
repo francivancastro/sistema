@@ -1,0 +1,372 @@
+<div class="row">
+    <section class="col-md-12">
+    <div class="box box-info">
+        <div class="box-header ui-sortable-handle" >
+          <i class="fa fa-legal"></i>
+          <h3 class="box-title">Dados do Protesto</h3>
+          <!-- tools box -->
+          <div class="pull-right box-tools">
+              <a class="btn btn-info" href="/sistema/protesto/imprimir/id/<?php echo $view_sql['id_protesto'];?>" target="_blank" data-toggle="tooltip" title="Imprimir"><i class="fa fa-print"></i></a>
+                    <a class="btn btn-default" data-toggle="tooltip" href="/sistema/protesto/index/" title="Voltar"><i class="fa fa-reply"></i></a>
+          </div><!-- /. tools -->
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    
+                        <table class="table table-condensed table-hover bg-gray">
+                            <tr>
+                                <td colspan="2"><center><strong>RESPONSÁVEL</strong></center></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 20%"><div class="pull-right"><strong>Responsável:</strong></div></td>
+                                <td><?php echo $view_pes->nome;?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>CPF:</strong></div></td>
+                                <td><?php echo UtilHelper::formataCPF($view_pes->cpf); ?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Endereço:</strong></div></td>
+                                <td><?php echo $view_end->endereco.', '.$view_end->numero." <strong> Bairro: </strong>". $view_bap->nome;?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Aluno:</strong></div></td>
+                                <td><?php echo $view_aln->nome;?></td>
+                            </tr>
+                        </table>
+                    <table class="table table-condensed table-hover bg-gray">
+                        <tr>
+                            <td colspan="2"><center><strong>EMPRESA</strong></center></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%"><div class="pull-right"><strong>Empresa:</strong></div></td>
+                            <td><?php echo $view_emp->empresa_nome;?></td>
+                        </tr>
+                        <tr>
+                            <td><div class="pull-right"><strong>CNPJ:</strong></div></td>
+                            <td><?php echo UtilHelper::formataCNPJ($view_emp->cnpj);?></td>
+                        </tr>
+                        <tr>
+                                                       <td><div class="pull-right"><strong>Endereço:</strong></div></td>
+                            <td><?php echo $view_ende->endereco.', '.$view_ende->numero." <strong> Bairro: </strong>". $view_bae->nome;?></td>
+                        </tr>
+                        <tr>
+                            <td><div class="pull-right"><strong>Email:</strong></div></td>
+                            <td><?php echo $view_emp->email;?></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                        <table class="table table-condensed table-hover bg-gray">
+                            <tr>
+                                <td colspan="2"><center><strong>PROTESTO</strong></center></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%"><div class="pull-right"><strong>Status:</strong></div></td>
+                                <td><?php echo $view_pts->descricao;?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Espécie:</strong></div></td>
+                                <td><?php echo $view_ptt->descricao;?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Numero:</strong></div></td>
+                                <td><?php echo $view_sql['numero'];?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Valor do Contrato:</strong></div></td>
+                                <td><?php echo UtilHelper::formatoReal($view_sql['valor_contrato']);?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Valor a Protestar:</strong></div></td>
+                                <td><?php echo UtilHelper::formatoReal($view_sql['valor_protesto']);?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Data de Emissão:</strong></div></td>
+                                <td><?php echo UtilHelper::formatBr($view_sql['data_emissao']);?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Data de Vencimento:</strong></div></td>
+                                <td><?php echo UtilHelper::formatBr($view_sql['data_vencimento']);?></td>
+                            </tr>
+                            <tr>
+                                <td><div class="pull-right"><strong>Data de Inclusão:</strong></div></td>
+                                <td><?php echo UtilHelper::formatBr($view_sql['data_inclusao']);?></td>
+                            </tr>
+                        </table>
+                    
+                </div>
+                <div class="col-md-4">
+                    <?php if($view_ptx){ ?>
+                    <table class="table table-condensed table-hover bg-gray">
+                        <tr>
+                            <td colspan="2"><center><strong>TAXAS</strong></center></td>
+                        </tr>
+                        <?php foreach ($view_ptx as $ptx){ 
+                            $taxa = new TaxasModel($ptx['id_taxas']);
+                            $vt += $ptx['valor'];
+                        ?>
+                        <tr>
+                            <td style="width: 50%"><div class="pull-right"><strong><?php echo $taxa->descricao ?>:</strong></div></td>
+                            <td><?php echo UtilHelper::formatoReal($ptx['valor']); ?></td>
+                        </tr>
+                        <?php } ?>
+                    </table>
+                    <?php } ?>
+                    <?php if($view_anx){ ?>
+                    <table class="table table-condensed table-hover bg-gray">
+                        <tr>
+                            <td colspan="2"><center><strong>ANEXOS</strong></center></td>
+                        </tr>
+                        <?php foreach ($view_anx as $anx){?>
+                        <tr>
+                            <td style="width: 50%"><div class="pull-right"><strong><?php echo $anx['descricao'] ?>: </strong></div></td>
+                            <td><span class="label label-info"><i class="fa fa-calendar"></i> <?php echo UtilHelper::formatBr($anx['data_envio']) ?></span></td>
+                        </tr>
+                        <?php } ?>
+                    </table>>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+<div class="row">
+    <section class="col-md-6">
+        <div class="box box-info">
+        <div class="box-header ui-sortable-handle" >
+            <i class="fa fa-list-alt"></i>
+            <h3 class="box-title">Informações da Negociações</h3>
+        </div>
+        <div class="box-body">
+            <table class="table table-condensed table-hover bg-info">
+                    <thead>
+                        <tr>
+                            <th>Ano Base</th>
+                            <th>Parcela</th>
+                            <th>Valor Parcela</th>
+                            <th>Multa</th>
+                            <th>Juros</th>
+                            <th>Desconto</th>
+                            <th>Total Negociado</th>
+                        </tr>
+                    </thead>
+                    <?php if($view_neg){ ?>
+                    <tbody>
+                        <?php foreach ($view_neg as $neg){
+                            $txt_desconto = UtilHelper::formatoReal($neg['desconto']);
+                            $txt_multa = UtilHelper::formatoReal($neg['multa']);
+                            $txt_juros = UtilHelper::formatoReal($neg['juros']);
+                            $valTotalParcela += $neg['valor_parcela'];
+                            $valTotalMulta += $neg['multa'];
+                            $valTotalJuros += $neg['juros'];
+                            $valTotalDesconto += $neg['desconto'];
+                            
+                            $ptotal = $neg['valor_parcela'] + $neg['multa'] + $neg['juros'] - $neg['desconto'];
+                             
+                            $tn += $ptotal;
+                            
+                            if($neg['desconto'] == 0){
+                                $txt_desconto = "--";
+                            }
+                            if($neg['multa'] == 0){
+                                $txt_multa = "--";
+                            }
+                            if($neg['juros'] == 0){
+                                $txt_juros = "--";
+                            }
+                            $txt_mes = '';
+                            $messes = UtilHelper::meses();
+                            foreach ($messes as $nMes => $txtMes){ 
+                                if($nMes == $neg['parcela']){
+                                    $txt_mes = $nMes.' - '.$txtMes;
+                                }
+                            }
+                        ?>
+                        <tr>
+                            <td><?php echo $neg['ano_base']; ?></td>
+                            <td><?php echo $txt_mes; ?></td>
+                            <td><?php echo UtilHelper::formatoReal($neg['valor_parcela']); ?></td>
+                            <td><?php echo $txt_multa;?></td>
+                            <td><?php echo $txt_juros;?></td>
+                            <td><?php echo $txt_desconto; ?></td>
+                            <td><?php echo UtilHelper::formatoReal($ptotal); ?></td>
+                            
+                        </tr>
+                        <?php }
+                            $vtp = $tn;
+                        ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Totais</strong></td>
+                            <td></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalParcela);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalMulta);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalJuros);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($valTotalDesconto);?></strong></td>
+                            <td><strong><?php echo UtilHelper::formatoReal($vtp);?></strong></td>
+                        </tr>
+                    </tfoot>
+                    <?php } ?>
+                </table>
+        </div>
+        </div>
+    </section>  
+    <?php if($view_propago){ ?>
+                    <?php if($view_propago){ 
+     foreach ($view_propago as $propag){
+        $dinheiro = new DinheiroModel();
+        $cartao =  new CartaoModel();
+        $transferencia = new TransferenciaModel();
+        $dinh = $dinheiro->listarPorPagamento($propag['id_pagamento']);
+        $cart = $cartao->listarPorPagamento($propag['id_pagamento']);
+        $trans = $transferencia->listarPorPagamento($propag['id_pagamento']);
+        foreach ($dinh as $din){
+            $valordoDin += $din['valor'];
+        }
+        foreach ($cart as $car){
+            $valordoCart += $car['valor'];
+        }
+        foreach ($trans as $tra){
+            $valordoTrans += $tra['valor'];
+        }
+        
+        $valorTotalPago = $valordoDin + $valordoCart + $valordoTrans;
+        
+        if(!$valorTotalPago){
+            $valorTotalPago = "0,00";
+        }
+     }
+     $valorPagar = $view_sql['valor_protesto'] + $vt;
+ }
+?>
+    <section class="col-md-6">
+        <div class="box box-info">
+        <div class="box-header ui-sortable-handle" >
+            <i class="fa fa-dollar"></i>
+            <h3 class="box-title">Informações de Pagamento</h3>
+                <div class="box-tools">
+                          
+                          <strong>A pagar:</strong> 
+                            <span class="label label-danger" style="font-size: 14px">
+                                <?php
+                                    $valorFinal =  $vtp + $valorPagar;
+                                    echo UtilHelper::formatoReal($valorFinal);
+                                ?>
+                            </span>
+                            &nbsp;
+                            &nbsp;
+                            <strong>Pago:</strong> 
+                            <span class="label label-success" style="font-size: 14px">
+                                <?php
+                                    echo UtilHelper::formatoReal($valorTotalPago);
+                                ?>
+                            </span>
+                                
+
+                      </div>
+        </div>
+            
+        <div class="box-body">
+            
+<table class="table table-bordered">
+                    <thead>
+                        <th>Dinheiro</th>
+                        <th>Cartão</th>
+                        <th>Transferência</th>
+                    </thead>
+                    <tbody>
+
+    <tr>
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $dinheiro = new DinheiroModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $dinh = $dinheiro->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($dinh as $di){
+                $totalDinheiro += $di['valor'];
+        ?>
+            <div class="box box-success">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($di['valor']) ?></h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($di['data_dinheiro']); ?><br />
+                </div><!-- /.box-body -->
+            </div>
+            <?php } ?>
+            <?php } ?>
+        </td>
+        
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $cartao = new CartaoModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $cart = $cartao->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($cart as $ca){
+                $ctp = new CartaotipoModel($ca['id_cartao_tipo']);
+                $parcela = $ca['valor'] / $ca['parcelas'];
+                $totalCartao += $ca['valor'];
+        ?>
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($ca['valor']) ?></h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                <?php echo $pgtipo->descricao; ?> de  <?php echo $ctp->descricao ?> -  <?php echo $ca['bandeira'] ?> <br />
+                <strong>Nº do Documento:</strong> <?php echo $ca['codigo']; ?> <br />
+                <strong>Parcelas:</strong> <?php echo $ca['parcelas']; ?> de <?php echo UtilHelper::formatoReal($parcela); ?> <br />
+                <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($ca['data_cartao']); ?><br />
+                </div><!-- /.box-body -->
+            </div>
+            <?php } ?>
+        
+        <?php } ?>
+        </td>
+        
+        <td class="col-md-4">
+        <?php foreach ($view_propago as $propag){
+            $transferencia = new TransferenciaModel();
+            $pgtipo = new PagamentotipoModel($propag['id_pagamento_tipo']);
+            $trans = $transferencia->listarPorPagamento($propag['id_pagamento']);
+        ?>
+            <?php    
+            foreach ($trans as $ta){
+                $totalTrans += $ta['valor'];
+        ?>
+            <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><?php echo UtilHelper::formatoReal($ta['valor']) ?></h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <strong>Banco: </strong><?php echo $ta['banco_cliente'] ?><br />
+                    <strong>AG - Conta (Cliente)</strong><br />
+                    <?php echo $ta['agencia_cliente'].' - '.$ta['conta_cliente'];?> <br />
+                    <strong>Banco: </strong><?php echo $ta['banco_empresa']; ?><br />
+                    <strong>AG - Conta (Empresa)</strong><br />
+                    <?php echo $ta['agencia_empresa'].' - '.$ta['conta_empresa'];?> <br />
+                    <strong>Pago em: </strong> <?php echo UtilHelper::formatBr($ta['data_transferencia']); ?><br />
+                </div>
+            </div>
+            
+            <?php } ?>
+        
+        <?php } ?>
+        </td>
+    </tr>
+                            </tbody>
+                            
+                        </table> 
+
+        </div>
+        </div>
+    </section>  
+    <?php } ?>
+</div>

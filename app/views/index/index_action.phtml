@@ -1,0 +1,143 @@
+<?php if($view_total){ ?>
+<script type="text/javascript">
+$(function(){
+    
+  //-------------
+  //- PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+  var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
+  var pieChart = new Chart(pieChartCanvas);
+  var PieData = [
+    {
+      value: <?php echo count($view_and);?>,
+      color: "#00c0ef",
+      highlight: "#00c0ef",
+      label: "<?php echo $view_and[0]['descricao'];?>"
+    },
+    {
+      value: <?php echo count($view_con);?>,
+      color: "#00a65a",
+      highlight: "#00a65a",
+      label: "<?php echo $view_con[0]['descricao'];?>"
+    },
+    
+    {
+      value: <?php echo count($view_can);?>,
+      color: "#f56954",
+      highlight: "#f56954",
+      label: "<?php echo $view_can[0]['descricao'];?>"
+    },
+    
+  ];
+  var pieOptions = {
+    //Boolean - Whether we should show a stroke on each segment
+    segmentShowStroke: true,
+    //String - The colour of each segment stroke
+    segmentStrokeColor: "#fff",
+    //Number - The width of each segment stroke
+    segmentStrokeWidth: 1,
+    //Number - The percentage of the chart that we cut out of the middle
+    percentageInnerCutout: 50, // This is 0 for Pie charts
+    //Number - Amount of animation steps
+    animationSteps: 100,
+    //String - Animation easing effect
+    animationEasing: "easeOutBounce",
+    //Boolean - Whether we animate the rotation of the Doughnut
+    animateRotate: true,
+    //Boolean - Whether we animate scaling the Doughnut from the centre
+    animateScale: false,
+    //Boolean - whether to make the chart responsive to window resizing
+    responsive: true,
+    // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+    maintainAspectRatio: false,
+    //String - A legend template
+    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
+    //String - A tooltip template
+    tooltipTemplate: "<%=value %> <%=label%>"
+  };
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.  
+  pieChart.Doughnut(PieData, pieOptions);
+  //-----------------
+  //- END PIE CHART -
+  //-----------------
+
+});
+</script>
+<?php } ?>
+<?php
+    $autenticar = new AuthHelper();
+    $login = $autenticar->checkLogin('boolean');
+?>
+<?php
+if($login){
+ $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+?>
+<div class="row">
+  
+<?php if($view_total){ ?>
+    <section class="col-md-4">
+        <?php
+        
+            $total = count($view_total);
+            $cont_and = count($view_and);
+            $cont_con = count($view_con);
+            $cont_can = count($view_can);
+            
+            $porcen_and = $cont_and * 100 / $total;
+            $porcen_con = $cont_con * 100 / $total;
+            $porcen_can = $cont_can * 100 / $total;
+        ?>
+        <div class="box box-success">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Protesto </h3>
+                  <div class="box-tools pull-right">
+                    <span data-toggle="tooltip" title="<?php echo $total;?> Protestos Cadastrados" class="badge bg-yellow"><?php echo $total;?></span>
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="chart-responsive">
+                        <canvas id="pieChart" height="155" width="204" style="width: 204px; height: 155px;"></canvas>
+                      </div><!-- ./chart-responsive -->
+                    </div><!-- /.col -->
+                    <div class="col-md-4">
+                      <ul class="chart-legend clearfix">
+                        <li><i class="fa fa-circle-o text-aqua"></i> Em Andamento</li>
+                        <li><i class="fa fa-circle-o text-green"></i> Concluido</li>
+                        <li><i class="fa fa-circle-o text-red"></i> Cancelado</li>
+                      </ul>
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
+                </div><!-- /.box-body -->
+                <div class="box-footer no-padding">
+                  <ul class="nav nav-pills nav-stacked">
+                    <?php if($view_can){ ?>
+                    <li><a href="#"><?php echo $view_can[0]['descricao'];?> <span class="pull-right text-red"> <?php echo $porcen_can; ?>%</span></a></li>
+                    <?php } if($view_con){ ?>
+                    <li><a href="#"><?php echo $view_con[0]['descricao'];?> <span class="pull-right text-green"> <?php echo $porcen_con; ?>%</span></a></li>
+                    <?php } if($view_and){ ?>
+                    <li><a href="#"><?php echo $view_and[0]['descricao'];?> <span class="pull-right text-info"> <?php echo $porcen_and; ?>%</span></a></li>
+                    <?php } ?>
+                  </ul>
+                </div><!-- /.footer -->
+              </div>
+    </section>
+<?php } ?>
+</div>
+<?php }  else{?>
+
+<div class="well">
+    <div class="hero">
+        <h1><span class="text-red"><i class="fa fa-warning"></i> Aviso!</span></h1>
+        <p style="font-size: 18px">
+            Seu Usuário Encontra-se Bloqueado, por favor entre em contato com a Administração!
+        </p>
+        <a href="" class="btn btn-large btn-primary"><i class="fa fa-reply"></i> Voltar ao Login</a>
+    </div>
+</div>
+<?php } ?>

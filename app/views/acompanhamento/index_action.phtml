@@ -1,0 +1,315 @@
+<?php 
+date_default_timezone_set('America/Belem');
+$data_atual = date('d-M-Y');
+?>
+<div class="row">
+    <div class="col-md-5">
+          <!-- The time line -->
+          <ul class="timeline">
+            <li class="time-label">
+                <span class="bg-teal">
+                    <?php echo $data_atual; ?>
+                </span>
+            </li>
+            <?php
+            $cont = -2;
+            foreach ($view_tudo as $sql){
+                $cont++;
+                $turm = new TurmaModel($sql['id_turma']); 
+                $msts = new MatriculastatusModel($sql['id_matricula_status']);
+                $aluno = new MalunoModel($sql['id_m_aluno']);
+                $usu = new UsuarioModel($sql['id_usuario']);
+                $pes = new PessoaModel($usu->id_pessoa);
+                $txt_status = "";
+                $txt_icon = "";
+                $txt_descricao = "";
+                
+                if($msts->chave == "MT"){
+                    $txt_descricao = "Matricula";
+                    $txt_icon = "fa-user-plus";
+                    $bg_color = "bg-green";
+                }
+                if($msts->chave == "RMT"){
+                    $txt_descricao = "Rematrícula";
+                    $txt_icon = "fa-handshake-o";
+                    $bg_color = "bg-aqua";
+                }
+                if($msts->chave == "RV"){
+                    $txt_descricao = "Reserva";
+                    $txt_icon = "fa-calendar";
+                    $bg_color = "bg-yellow";
+                }
+                
+                if($sql['status'] == "A"){
+                    $txt_descricao = "Inclusão na lista de espera";
+                    $txt_icon = "fa-spinner fa-pulse fa-fw";
+                    $bg_color = "bg-red";
+                }
+                $txt_reseva = "";
+                if($sql['status'] == "T"){
+                    $txt_descricao = "Lista de espera";
+                    $txt_reseva = " para <span class='badge bg-purple'>Transferência</span>";
+                    $txt_icon = "fa-refresh";
+                    $bg_color = "bg-red";
+                }
+                
+                
+                $data = new DateTime($sql['data_cadastro']);
+                $data2 = new DateTime($view_tudo[$cont]['data_cadastro']);
+                $data_queveio = $data->format("Y-m-d");
+                $data_queveio_hora = $data->format("H:i:s");
+                
+                $data_ultima = $data2->format("Y-m-d");
+            ?>
+            <?php if($data_ultima != $data_queveio){
+                $nd = new DateTime($sql['data_cadastro']);
+                ?>
+            <li class="time-label">
+                <span class="bg-teal">
+                    <?php echo $nd->format("d - M - Y"); ?>
+                </span>
+            </li>
+            <?php } ?>
+            
+            <li>
+                <i class="fa <?php echo $txt_icon; ?> <?php echo $bg_color; ?>"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fa fa-clock-o"></i> <?php echo $data_queveio_hora; ?></span>
+                    <h3 class="timeline-header"><a href="#"><?php echo UtilHelper::formataNome($pes->nome); ?></a> realizou uma <span class="badge <?php echo $bg_color; ?>"><?php echo $txt_descricao; ?></span> <?php echo $txt_reseva; ?> </h3>
+                    <div class="timeline-body">
+                       Para o aluno(a) <?php echo $aluno->nome; ?> na turma <?php echo $turm->descricao ?>
+                    </div>
+                </div>
+              
+            </li>
+            <?php } ?>
+            <li>
+              <i class="fa fa-clock-o bg-gray"></i>
+            </li>
+          </ul>
+        </div>
+    <section class="col-md-7">
+<?php 
+foreach ($view_turma as $turma){
+    $mat = new MatriculaModel();
+    $matesp = new MatriculaesperaModel();
+    $listMat = $mat->listarPorTurmaAtivos($turma['id_turma']);
+    $listMatesp = $matesp->listarPorTurma($turma['id_turma']);
+    // diferencia as quantidades e adciona no array
+    $array_esp = array();
+    foreach ($listMatesp as $espe){
+        if($espe['status'] == 'A'){
+            $array_esp[] = $espe['status'];
+        }
+    }
+    $t_ocu = array();
+    $t_res = array();
+    foreach ($listMat as $matr){
+        $mtsts = new MatriculastatusModel($matr['id_matricula_status']);
+        if($mtsts->chave != 'RV'){
+            $t_ocu[] = $mtsts->chave;
+        }
+        
+        if($mtsts->chave == 'RV'){
+            $t_res[] = $mtsts->chave;
+        }
+    }
+    
+    $tcp += $turma['vagas'];
+
+    $toc += count($t_ocu);
+    $trv += count($t_res);
+    
+}
+
+
+$p_toc =  $toc * 100 / $tcp;
+$p_trv =  100;
+
+$p_tcp = 100 - ceil($p_toc);
+
+?>
+        <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box bg-aqua">
+            <span class="info-box-icon"><i class="fa fa-line-chart"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">T. Capacidade</span>
+              <span class="info-box-number"><?php echo $tcp?></span>
+
+              <div class="progress">
+                  <div class="progress-bar" style="width: <?php echo $p_tcp ?>%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo $p_tcp; ?>% 
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box bg-purple">
+            <span class="info-box-icon"><i class="fa fa-thumbs-o-up"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">T. Ocupado</span>
+              <span class="info-box-number"><?php echo $toc?></span>
+
+              <div class="progress">
+                  <div class="progress-bar" style="width: <?php echo ceil($p_toc); ?>%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo ceil($p_toc); ?>%
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+                   <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="info-box bg-yellow">
+            <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">T. Reserva</span>
+              <span class="info-box-number"><?php echo $trv?></span>
+
+              <div class="progress">
+                  <div class="progress-bar" style="width: <?php echo ceil($p_trv); ?>%"></div>
+              </div>
+                  <span class="progress-description">
+                    <?php echo ceil($p_trv); ?>% 
+                  </span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+                   
+               </div>
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-list"></i>
+              <h3 class="box-title">Estatísticas</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+                    <a class="btn btn-default" href="/sistema/acompanhamento/selecioneano/" data-toggle="tooltip" title="Trocar ano"> <i class="fa fa-exchange"></i></a>
+              </div>
+            </div>
+           <div class="box-body">
+                <div class="col-md-4 well-sm areapesquisa" style="display: none">
+                <form class="form-horizontal" action="/sistema/acompanhamento/index/" method="post">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+                        <span class="input-group-btn">
+                          <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                          <a class="btn btn-danger" href="/sistema/acompanhamento/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+                        </span>
+                    </div>
+                </form>
+                </div>
+               
+                <table class="table table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                      <th style="text-align: center">Turma</th>
+                      <th style="text-align: center">Capacidade</th>
+                      <th style="text-align: center">V. Ocup</th>
+                      <th style="text-align: center"  class="bg-maroon">Saldo</th>
+                      <th style="text-align: center;"></th>
+                      <th style="text-align: center" class="bg-yellow">Reserva</th>
+                      <th style="text-align: center">Espera</th>
+                      <th style="text-align: center" class="bg-green">Dispon</th>
+                      <th style="text-align: center">MT</th>
+                      <th style="text-align: center">RMT</th>
+                      <th style="text-align: center"><i class="fa fa-cog"></i></th>
+                    </tr>
+                </thead>
+        
+        <?php if($view_turma){ ?>
+                <tbody>
+                <?php foreach ($view_turma as $turma){
+                    // lista as matricula e as esperas
+                    $mat = new MatriculaModel();
+                    $matesp = new MatriculaesperaModel();
+                    $listMat = $mat->listarPorTurmaAtivos($turma['id_turma']);
+                    $listMatesp = $matesp->listarPorTurma($turma['id_turma']);
+                    // diferencia as quantidades e adciona no array
+                    $array_esp = array();
+                    foreach ($listMatesp as $espe){
+                        if($espe['status'] == 'A'){
+                            $array_esp[] = $espe['status'];
+                        }
+                    }
+                    $qtdmt = array();
+                    $qtdrmt = array();
+                    $qtdrv = array();
+                    foreach ($listMat as $matr){
+                        $mtsts = new MatriculastatusModel($matr['id_matricula_status']);
+                        if($mtsts->chave == 'MT'){
+                            $qtdmt[] = $mtsts->chave;
+                        }
+                        if($mtsts->chave == 'RMT'){
+                            $qtdrmt[] = $mtsts->chave;
+                        }
+                        if($mtsts->chave == 'RV'){
+                            $qtdrv[] = $mtsts->chave;
+                        }
+                    }
+                    // conta matricula por tipo
+                    $count_mt = count($qtdmt);
+                    $count_rmt = count($qtdrmt);
+                    $count_rv = count($qtdrv);
+                    // mostra as quantidades
+                    $txt_vagas_ocupadas = $count_mt + $count_rmt;
+                    $saldo = $turma['vagas'] - $txt_vagas_ocupadas;
+                    $txt_espera = count($array_esp);
+                    $count_vaga  = count($listMat);
+                    $txt_vaga = $turma['vagas'] - $count_vaga;
+                    
+                ?>
+                <tr>
+                  <td align='center'><span class="badge "><?php echo $turma['descricao']; ?></span></td>
+                  <td align='center'><span class="badge bg-aqua"><?php echo $turma['vagas']; ?></span></td>
+                  <td align='center'><span class="badge bg-purple"><?php echo $txt_vagas_ocupadas; ?></span></td>
+                  <td align='center'><span class="badge bg-maroon"><?php echo $saldo; ?></span></td>
+                  <td align='center'></td>
+                  <td align='center'><span class="badge bg-yellow"><?php echo $count_rv; ?></span></td>
+                  <td align='center'><span class="badge bg-red"><?php echo $txt_espera; ?></span></td>
+                  <td align='center'><span class="badge bg-green"><?php echo $txt_vaga; ?></span></td>
+                  <td align='center'><span class="badge"><?php echo $count_mt; ?></span></td>
+                  <td align='center'><span class="badge"><?php echo $count_rmt; ?></span></td>
+                  <td align='center'>
+                      <div class="dropdown">
+                        <button class="btn btn-info btn-sm" type="button" data-toggle="dropdown" data-submenu="" aria-expanded="false">
+                          <i class="fa fa-bars"></i>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="/sistema/turma/aluno/id/<?php echo $turma['id_turma'];?>" ><i class="fa fa-check"></i> Alunos na turma</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="<?php echo "/sistema/matriculaespera/visitante/id/{$turma["id_turma"]}";?>"><i class="fa fa-book"></i> Alunos em espera</a></li>
+                        </ul>
+                    </div>
+                  </td>
+                </tr>
+                <?php } ?>
+                </tbody>
+                <?php } else { ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            Não existe turma cadastrada neste ano!
+                        </td>
+                    </tr>
+                </tfoot>
+                <?php } ?>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>

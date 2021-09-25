@@ -1,0 +1,151 @@
+<?php 
+    $pes = new PessoaModel($view_sql['id_pessoa']);
+    $p_ref = new PessoarefModel;
+    $ref = $p_ref->listarPorPessoa($view_sql['id_pessoa']);
+    $end = new EnderecoModel($ref[0]['id_endereco']);
+    $bai = new BairroModel($end->id_bairro);
+    $mun = new MunicipioModel($bai->id_municipio);
+    $est = new EstadoModel($mun->id_estado);
+    $alu = new AlunoModel();
+    $aluno = $alu->pegaAlunoPorPessoa($view_sql['id_pessoa']);
+    $curso = new CursoModel($aluno[0]['id_curso']);
+    $ins = new InstituicaoModel($curso->id_instituicao);
+    $tur = new TurnoModel($curso->id_turno);
+    $ctp = new ColaboradortipoModel($view_sql["id_colaborador_tipo"]);
+    $contrato = new ContratoModel();
+    $ctr = $contrato->listarPorColaborador($view_sql['id_colaborador']);
+    $atua = new AreaatuacaoModel($ctr[0]['id_area_atuacao']);
+    
+    /*orientador*/
+    
+    $ori = new OrientadorModel($view_sql['id_orientador']);
+    $pessoa_orientador = new PessoaModel($ori->id_pessoa);
+    
+?>
+<div class="row">
+    <div class="span10">            
+        <ul class="breadcrumb">
+            <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+            <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+            <li class="active">Visualizar</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/colaborador/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+    </div>
+</div>
+<div class="well">
+    <legend>DADOS PESSOAIS</legend>
+    
+    <dl class="dl-horizontal">
+        <dt>Nome:</dt>
+        <dd><?php echo $pes->nome; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Profissão:</dt>
+        <dd><?php echo $pes->profissao; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Data de Nascimento:</dt>
+        <dd><?php echo UtilHelper::formatBr($pes->data_nascimento); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Nacionalidade:</dt>
+        <dd><?php echo $pes->nacionalidade; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Naturalidade:</dt>
+        <dd><?php echo $pes->naturalidade; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>CPF:</dt>
+        <dd><?php echo UtilHelper::formataCPF($pes->cpf); ?></dd>
+    </dl> 
+    <dl class="dl-horizontal">
+        <dt>RG nº:</dt>
+        <dd><?php echo $pes->rg; ?> / <strong>Órgão Expedidor: </strong> <?php echo $pes->expedidor; ?> / <strong>Data Expedição: </strong> <?php echo UtilHelper::formatBr($pes->data_expedicao); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>PIS:</dt>
+        <dd><?php echo $pes->pis; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Estado Civil:</dt>
+        <dd><?php echo $pes->estado_civil; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Email:</dt>
+        <dd><?php echo $pes->email; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>CPF:</dt>
+        <dd><?php echo $pes->cpf; ?></dd>
+    </dl>
+    
+</div>
+<div class="well">
+    <legend>ENDEREÇO DO COLABORADOR</legend>
+    <dl class="dl-horizontal">
+        <dt>Endereço:</dt>
+        <dd><?php echo $end->endereco ; ?> / <strong>Nº:</strong> <?php echo $end->numero;?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>CEP:</dt>
+        <dd><?php echo $end->cep; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Bairro:</dt>
+        <dd><?php echo $bai->nome; ?> / <?php echo $mun->nome; ?> - <?php echo $est->sigla; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Complemento:</dt>
+        <dd><?php echo $end->complemento; ?></dd>
+    </dl>
+</div>
+<div class="well">
+    <legend>DADOS ESCOLARES</legend>
+    
+    <dl class="dl-horizontal">
+        <dt>Instituição de Origem:</dt>
+        <dd><?php echo $ins->nome; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Curso:</dt>
+        <dd><?php echo $curso->descricao; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Turno:</dt>
+        <dd><?php echo $tur->descricao; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Semestre:</dt>
+        <dd><?php echo $aluno[0]['semestre']; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Inicio do Curso:</dt>
+        <dd><?php echo UtilHelper::formatBr($aluno[0]['data_inicio']); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Termino do Curso:</dt>
+        <dd><?php echo UtilHelper::formatBr($aluno[0]['data_fim']); ?></dd>
+    </dl>
+</div>
+<div class="well">
+    <legend>DADOS RELATIVOS AO <?php echo $ctp->descricao;?></legend>
+    <dl class="dl-horizontal">
+        <dt>Area de Atuação:</dt>
+        <dd><?php echo $atua->descricao; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Projeto Vinculado:</dt>
+        <dd><?php echo $ctr[0]['projeto']; ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Periodo de Contrato:</dt>
+        <dd> <?php echo UtilHelper::formatBr($ctr[0]['data_inicio']); ?> à <?php echo UtilHelper::formatBr($ctr[0]['data_final']); ?></dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Orientador:</dt>
+        <dd><?php echo $pessoa_orientador->nome; ?></dd>
+    </dl>
+</div>

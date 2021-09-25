@@ -1,0 +1,95 @@
+<form method="post" action="/sistema/empresa/editar/id/<?php echo $view_sql['id_empresa'];?>/" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_empresa" value="<?php echo $view_sql['id_empresa'];?>" />
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li id="ab1" class="active"><a href="#aba1" data-toggle="tab">Editar empresa</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/empresa/index/"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          
+        </ul>
+    </div>
+    <div class="tab-content no-padding">
+        <div class="tab-pane active" id="aba1">
+        <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">empresa</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Nome da Empresa:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo $view_sql['empresa_nome'];?>" class="form-control" name="empresa_nome" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Nome Fantasia:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo $view_sql['nome_fantasia'];?>" class="form-control" name="nome_fantasia" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">CNPJ:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo UtilHelper::formataCNPJ($view_sql['cnpj']);?>" class="form-control cnpj" name="cnpj" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Email:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo $view_sql['email'];?>" class="form-control" name="email" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Telefone 1:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo UtilHelper::formataTelefone($view_sql['telefone1']);?>" class="form-control telefone" name="telefone1" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Telefone 2:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo UtilHelper::formataTelefone($view_sql['telefone2']);?>" class="form-control telefone" name="telefone2" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao" class="col-sm-3 control-label">Telefone Cel.:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" value="<?php echo UtilHelper::formataCelular($view_sql['telefone3']);?>" class="form-control celular" name="telefone3" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>   
+            
+</div>
+</form>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Lista de empresa</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i></button>
+        <button type="button" class="btn btn-primary"><i class="fa fa-save"></i></button>
+      </div>
+    </div>
+  </div>
+</div>

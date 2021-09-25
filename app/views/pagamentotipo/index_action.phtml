@@ -1,0 +1,72 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Lista de Tipos de Pagamento</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/pagamentotipo/inserir/" data-toggle="tooltip" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="itemTitulo2">
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Chave</th>
+                        <th><center>Operações</center></th>
+                    </tr>
+                    <?php foreach ($view_sql as $sql){ ?>
+                    <tr>
+                        <td><?php echo $sql['id_pagamento_tipo'];?></td>
+                        <td><?php echo $sql['descricao'];?></td>
+                        <td><?php echo $sql['chave'];?></td>
+                        <td>
+                            <center>
+                            <div class="btn-group mod">
+                                <a class="btn btn-small btn-success" href="<?php echo "/sistema/pagamentotipo/visualizar/id/{$sql["id_pagamento_tipo"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-small btn-warning" href="<?php echo "/sistema/pagamentotipo/editar/id/{$sql["id_pagamento_tipo"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                                <a href="#id<?php echo "{$sql["id_pagamento_tipo"]}";?>" role="button" class="btn btn-danger" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            </center>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            </div>
+            <div class="box-footer">
+<?php if($view_sql){ $nun = count($view_sql); ?>
+<span class="label label-default"><?php echo $nun;?> Registros</span> 
+<?php }
+if($view_numero && (!count($view_numero) == 0)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+} ?>
+            </div>
+        </div>
+        </section>
+</div>
+<?php foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_pagamento_tipo"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_pagamento_tipo"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar este Tipo de pagamento?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/pagamentotipo/excluir/id/{$sql["id_pagamento_tipo"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>

@@ -1,0 +1,343 @@
+<?php 
+    $pes = new PessoaModel($view_sql["id_pessoa"]);
+    $col = new ColaboradorModel($view_sql["id_colaborador"]); 
+    $ori = new OrientadorModel($view_sql["id_orientador"]);
+    $pessoa_orientador = new PessoaModel($ori->id_pessoa);
+    $pref = new PessoarefModel();
+    $ref = $pref->listarPorPessoa($view_sql["id_pessoa"]);
+    $end = new EnderecoModel($ref[0]['id_endereco']);
+    $dbc = new DadosbancarioModel();
+    $dados = $dbc->pegaDadosPorPessoa($view_sql["id_pessoa"]);
+    $alu = new AlunoModel();
+    $aluno = $alu->pegaAlunoPorPessoa($view_sql["id_pessoa"]);
+    $curso = new CursoModel($aluno[0]["id_curso"]);
+    $inst = new InstituicaoModel($curso->id_instituicao);
+?>
+<form method="post" action="/sistema/colaborador/editar/id/<?php echo $view_sql["id_colaborador"]; ?>/" class="form-horizontal" name="form1" enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_endereco" value="<?php echo $end->id_endereco; ?>" />
+    <input type="hidden" name="id_pessoa" value="<?php echo $pes->id_pessoa; ?>" />
+    <input type="hidden" name="id_colaborador" value="<?php echo $col->id_colaborador; ?>" />
+    <input type="hidden" name="id_dados_bancario" value="<?php echo $dados[0]["id_dados_bancario"]; ?>" />
+    <input type="hidden" name="id_aluno" value="<?php echo $aluno[0]["id_aluno"]; ?>" />
+    <div class="row">
+    <div class="span5">            
+        <ul class="breadcrumb">
+            <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+            <li><a href="/sistema/colaborador/index/"><i class="fa fa-briefcase"></i> Colaborador</a> <span class="divider">/</span></li>
+            <li class="active">Cadastro</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <a class="btn" href="/sistema/colaborador/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+    </div>
+</div>
+<div class="well">
+<div class="navbar">
+        <div class="span4"><h4>Dados do Colaborador</h4></div>
+        <div class="span4 pull-right">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div>
+</div><br /><hr />
+<div class="control-group tabela">
+    <label for="Tipo" class="control-label">Tipo:</label> 
+    <div class="controls"> 
+        <select name="id_colaborador_tipo"> 
+            <option value="">=> Selecione <=</option> 
+            <?php foreach ($view_ftp as $ftp){ ?>
+                <option value="<?php echo $ftp["id_colaborador_tipo"]; ?>"<?php ($ftp["id_colaborador_tipo"] == $col->id_colaborador_tipo) ? print " selected" : print ""; ?>><?php echo $ftp["descricao"]; ?></option>
+            <?php } ?>
+        </select> <span class="text-error">*</span>
+    </div>
+</div>
+<div class="control-group" id="ftipo">
+    <label for="id_orientador" class="control-label">Orientador:</label>
+    <div class="controls">
+        <div class="input-append">
+            <input type="hidden" name="id_orientador" id="id_orientador" value="<?php echo $view_sql["id_orientador"] ?>" />
+            <input class="span5" id="show_id_orientador" type="text" value="<?php echo $pessoa_orientador->nome; ?>" disabled=""> 
+            <a href="#myModal" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-plus-square-o"></i></a>
+        </div> <span class="text-error">*</span>
+    </div>
+</div>
+</div>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Dados do Colaborador</h4></div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="foto" class="control-label">Foto:</label>
+        <div class="controls">
+            <img id="blah" class="img-circle" src="/<?php echo $pes->foto; ?>" alt="" style="width: 100px" />
+            <input type='file' id="imgInp" name="foto"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="nome" class="control-label">Nome Completo:</label>
+        <div class="controls">
+            <input type="text" name="nome" id="nome" value="<?php echo $pes->nome; ?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="principal" class="control-label">Sexo:</label>
+        <div class="controls">
+            <label class="radio">
+            <input type="radio" name="sexo" id="principal" size="5" value="M" <?php ($pes->sexo == "M") ? print "checked" : print ""; ?>/>
+            Masculino.
+            </label>
+            <label class="radio">
+            <input type="radio" name="sexo" id="principal" size="5" value="F" <?php ($pes->sexo == "F") ? print "checked" : print ""; ?>/>
+            Feminino.
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="pai" class="control-label">Nome do Pai:</label>
+        <div class="controls">
+            <input type="text" name="pai" id="pai" value="<?php echo $pes->pai; ?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="mae" class="control-label">Nome da Mãe:</label>
+        <div class="controls">
+            <input type="text" name="mae" id="mae" value="<?php echo $pes->mae; ?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="profissao" class="control-label">Profissão:</label>
+        <div class="controls">
+            <input type="text" name="profissao" id="profissao" value="<?php echo $pes->profissao; ?>" class="span5" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="data_nascimento" class="control-label">Data de Nascimento:</label>
+        <div class="controls">
+            <div class="input-append">
+                <input type="text" name="data_nascimento" id="data_nascimento" value="<?php echo UtilHelper::formatBr($pes->data_nascimento); ?>" class="span2 calendario data" />
+                <span class="add-on"><i class="fa fa-calendar"></i></span>
+            </div> <span class="text-error">*</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="nacionalidade" class="control-label">Nacionalidade:</label>
+        <div class="controls">
+            <input type="text" name="nacionalidade" id="nacionalidade" value="<?php echo $pes->nacionalidade; ?>" class="span5" /> <span class="text-error">*</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="naturalidade" class="control-label">Naturalidade:</label>
+        <div class="controls">
+            <input type="text" name="naturalidade" id="naturalidade" value="<?php echo $pes->naturalidade; ?>" class="span5" /> <span class="text-error">*</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="cpf" class="control-label">cpf:</label>
+        <div class="controls">
+            <input type="text" name="cpf" value="<?php echo UtilHelper::formataCPF($pes->cpf);  ?>" class="cpf span2" maxlength="14" placeholder="___.___.___-__">
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="rg" class="control-label">Rg:</label>
+        <div class="controls">
+            <input type="text" name="rg" id="rg" value="<?php echo $pes->rg; ?>" class="span2" /> <span class="text-error">*</span>
+            Órgão Expedidor:
+            <input type="text" name="expedidor" id="expedidor" value="<?php echo $pes->expedidor; ?>" class="span2" /> <span class="text-error">*</span>
+            
+        </div>     
+    </div>
+    <div class="control-group">
+        <label for="rg" class="control-label">Data de Expedição:</label>
+        <div class="controls">
+            <div class="input-append">
+                <input type="text" name="data_expedicao" id="data_expedicao" value="<?php echo UtilHelper::formatBr($pes->data_expedicao); ?>" class="span2 calendario data" />
+                <span class="add-on"><i class="fa fa-calendar"></i></span>
+            </div> <span class="text-error">*</span>
+            UF:
+            <select name="id_estado" class="span2">
+                <option value="">=> Selecione <=</option>
+                <?php foreach ($view_est as $est){ ?>
+                    <option value="<?php echo $est["id_estado"]; ?>"<?php ($est["id_estado"] == $pes->id_estado) ? print "selected" : print ""; ?>><?php echo $est["sigla"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>     
+    </div>
+    <div class="control-group">
+        <label for="pis" class="control-label">PIS:</label>
+        <div class="controls">
+            <input type="text" name="pis" id="pis" value="<?php echo $pes->pis; ?>" class="span3" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="estado_civil" class="control-label">Estado Civil:</label>
+        <div class="controls">
+            <input type="text" name="estado_civil" id="estado_civil" value="<?php echo $pes->estado_civil; ?>" class="span2" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="email" class="control-label">Email:</label>
+        <div class="controls">
+            <input type="email" name="email" id="chave" value="<?php echo $pes->email; ?>" class="span5" />
+        </div>
+    </div>
+</div>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Endereço do Colaborador</h4></div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="endereco" class="control-label">Endereço:</label>
+        <div class="controls">
+            <input type="text" name="endereco" id="endereco" value="<?php echo $end->endereco; ?>" class="span5" />
+            Nº:
+            <input type="text" name="numero" id="numero" value="<?php echo $end->numero; ?>" class="span1" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="endereco" class="control-label">Municipio:</label>
+        <div class="controls">
+            <select name="id_municipio" class="span2" id="municipio" required="">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_mun as $mun){ ?>
+                    <option value="<?php echo $mun["id_municipio"]; ?>"<?php ($mun["id_municipio"] == $pes->id_municipio) ? print "selected" : print ""; ?>><?php echo $mun["nome"]; ?></option>
+                <?php } ?>
+            </select> <span class="text-error">*</span>
+            Bairro:
+
+            <select name="id_bairro" class="span2" id="load_bairro">
+                <?php foreach ($view_bai as $bai){ ?>
+                    <option value="<?php echo $bai["id_bairro"]; ?>"<?php ($bai["id_bairro"] == $end->id_bairro) ? print "selected" : print ""; ?>><?php echo $bai["nome"]; ?></option>
+                <?php } ?>>
+            </select>
+            
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="cep" class="control-label">CEP:</label>
+        <div class="controls">
+            <input type="text" name="cep" id="cep" value="<?php echo $end->cep; ?>" class="span2 cep"   maxlength="10" placeholder="__.___-___"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="complemento" class="control-label">Complemento:</label>
+        <div class="controls">
+            <input type="text" name="complemento" id="complemento" value="<?php echo $end->complemento; ?>" class="span5" placeholder="Ex.: Bloco A." />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="telefone" class="control-label">Telefone:</label>
+        <div class="controls">
+            <input type="text" name="telefone" id="telefone" value="" class="span5" maxlength="14" placeholder="(__) ___-____"/>
+        </div>
+    </div>
+</div>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Dados Bancários do Colaborador</h4></div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="banco" class="control-label">Banco:</label>
+        <div class="controls">
+            <input type="text" name="banco" id="banco" value="<?php echo $dados[0]["banco"]; ?>" class="span3"/>
+            Agencia:
+            <input type="text" name="agencia" id="agencia" value="<?php echo $dados[0]["agencia"] ?>" class="span1"/>
+            Conta Corrente:
+            <input type="text" name="conta" id="conta" value="<?php echo $dados[0]["conta"]; ?>" class="span2"/>
+        </div>
+    </div>
+</div>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Dados Escolares do Colaborador</h4></div>
+    </div>
+    <br /><hr />
+    <div class="control-group">
+        <label for="instiuicao" class="control-label">Instituição De Origem:</label>
+        <div class="controls">
+            <select name="id_instituicao" id="inst">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_ins as $ins){ ?>
+                    <option value="<?php echo $ins["id_instituicao"]; ?>"<?php ($ins["id_instituicao"] == $curso->id_instituicao) ? print "selected" : print ""; ?>><?php echo $ins["nome"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="curso" class="control-label">Curso:</label>
+        <div class="controls">
+            <select name="id_curso" id="cur">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_cur as $cur){ ?>
+                    <option value="<?php echo $cur["id_curso"]; ?>"<?php ($cur["id_curso"] == $curso->id_curso) ? print "selected" : print ""; ?>><?php echo $cur["descricao"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="semestre" class="control-label">Semestre:</label>
+        <div class="controls">
+            <input type="text" name="semestre" id="semestre" value="<?php echo $aluno[0]["semestre"];?>" class="span2" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="data_inicio" class="control-label">Inicio de Curso:</label>
+        <div class="controls">
+            <input type="text" name="data_inicio" id="data_inicio" value="<?php echo UtilHelper::formatBr($aluno[0]["data_inicio"]);?>" class="span2 calendario" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="data_fim" class="control-label">Termino de Curso:</label>
+        <div class="controls">
+            <input type="text" name="data_fim" id="data_fim" value="<?php echo UtilHelper::formatBr($aluno[0]["data_fim"]);?>" class="span2 calendario" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="" class="control-label"></label>
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+        </div>
+    </div>
+</div>
+
+
+ 
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Pessoa Orientador</h3>
+  </div>
+  <div class="modal-body">
+    <div class="control-group">
+        <label for="pesquisar" class="control-label">Pesquisar:</label>
+        <div class="controls">
+              <input type="text" name="pesquisar" id="pesquisar" value="" placeholder="Pesquisar nome" />
+        </div>
+    </div>
+      <table class="table table-bordered">
+          <tr class="titulo2">
+              <th></th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>RG</th>
+          </tr>
+          <?php foreach ($view_ori as $ori){
+              $pes =  new PessoaModel($ori["id_pessoa"]);
+          ?>
+          <tr>
+              <td><input type="radio" value="<?php echo $ori["id_orientador"]; ?>" name="orientador" class="modal_id_orientador" title="<?php echo $pes->nome; ?>"  /></td>
+              <td><span class="badge badge-inverse"><?php echo $ori["id_orientador"]; ?></span></td>
+              <td><?php echo $pes->nome; ?></td>
+              <td><?php echo $pes->cpf; ?></td>
+              <td><?php echo $ori['matricula']; ?></td>
+          </tr>
+          <?php }?>
+      </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-primary" id="modal_btn_salvar">Salvar</button>
+  </div>
+</div>
+</form>

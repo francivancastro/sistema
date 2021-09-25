@@ -1,0 +1,730 @@
+<script type="text/javascript">
+    $(document).ready(function(){ 
+        $('.timepicker').timepicker({
+            showMeridian: false,
+            showInputs: false,
+            secondStep: 1, 
+            minuteStep: 1,
+
+        });
+        $("#tbaluno").tablesorter(); 
+        $('[data-toggle="popover"]').popover({html: true});
+    }); 
+</script>
+<?php 
+    $count_alu  = count($view_sql);
+    $matri = new MatriculaModel();
+    $turma = new TurmaModel($view_id);
+    $listatudo = $matri->listarPorTurmaAtivos($view_id);
+    $ct = count($listatudo);
+    $reserva = 0;
+    if($ct){
+        $cdisponiveis = $turma->vagas - $ct;
+    }
+    $pes = new PessoaModel($_SESSION["userData"]["id_pessoa"]);
+    $usu = new UsuariogrupoModel();
+    $lista_grupo = $usu->listarPorUsuario($_SESSION["userData"]["id_usuario"]);
+    $array = array();
+    foreach ($lista_grupo as $lp){
+        $array[] = $lp['id_grupo'];
+    }
+?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs ui-sortable-handle">
+                <li class="active"><a href="#prot" data-toggle="tab">Turma - <?php echo $turma->descricao; ?></a></li>
+                
+                <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/matriculaespera/index/" data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+                <?php if (in_array(1, $array)) { ?>
+                <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/acompanhamento/index/" data-toggle="tooltip" title="Acompanhamento"><i class="fa fa-list"></i></a>              
+                <?php } ?>
+                <a style="margin: 5px" class="btn btn-info pull-right" href="/sistema/matriculaespera/relatoriovisitante/id/<?php echo $turma->id_turma; ?>"data-toggle="tooltip" title="Relatório de Visitante"><i class="fa fa-print"></i></a>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-user-plus"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Capacidade de Aluno</span>
+                <span class="info-box-number">
+                    <?php echo $turma->vagas;?><small></small>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-handshake-o"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Vagas Disponíveis</span>
+                <span class="info-box-number"><?php echo $cdisponiveis; ?> </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="info-box">
+            <span class="info-box-icon"><i class="fa fa-info"></i></span>
+            <div class="info-box-content">
+                <div class="col-md-4">
+                    <ul class="chart-legend">
+                        <li><span class="info-box-text">Legendas</span></li>
+                        <li><span class="label label-primary">NAP <i class="fa fa-clock-o"></i></span>  Aguardando</li>
+                        <li><span class="label label-success">NAP <i class="fa fa-thumbs-o-up"></i></span> Aprovado</li>
+                        <li><span class="label bg-maroon">NAP <i class="fa fa-thumbs-o-down"></i></span> Reprovado</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="chart-legend">
+                        <li>&nbsp;</li>
+                        <li><span class="label label-primary">VP <i class="fa fa-clock-o"></i></span> Aguardando</li>
+                        <li><span class="label label-success">VP <i class="fa fa-thumbs-o-up"></i></span> Realizada</li>
+                        <li><span class="label bg-maroon">VP <i class="fa fa-thumbs-o-down"></i></span> Não Realizada</li>
+                        
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="chart-legend">
+                        <li>&nbsp;</li>
+                        <li><span class="label label-primary">PS <i class="fa fa-clock-o"></i></span> Aguardando</li>
+                        <li><span class="label label-success">PS <i class="fa fa-thumbs-o-up"></i></span> Aprovado</li>
+                        <li><span class="label bg-maroon">PS <i class="fa fa-thumbs-o-down"></i></span> Reprovado</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <table id="tbaluno" class="tablesorter table  table-bordered ">
+                <thead>
+                    <tr>
+                        <th><i class="fa fa-arrows-v"></i> ID</th>
+                        <th style="width: 25%">Visitante</th>
+                        <th style="width: 25%">Nome do aluno</th>
+                        <th style="width: 25%">Usuário</th>
+                        <th>Data e hora</th>
+                        <th>Agendamentos</th>
+                        <th>Status</th>
+                        <th style="width: 10%">Operações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($view_sql as $sql){  
+                    $vis = new VisitanteModel($sql['id_visitante']);
+                    if($vis->troca == "S"){
+                        $troca[] = $vis->troca;
+                    }
+                } ?>
+                <?php                                      
+                    $cont = 0;
+                    foreach ($view_sql as $sql){ 
+                        if($sql['status'] == 'A'){
+                        $status_nap = "";
+                            $status_vp = "";
+                            $status_ps = "";
+                            $status = '<span class="label label-info"> Aguardando</span>';
+                            if($sql['status'] == "D"){
+                                $status = '<small class="label label-danger"> Cancelado</small>';
+                            }
+                            $cont++;
+                            $visi = new VisitanteModel($sql['id_visitante']);
+                            // Filtra todas os visitantes
+                            // em que o troca for diferente de "S";
+                        if($visi->troca != "S"){
+                            $agenda = new AgendaModel();
+                            $checa_agenda_nap = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'NAP');
+                            $checa_agenda_vp = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'VP');
+                            $checa_agenda_ps = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'PS');
+
+                            $data = new DateTime($checa_agenda_nap[0]['data_agendamento']);
+                            $da = $data->format('d/m/Y');
+                            $m_aluno = new MalunoModel($sql['id_m_aluno']);
+                            $date = new DateTime($sql['data_cadastro']);
+                            $usu = new UsuarioModel($sql['id_usuario']);
+                            $pes = new PessoaModel($usu->id_pessoa);
+                            $mts = new MatriculastatusModel($sql['id_matricula_status']);
+
+                            if($sql['status'] == "A" && count($checa_agenda_vp) == 0 && count($checa_agenda_nap) == 0){
+                                $status = '<small class="label label-info"> Aguardando</small>';
+                            }
+                           
+                            if($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == "S"){
+                                $status_vp = '<small class="label label-success">VP <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == "N") {
+                                $status_vp = '<small class="label bg-maroon">VP <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == null) {
+                                $status_vp = '<small class="label label-primary"> VP <i class="fa fa-clock-o"></i></small>';
+                            }
+
+                            if($checa_agenda_nap[0] && $checa_agenda_nap[0]['aprovado'] == "S"){
+                                $status_nap = '<small class="label label-success"> NAP <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_nap[0] && $checa_agenda_nap[0]['aprovado'] == "N") {
+                                $status_nap = '<small class="label bg-maroon">NAP <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_nap[0] &&  $checa_agenda_nap[0]['aprovado'] == null) {
+                                $status_nap = '<small class="label label-primary">NAP <i class="fa fa-clock-o"></i></small>';
+                            }
+
+                            if($checa_agenda_ps[0] && $checa_agenda_ps[0]['aprovado'] == "S"){
+                                $status_ps = '<small class="label label-success"> PS <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_ps[0] && $checa_agenda_ps[0]['aprovado'] == "N") {
+                                $status_ps = '<small class="label bg-maroon">PS <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_ps[0] &&  $checa_agenda_ps[0]['aprovado'] == null) {
+                                $status_ps = '<small class="label label-primary">PS <i class="fa fa-clock-o"></i></small>';
+                            }
+                ?>
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $visi->nome; ?></td>
+                        <td><?php echo $m_aluno->nome; ?></td>
+                        <td><?php echo $pes->nome; ?></td>
+                        <td><?php echo $date->format('d/m/Y H:i:s'); ?></td>
+                        <td style="width: 12%">
+                            <span>
+                            <?php echo $status_nap; ?> 
+                            <?php echo $status_vp; ?>
+                            <?php echo $status_ps; ?> 
+                            </span>
+                        </td>
+                        <td align="center">
+                            <?php echo $status; ?> 
+                        </td>
+                        <td align="center">
+                            <div class="btn-group">
+                                <?php if($checa_agenda_nap[0]['aprovado'] == "S" || $checa_agenda_vp[0]['aprovado'] == "S"){
+                                    if(count($troca) > 0){ 
+                                ?>
+                                    <a class="btn btn-info btn-sm" href="#transf<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Transferir"><i class="fa fa-upload"></i></a>
+                                <?php } else { ?>
+                                    <a class="btn btn-info btn-sm" href="<?php echo "/sistema/matriculaespera/transferir/id/{$sql["id_m_aluno"]}";?>" title="Transferir"><i class="fa fa-upload"></i></a>
+                                <?php }} else { ?>
+                                    <button type="button" class="btn btn-info btn-sm" ><i class="fa fa-upload"></i></button>
+                                <?php } ?>
+                                    <a class="btn btn-danger btn-sm" href="<?php echo "/sistema/matriculaespera/cancelarespera/id/{$sql["id_matricula_espera"]}";?>" title="Cancelar Espera"><i class="fa fa-download"></i></a>
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                    <?php if(count($checa_agenda_nap) > 0){ ?>
+                                        <li><a href="#remarcar<?php echo "{$checa_agenda_nap[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento NAP"><i class="fa fa-calendar"></i> Agendamento NAP</a></li>
+                                    <?php } else { ?>
+                                        <li><a href="#agendaNAP<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento NAP"><i class="fa fa-calendar"></i> Agendamento NAP</a></li>
+                                    <?php } ?>
+
+                                    <?php if(count($checa_agenda_vp) > 0){ ?>
+                                        <li><a href="#remarcar<?php echo "{$checa_agenda_vp[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento Visita Pedagógica"><i class="fa fa-calendar"></i> Agendamento Visita Pedagógica</a></li>
+                                    <?php } else { ?>
+                                        <li><a href="#agendaVP<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento Visita Pedagógica"><i class="fa fa-calendar-check-o"></i> Agendamento Visita Pedagógica</a></li>
+                                    <?php } ?>
+
+                                    <?php if($view_serie->descricao == '9º ANO' || $view_serie->descricao == '1ª SERIE' || $view_serie->descricao == '2ª SERIE' || $view_serie->descricao == '3ª SERIE'){ ?>
+                                        <?php if(count($checa_agenda_ps) > 0){ ?>
+                                            <li><a href="#remarcar<?php echo "{$checa_agenda_ps[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento Processo Seletivo"><i class="fa fa-calendar"></i> Agendamento Processo Seletivo</a></li>
+                                        <?php } else { ?>
+                                            <li><a href="#agendaPS<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento Processo Seletivo"><i class="fa fa-calendar-plus-o"></i> Agendamento Processo Seletivo</a></li>
+                                        <?php } ?>
+                                    <?php } ?>
+                                    <li><a href="<?php echo "/sistema/matriculaespera/fichaespera/id/{$sql["id_matricula_espera"]}";?>" title="Ficha de Espera" target="_blank"><i class="fa fa-print"></i> Ficha de Espera</a></li>
+                                    <li><a href="<?php echo "/sistema/matriculaespera/editarvisitante/id/{$sql["id_matricula_espera"]}";?>" title="Editar"><i class="fa fa-edit"></i> Editar</a></li>
+                                    <li><a href="#id<?php echo "{$sql["id_matricula_espera"]}";?>" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i> Excluir</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php }}} ?>
+                    </tbody>
+                    <tfoot>
+                        <?php foreach ($view_sql as $sql){  
+                        if($sql['status'] == 'D'){
+                        $status_nap = "";
+                            $status_vp = "";
+                            $status_ps = "";
+
+                            $status = '<small class="label label-danger"> Cancelado</small>';
+                            $cont++;
+                            $visi = new VisitanteModel($sql['id_visitante']);
+                            // Filtra todas os visitantes
+                            // em que o troca for diferente de "S";
+                        
+                            $agenda = new AgendaModel();
+                            $checa_agenda_nap = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'NAP');
+                            $checa_agenda_vp = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'VP');
+                            $checa_agenda_ps = $agenda->listarPorTipoeMatricula($sql['id_matricula_espera'], 'PS');
+
+                            $data = new DateTime($checa_agenda_nap[0]['data_agendamento']);
+                            $da = $data->format('d/m/Y');
+                            $m_aluno = new MalunoModel($sql['id_m_aluno']);
+                            $date = new DateTime($sql['data_cadastro']);
+                            $usu = new UsuarioModel($sql['id_usuario']);
+                            $pes = new PessoaModel($usu->id_pessoa);
+                            $mts = new MatriculastatusModel($sql['id_matricula_status']);
+
+                            if($sql['status'] == "A" && count($checa_agenda_vp) == 0 && count($checa_agenda_nap) == 0){
+                                $status = '<small class="label label-info"> Aguardando</small>';
+                            }
+                           
+                            if($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == "S"){
+                                $status_vp = '<small class="label label-success">VP <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == "N") {
+                                $status_vp = '<small class="label bg-maroon">VP <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_vp[0] && $checa_agenda_vp[0]['aprovado'] == null) {
+                                $status_vp = '<small class="label label-primary"> VP <i class="fa fa-clock-o"></i></small>';
+                            }
+
+                            if($checa_agenda_nap[0] && $checa_agenda_nap[0]['aprovado'] == "S"){
+                                $status_nap = '<small class="label label-success"> NAP <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_nap[0] && $checa_agenda_nap[0]['aprovado'] == "N") {
+                                $status_nap = '<small class="label bg-maroon">NAP <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_nap[0] &&  $checa_agenda_nap[0]['aprovado'] == null) {
+                                $status_nap = '<small class="label label-primary">NAP <i class="fa fa-clock-o"></i></small>';
+                            }
+
+                            if($checa_agenda_ps[0] && $checa_agenda_ps[0]['aprovado'] == "S"){
+                                $status_ps = '<small class="label label-success"> PS <i class="fa fa-thumbs-o-up"></i></small>';
+                            } elseif ($checa_agenda_ps[0] && $checa_agenda_ps[0]['aprovado'] == "N") {
+                                $status_ps = '<small class="label bg-maroon">PS <i class="fa fa-thumbs-o-down"></i></small>';
+                            } elseif($checa_agenda_ps[0] &&  $checa_agenda_ps[0]['aprovado'] == null) {
+                                $status_ps = '<small class="label label-primary">PS <i class="fa fa-clock-o"></i></small>';
+                            }
+                        
+                    
+                ?>
+                    <tr>
+                        <td><?php echo $cont; ?></td>
+                        <td><?php echo $visi->nome; ?></td>
+                        <td><?php echo $m_aluno->nome; ?></td>
+                        <td><?php echo $pes->nome; ?></td>
+                        <td><?php echo $date->format('d/m/Y H:i:s'); ?></td>
+                        <td style="width: 12%">
+                            <span>
+                            <?php echo $status_nap; ?> 
+                            <?php echo $status_vp; ?>
+                            <?php echo $status_ps; ?> 
+                            </span>
+                        </td>
+                        <td align="center">
+                            <?php echo $status; ?> 
+                        </td>
+                        <td align="center">
+                            <div class="btn-group">
+                                <a class="btn btn-warning btn-sm" href="<?php echo "/sistema/matriculaespera/desfazercancelamento/id/{$sql["id_matricula_espera"]}";?>" title="Desfazer Cancelamento"><i class="fa fa-refresh"></i></a>
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu pull-right" role="menu">
+                                
+                                <?php if(count($checa_agenda_nap) > 0){ ?>
+                                    <li><a href="#remarcar<?php echo "{$checa_agenda_nap[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento NAP"><i class="fa fa-calendar"></i> Agendamento NAP</a></li>
+                                <?php } else { ?>
+                                    <li><a href="#agendaNAP<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento NAP"><i class="fa fa-calendar"></i> Agendamento NAP</a></li>
+                                <?php } ?>
+                                    
+                                <?php if(count($checa_agenda_vp) > 0){ ?>
+                                    <li><a href="#remarcar<?php echo "{$checa_agenda_vp[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento Visita Pedagógica"><i class="fa fa-calendar"></i> Agendamento Visita Pedagógica</a></li>
+                                <?php } else { ?>
+                                    <li><a href="#agendaVP<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento Visita Pedagógica"><i class="fa fa-calendar-check-o"></i> Agendamento Visita Pedagógica</a></li>
+                                <?php } ?>
+                                    
+                                <?php if($view_serie->descricao == '9º ANO' || $view_serie->descricao == '1ª SERIE' || $view_serie->descricao == '2ª SERIE' || $view_serie->descricao == '3ª SERIE'){ ?>
+                                    <?php if(count($checa_agenda_ps) > 0){ ?>
+                                        <li><a href="#remarcar<?php echo "{$checa_agenda_ps[0]["id_agenda"]}";?>" role="button" data-toggle="modal" title="Agendamento Processo Seletivo"><i class="fa fa-calendar"></i> Agendamento Processo Seletivo</a></li>
+                                    <?php } else { ?>
+                                        <li><a href="#agendaPS<?php echo "{$sql["id_m_aluno"]}";?>" role="button" data-toggle="modal" title="Agendamento Processo Seletivo"><i class="fa fa-calendar-plus-o"></i> Agendamento Processo Seletivo</a></li>
+                                    <?php } ?>
+                                <?php } ?>
+                                <li><a href="<?php echo "/sistema/matriculaespera/fichaespera/id/{$sql["id_matricula_espera"]}";?>" title="Ficha de Espera" target="_blank"><i class="fa fa-print"></i> Ficha de Espera</a></li>
+                                <li><a href="<?php echo "/sistema/matriculaespera/editarvisitante/id/{$sql["id_matricula_espera"]}";?>" title="Editar"><i class="fa fa-edit"></i> Editar</a></li>
+                                <li><a href="#id<?php echo "{$sql["id_matricula_espera"]}";?>" role="button" data-toggle="modal"><i class="fa fa-trash-o"></i> Excluir</a></li>
+                            </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php }} ?>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+</div>
+
+<?php 
+    date_default_timezone_set('America/Belem');
+    $date = date('Y-m-d H:i:s');
+    foreach ($view_sql as $sql){
+        $vis = new VisitanteModel($sql['id_visitante']);
+        $m_aluno = new MalunoModel($sql['id_m_aluno']);
+?>
+
+<div class="modal fade" id="id<?php echo "{$sql["id_matricula_espera"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_m_aluno"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-red">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 id="myModalLabel">Deseja realmente apagar esta espera?</h4>
+        </div>
+        <div class="modal-body">
+            <p>O registro e todas as suas dependências serão apagados permanentemente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/matriculaespera/excluirespera/id/{$sql["id_matricula_espera"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<?php if(count($troca) > 0){ ?>
+<div class="modal fade" id="transf<?php echo "{$sql["id_m_aluno"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_m_aluno"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 id="myModalLabel"><i class="fa fa-warning"></i> Existe prioridades na lista troca de turma!</h4>
+        </div>
+        <div class="modal-body">
+            <p>Deseja efetuar a reserva assim mesmo?</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/matriculaespera/transferir/id/{$sql["id_m_aluno"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+<div class="modal fade" id="agendaNAP<?php echo "{$sql["id_m_aluno"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_m_aluno"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Agendamento - NAP</h4>
+        </div>
+        <form action="/sistema/agenda/inserir" method="post">
+            <input type="hidden" name="id_turma" value="<?php echo $view_id; ?>" />
+            <input type="hidden" name="id_matricula_espera" value="<?php echo $sql['id_matricula_espera']; ?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data_operacao" value="<?php echo $date;?>" />
+            <input type="hidden" name="tipo_agenda" value="NAP" />
+            <div class="modal-body" style="min-height: 250px;">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Aluno:</label>
+                        <input type="text" class="form-control" value="<?php echo $m_aluno->nome;?>" disabled="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <label> Data:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="" name="data_agendamento" class="form-control data calendario" placeholder="__/__/___">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                    <label>Hora Inicio:</label>
+
+                    <div class="input-group">
+                        <input type="text" name="hora_inicio" class="form-control timepicker">
+
+                      <div class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                </div>
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                        <label>Hora Final:</label>
+
+                        <div class="input-group">
+                          <input type="text" name="hora_fim" class="form-control timepicker">
+
+                          <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                          </div>
+                        </div>
+                        <!-- /.input group -->
+                      </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="obs_atendimento" name="obs_atendimento" class="form-control" rows="3" placeholder="..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+                <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="agendaVP<?php echo "{$sql["id_m_aluno"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_m_aluno"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Agendamento - Visita Pedagógica</h4>
+        </div>
+        <form action="/sistema/agenda/inserir" method="post">
+            <input type="hidden" name="id_turma" value="<?php echo $view_id; ?>" />
+            <input type="hidden" name="id_matricula_espera" value="<?php echo $sql['id_matricula_espera']; ?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data_operacao" value="<?php echo $date;?>" />
+            <input type="hidden" name="tipo_agenda" value="VP" />
+            <div class="modal-body" style="min-height: 250px;">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Aluno:</label>
+                        <input type="text" class="form-control" value="<?php echo $m_aluno->nome;?>" disabled="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <label> Data:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="" name="data_agendamento" class="form-control data calendario" placeholder="__/__/___">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                    <label>Hora Inicio:</label>
+
+                    <div class="input-group">
+                        <input type="text" name="hora_inicio" class="form-control timepicker">
+
+                      <div class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                </div>
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                        <label>Hora Final:</label>
+
+                        <div class="input-group">
+                          <input type="text" name="hora_fim" class="form-control timepicker">
+
+                          <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                          </div>
+                        </div>
+                        <!-- /.input group -->
+                      </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="obs_atendimento" name="obs_atendimento" class="form-control" rows="3" placeholder="..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+                <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="agendaPS<?php echo "{$sql["id_m_aluno"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_m_aluno"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Agendamento - Processo Seletivo</h4>
+        </div>
+        <form action="/sistema/agenda/inserir" method="post">
+            <input type="hidden" name="id_turma" value="<?php echo $view_id; ?>" />
+            <input type="hidden" name="id_matricula_espera" value="<?php echo $sql['id_matricula_espera']; ?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data_operacao" value="<?php echo $date;?>" />
+            <input type="hidden" name="tipo_agenda" value="PS" />
+            <div class="modal-body" style="min-height: 250px;">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Aluno:</label>
+                        <input type="text" class="form-control" value="<?php echo $m_aluno->nome;?>" disabled="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <label> Data:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="" name="data_agendamento" class="form-control data calendario" placeholder="__/__/___">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                    <label>Hora Inicio:</label>
+
+                    <div class="input-group">
+                        <input type="text" name="hora_inicio" class="form-control timepicker">
+
+                      <div class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                </div>
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                        <label>Hora Final:</label>
+                        <div class="input-group">
+                          <input type="text" name="hora_fim" class="form-control timepicker">
+                          <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="obs_atendimento" name="obs_atendimento" class="form-control" rows="3" placeholder="..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+                <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+<?php } ?>
+
+<?php foreach ($view_agenda as $agenda){
+    if($agenda['tipo_agenda'] == "NAP"){
+        $titulo = "NAP";
+    } elseif($agenda['tipo_agenda'] == "VP"){
+        $titulo = "Visita Pedagógica";
+    } elseif($agenda['tipo_agenda'] == "PS") {
+        $titulo = "Processo Seletivo";
+    }
+    $me = new MatriculaesperaModel($agenda['id_matricula_espera']);
+    $alunoagenda = new MalunoModel($me->id_m_aluno);
+    $status = 'style="min-height: 250px;"';
+    if($agenda['aprovado']){
+        $status = 'style="height: 150px;"';
+    } 
+    $obs_atendimento = '';
+    if($agenda['obs_atendimento']){
+        $obs_atendimento = preg_replace('/\s/',' ', $agenda['obs_atendimento']);
+    }
+    ?>
+<div class="modal fade" id="remarcar<?php echo $agenda['id_agenda'];?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-green">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Agendamento - <?php echo $titulo; ?></h4>
+        </div>
+        <form action="/sistema/agenda/remarcar/id/<?php echo $agenda['id_agenda']; ?>" method="post">
+            
+            <input type="hidden" name="id_turma" value="<?php echo $view_id; ?>" />
+            <input type="hidden" name="id_agenda" value="<?php echo $agenda['id_agenda']; ?>" />
+            <input type="hidden" name="id_matricula_espera" value="<?php echo $agenda['id_matricula_espera']; ?>" />
+            <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["userData"]["id_usuario"];?>" />
+            <input type="hidden" name="data_operacao" value="<?php echo $date;?>" />
+            <input type="hidden" name="data_conclusao" value="<?php echo $agenda['data_conclusao']; ?>" />
+            <input type="hidden" name="aprovado" value="<?php echo $agenda['aprovado']; ?>" />
+            <input type="hidden" name="obs_agenda" value="<?php echo $agenda['obs_agenda']; ?>" />
+            <input type="hidden" name="tipo_agenda" value="<?php echo $agenda['tipo_agenda']; ?>" />
+            <div class="modal-body" <?php echo $style; ?>>
+                <?php if(!$agenda['aprovado']){ ?>
+                <div class="well-sm" >
+                    <i class="fa fa-warning text-red" style="margin: 0px"></i> O Aluno já possui um agendamento para o dia <?php echo UtilHelper::formatBr($agenda['data_agendamento']); ?>, deseja Remarcar?
+                </div>
+                <br />
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Aluno:</label>
+                        <input type="text" class="form-control" value="<?php echo $alunoagenda->nome;?>" disabled="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <label> Data:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" value="<?php echo UtilHelper::formatBr($agenda['data_agendamento']); ?>" name="data_agendamento" class="form-control data calendario" placeholder="__/__/___">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                    <label>Hora Inicio:</label>
+
+                    <div class="input-group">
+                    <input type="text" name="hora_inicio" value="<?php echo $agenda['hora_inicio']; ?>" class="form-control timepicker">
+
+                      <div class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                    </div>
+                    <!-- /.input group -->
+                  </div>
+                </div>
+                <div class="col-md-4 bootstrap-timepicker">
+                    <div class="form-group">
+                        <label>Hora Final:</label>
+                        <div class="input-group">
+                          <input type="text" name="hora_fim" value="<?php echo $agenda['hora_fim']; ?>" class="form-control timepicker">
+                          <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="obs_atendimento" name="obs_atendimento" class="form-control" rows="3" placeholder="..."><?php echo $obs_atendimento; ?></textarea>
+                    </div>
+                </div>
+                <?php } else {
+                    $datac = new DateTime($agenda['data_conclusao']);
+                ?>
+                    <div class="well-sm" >
+                        <i class="fa fa-warning text-red" style="margin: 0px"></i> O Aluno atendido o dia <?php echo $datac->format('d/m/Y'); ?>!
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="modal-footer">
+                <?php if(!$agenda['aprovado']){ ?>
+                <button type="submit" name="cancelar" class="btn btn-warning"><i class="fa fa-trash-o"></i> Cancelar Agendamento</button>
+                <button type="submit" name="remarcar" class="btn btn-primary"><i class="fa fa-save"></i> Remarcar</button>
+                <?php } ?>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"> <i class="fa fa-close"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+<?php } ?>

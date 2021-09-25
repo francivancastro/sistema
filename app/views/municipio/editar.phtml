@@ -1,0 +1,33 @@
+<form method="post" action="/sistema/municipio/editar/id/<?php echo $view_sql["id_municipio"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_municipio" value="<?php echo $view_sql["id_municipio"]; ?>"/>
+<div class="well">
+    <div class="navbar">
+        <div class="span4"><h4>Estado - <a href="/sistema/municipio/editar/id/<?php echo $view_sql["id_municipio"]; ?>">Editar</a></h4></div>
+        <div class="navbar-inner pull-right">
+            <div class="">
+            <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+            <button type="reset" class="btn btn-danger">Limpar <i class="fa fa-trash-o"></i></button>
+            <a class="btn" href="/sistema/municipio/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+            </div>
+        </div>
+    </div>
+    <br /><hr />
+        <div class="control-group">
+        <label for="pais" class="control-label">Estado:</label>
+        <div class="controls">
+            <select name="id_estado" id="cur">
+                    <option value="">=> Selecione <=</option>
+                <?php foreach ($view_est as $est){ ?>
+                    <option value="<?php echo $est["id_estado"]; ?>"><?php echo $est["nome"]; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        </div>
+        <div class="control-group">
+            <label for="nome" class="control-label">Estado:</label>
+            <div class="controls">
+                <input type="text" name="nome" id="nome" value="<?php echo $view_sql["nome"]; ?>" class="span2" />
+            </div>
+        </div>
+</div>
+</form>

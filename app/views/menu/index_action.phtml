@@ -1,0 +1,50 @@
+<div class="well">
+<div class="navbar">
+    <div class="span4"><h4>Menu - <a href="/sistema/menu/">Listar</a></h4></div>
+    <div class="navbar-inner pull-right">
+        <div class="">
+        <a class="btn" href="/sistema/menu/inserir/" title="Adicionar">Adicionar Menu <i class="icon-plus-sign"></i></a>
+        <a class="btn" href="/sistema/index/index/" title="Voltar"> Voltar <i class="icon-circle-arrow-left"></i></a>
+    </div>
+    </div>
+</div>
+    <br />
+    <hr />
+    <table class="table table-bordered">
+        <tr>
+            <th colspan="9" class="titulo2">Menus</th>
+        </tr>
+        <tbody>
+            <tr class="itemTitulo2">
+                <th>Id</th>
+                <th>Descrição</th>
+                <th>Ordem</th>
+                <th>Url</th>
+                <th>Icone</th>
+                <th>Tipo</th>
+                <th>Posicao</th>
+                <th>Superior</th>
+                <th>Operações</th>
+            </tr>
+            <?php foreach ($view_sql as $sql){?>
+            <tr class="item2">
+                <td><div class="badge badge-inverse"><?php echo $sql['id_menu'];?></div></td>
+                <td><?php echo $sql['descricao'];?></td>
+                <td><?php echo $sql['ordem'];?></td>
+                <td><?php echo $sql['url'];?></td>
+                <td><?php echo $sql['icon'];?></td>
+                <td><?php echo $sql['id_menu_tipo'];?></td>
+                <td><?php echo $sql['id_menu_posicao'];?></td>
+                <td><?php echo $sql['id_menu_superior'];?></td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="<?php echo "/sistema/menu/visualizar/id/{$sql["id_menu"]}";?>" title="Visualizar"><i class="icon-zoom-in icon-white"></i></a>
+                        <a class="btn btn-warning" href="<?php echo "/sistema/menu/editar/id/{$sql["id_menu"]}";?>" title="Editar"><i class="icon-edit icon-white"></i></a>
+                        <a class="btn btn-danger" href="<?php echo "/sistema/menu/excluir/id/{$sql["id_menu"]}";?>" title="Excluir" onclick="exclui(event);"><i class="icon-trash icon-white"></i></a>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+    </tbody>
+</table>
+</div>

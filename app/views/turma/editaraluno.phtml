@@ -1,0 +1,71 @@
+<?php 
+    $aluno = new MalunoModel($view_sql['id_m_aluno']);
+?>
+
+<form method="post" action="/sistema/turma/editaraluno/id/<?php echo $view_sql['id_m_aluno']; ?>" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" name="id_matricula" value="<?php echo $view_sql['id_matricula']; ?>"/>
+    <input type="hidden" name="id_m_aluno" value="<?php echo $view_sql['id_m_aluno']; ?>"/>
+    <input type="hidden" name="id_turma" value="<?php echo $view_sql['id_turma']; ?>"/>
+    <input type="hidden" name="id_usuario" value="<?php echo $view_sql['id_usuario']; ?>"/>
+    <input type="hidden" name="data" value="<?php echo $view_sql['data_cadastro']; ?>"/>
+    <input type="hidden" name="situacao" value="<?php echo $view_sql['situacao']; ?>"/>
+    <div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#prot" data-toggle="tab">Editar Aluno</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/turma/aluno/id/<?php echo $view_sql['id_turma']; ?>"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" type="reset" class="btn btn-danger pull-right" data-toggle="tooltip" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="prot">
+                <div class="box box-info">
+                    <div class="box-header ui-sortable-handle" >
+                      <i class="fa fa-envelope"></i>
+                      <h3 class="box-title">Aluno</h3>
+                      <!-- tools box -->
+                      <div class="pull-right box-tools">
+                        
+                      </div><!-- /. tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nome" class="col-sm-3 control-label">Nome do aluno:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text"  class="form-control" name="nome" value="<?php echo $aluno->nome; ?>" placeholder="">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="matricula" class="col-sm-3 control-label">Matrícula do aluno:</label>
+                                    <div class="col-sm-6">
+                                        <input type="text"  class="form-control" name="matricula" value="<?php echo $aluno->matricula; ?>" placeholder="">
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Status de Matrícula</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" name="id_matricula_status">
+                                          <option value=''>Selecione</option>
+                                          <?php foreach ($view_status as $status){ ?>
+                                          <option value="<?php echo $status['id_matricula_status']; ?>" <?php ($view_sql['id_matricula_status'] == $status['id_matricula_status']) ? print "selected" : print ''; ?>><?php echo $status['descricao']; ?></option>
+                                          <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</form>

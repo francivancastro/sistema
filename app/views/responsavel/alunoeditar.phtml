@@ -1,0 +1,36 @@
+<?php
+$pes = new PessoaModel($view_sql['id_pessoa']);
+?>
+<form method="post" action="/sistema/responsavel/alunoeditar/id/<?php echo $view_sql['id_aluno'];?>/" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+    <input type="hidden" value="<?php echo $pes->id_pessoa; ?>" name="id_pessoa" />
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li id="ab1" class="active"><a href="#aba1" data-toggle="tab">Editar Aluno</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right" href="/sistema/responsavel/aluno/id/<?php echo $_SESSION['responsavel'];?>"data-toggle="tooltip" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" type="submit" class="btn btn-primary pull-right" data-toggle="tooltip" title="Salvar"><i class="fa fa-save"></i></button>
+          
+        </ul>
+    </div>
+    <div class="tab-content no-padding">
+        <div class="tab-pane active" id="aba1">
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Editar</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <label for="">Nome Completo:</label>
+                        <input type="text" name="nome" value="<?php echo $pes->nome; ?>" class="form-control" placeholder="Nome completo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>   
+    </div>
+    </section>
+</div>
+</form>

@@ -1,0 +1,74 @@
+<?php
+    $pes = new PessoaModel($view_sql["id_pessoa"]);
+?>
+<form method="post" action="/sistema/usuario/editar/id/<?php echo $view_sql["id_usuario"]; ?>/" class="form-horizontal" enctype="multipart/form-data" id="form1" runat="server">
+<div class="row">
+    <section class="col-md-12">
+        <div class="nav-tabs-custom">
+    <input type="hidden" name="id_usuario" value="<?php echo $view_sql["id_usuario"]; ?>" />
+    <input type="hidden" name="id_pessoa" value="<?php echo $pes->id_pessoa; ?>" />
+    <input type="hidden" name="id_endereco" value="<?php echo $end->id_endereco; ?>" />
+    <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#user" data-toggle="tab"><i class="fa fa-user-plus"></i> Cadastrar Usuário</a></li>
+    <li><a href="#login" data-toggle="tab">Informações de Login</a></li>
+    <a style="margin: 5px" class="btn btn-default pull-right"  data-toggle="tooltip" href="/sistema/usuario/index/" title="Voltar"><i class="fa fa-reply"></i></a>
+    <button style="margin: 5px" data-toggle="tooltip" type="submit" class="btn btn-primary pull-right" title="Salvar"><i class="fa fa-save"></i></button>
+    <button style="margin: 5px" data-toggle="tooltip" type="reset" class="btn btn-danger pull-right" title="Limpar"><i class="fa fa-trash-o"></i></button>
+  </ul>
+    <div class="tab-content no-padding">
+        <div class="tab-pane active" id="user">
+            <div class="well-sm">
+            <div class="form-group " id="ftipo">
+              <label for="id_pessoa" class="col-sm-3 control-label">Adicionar Pessoa Castrada:</label>
+              <div class="col-sm-5">
+                <div class="input-group input-group-sm">
+                    <input type="hidden" name="id_pessoa"value="<?php echo $pes->id_pessoa;?>"/>
+                    <input type="text" class="form-control" id="show_id_orientador" value="<?php echo $pes->nome;?>" disabled="">
+                    <span class="input-group-btn">
+                      <a href="#myModal" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-plus-square-o"></i></a>
+                    </span>
+                </div>
+              </div>
+            </div>
+        </div>
+        </div>
+        <div class="tab-pane" id="login" >
+                <div class="well-sm">
+                <div class="form-group">
+                    <label for="login" class="col-sm-2 control-label">Login:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="login" id="login" value="<?php echo $view_sql["login"]; ?>" placeholder="Login">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="senha" class="col-sm-2 control-label">Senha:</label> 
+                    <div class="col-sm-6">
+                      <input type="password" class="form-control" name="senha" id="senha" value="" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="senhaconf" class="col-sm-2 control-label">Confirmar Senha:</label> 
+                    <div class="col-sm-6">
+                      <input type="password" class="form-control" name="senhaconf" id="senhaconf" value="" placeholder="Confirmar Senha">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="habilitado" class="col-sm-2 control-label">Habilitar Usuário?</label> 
+                      <div class="radio">
+                        <label>
+                          <input type="radio" type="radio" name="habilitado" id="habilitado" <?php ($view_sql["habilitado"] == "S") ? print "checked" : print ""; ?> value="S">
+                          Sim
+                        </label>
+                        <label>
+                          <input type="radio" type="radio" name="habilitado" id="habilitado" <?php ($view_sql["habilitado"] == "N") ? print "checked" : print ""; ?> value="N">
+                          Não
+                        </label>
+                      </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    </div>
+</form>

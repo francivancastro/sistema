@@ -1,0 +1,31 @@
+<form method="post" action="/sistema/segurotipo/editar/id/<?php echo $view_sql["id_seguro_tipo"]; ?>" class="form-horizontal">
+    <input type="hidden" name="id_seguro_tipo" value="<?php echo $view_sql["id_seguro_tipo"]; ?>"/>
+<div class="row">
+    <div class="span10">
+        <ul class="breadcrumb">
+          <li><a href="/sistema/index/index/"><i class="fa fa-home"></i> Início</a> <span class="divider">/</span></li>
+          <li><a href="/sistema/segurotipo/index/"><i class="fa fa-cog"></i> Tipo de Seguro</a><span class="divider">/</span></li>
+          <li class="active">Editar</li>
+        </ul>
+    </div>
+    <div class="pull-right">
+        <button type="submit" class="btn btn-primary">Salvar <i class="fa fa-save"></i></button>
+        <a class="btn" href="/sistema/segurotipo/index/" title="Voltar"> Voltar <i class="fa fa-reply"></i></a>
+    </div>
+</div>
+<div class="well">
+    <legend>Tipo de Seguro <div class="span4 pull-right" style="font-size: 14px;">Campos com "<span class="text-error"><i class="fa fa-asterisk"></i></span>" Obrigatorios!</div></legend>    
+        <div class="control-group">
+            <label for="descricao" class="control-label">Descrição:</label>
+            <div class="controls">
+                <input type="text" name="descricao" id="descricao" value="<?php echo $view_sql["descricao"]; ?>" class="span2" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="chave" class="control-label">Chave:</label>
+            <div class="controls">
+                <input type="text" name="chave" id="chave" value="<?php echo $view_sql["chave"]; ?>" class="span2" required=""/> <span class="text-error">*</span>
+            </div>
+        </div>
+</div>
+</form>

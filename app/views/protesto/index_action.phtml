@@ -1,0 +1,120 @@
+<div class="row">
+    <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Lista de Protestos</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/protesto/inserir/" data-toggle="tooltip" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+    <div class="col-md-4 well-sm areapesquisa" style="display: none">
+    <form class="form-horizontal" action="/sistema/protesto/index/" method="post">
+        <div class="input-group input-group-sm">
+            <input type="text" class="form-control" name="nome"placeholder="Buscar Nome...">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+              <a class="btn btn-danger" href="/sistema/protesto/index/" title=""><i class="fa fa-close"></i> Limpar Busca</a>
+            </span>
+        </div>
+    </form>
+    </div>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="itemTitulo2">
+                        <th>Responsável</th>
+                        <th>Aluno</th>
+                        <th>Valor do Contrato</th>
+                        <th>Valor a Protestar</th>
+                        <th>Emissão do contrato</th>
+                        <th>Status</th>
+                        <th><center>Operações</center></th>
+                    </tr>
+                    <?php foreach ($view_sql as $sql){
+     
+                        $prote = new ProtestotipoModel($sql['id_protesto_tipo']);
+                        $pstatus = new ProtestostatusModel($sql['id_protesto_status']);
+                        $respo = new ResponsavelModel($sql['id_responsavel']);
+                        $pes = new PessoaModel($respo->id_pessoa);
+                        $aluno = new AlunoModel($sql['id_aluno']);
+                        $pesAluno = new PessoaModel($aluno->id_pessoa);
+                        $status_prostesto = '';
+                        switch ($pstatus->chave){
+                            case "AND":
+                                $status_prostesto = "info";
+                                break;
+                            case "CON":
+                                $status_prostesto = 'success';
+                                break;
+                            case "CAN":
+                                $status_prostesto = 'danger';
+                                break;
+                        }
+                        ?>
+                    <tr>
+                        <td><?php echo $pes->nome;?></td>
+                        <td><?php echo $pesAluno->nome;?></td>
+                        <td><?php echo UtilHelper::formatoReal($sql["valor_contrato"]);?></td>
+                        <td><?php echo UtilHelper::formatoReal( $sql["valor_protesto"]);?></td>
+                        <td><?php echo UtilHelper::formatBr($sql['data_emissao']);?></td>
+                        <td><span class="label label-<?php echo $status_prostesto; ?>"><?php echo $pstatus->descricao;?></span></td>
+                        <td style="width: 20%">
+                            <center>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-default" data-toggle="dropdown">
+                                    <i class="fa fa-cog"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a target="_blank" href="<?php echo "/sistema/protesto/relatorio/id/{$sql["id_protesto"]}";?>" title="Relatório"><i class="fa fa-file-o"></i> Relatório de Pagamento</a></li>
+                                    <?php if($pstatus->chave == "CON"){ ?>
+                                    <li><a target="_blank" href="<?php echo "/sistema/protesto/cartaanuencia/id/{$sql["id_protesto"]}";?>" title="Carta de Anuência"><i class="fa fa-file-o"></i> Carta de Anuência</a></li>
+                                    <?php } ?>
+                                </ul>
+                                <a class="btn btn-sm bg-purple" href="<?php echo "/sistema/protesto/acompanhamento/id/{$sql["id_protesto"]}";?>" title="Acompanhamento"><i class="fa fa-folder-open-o"></i></a>
+                                <a class="btn btn-sm btn-info" href="<?php echo "/sistema/protesto/imprimir/id/{$sql["id_protesto"]}";?>" target="_blank" title="Imprimir Protesto"><i class="fa fa-print"></i></a>
+                                <a class="btn btn-sm btn-success" href="<?php echo "/sistema/protesto/visualizar/id/{$sql["id_protesto"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-sm btn-warning" href="<?php echo "/sistema/protesto/editar/id/{$sql["id_protesto"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                                <a href="#id<?php echo "{$sql["id_protesto"]}";?>" role="button" class="btn btn-danger btn-sm" data-toggle="modal"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            </center>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            </div>
+            <div class="box-footer">
+<?php if($view_sql){ ?>
+<span class="label label-default"><?php echo $view_totalreg;?> Registros</span> 
+<?php }
+if($view_numero && (!count($view_numero) == 0)){
+    $paginar = new PaginadorHelper();
+    echo $paginar->paginacao($view_numero);
+} ?>
+            </div>
+        </div>
+        </section>
+</div>
+<?php foreach ($view_sql as $sql){ ?>
+<div class="modal fade" id="id<?php echo "{$sql["id_protesto"]}";?>" tabindex="-1" role="dialog" aria-labelledby="id<?php echo "{$sql["id_protesto"]}";?>">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">Deseja Realmente Apagar este Protesto?</h3>
+        </div>
+        <div class="modal-body">
+            <p>O registro será apagado permanente!</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger" href="<?php echo "/sistema/protesto/excluir/id/{$sql["id_protesto"]}";?>" title="Excluir">Sim</a>
+            <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+<?php } ?>

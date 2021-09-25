@@ -1,0 +1,150 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#nome").keyup(function(ev) {
+                var nome = $('#nome').val();
+                var url = '/sistema/usuario/pesquisa/nome/'+nome;
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {nome:nome},
+                    dataType: "html",
+                    success: function(data){
+                       $("#load_pessoas").html(data);
+                    }
+                });
+        });
+        $("#btn_limpa").click(function(){
+            $('#nome').val('');
+            var nome = ' ';
+            var url = '/sistema/usuario/pesquisa/nome/'+nome;
+           $.ajax({
+                type: "POST",
+                url: url,
+                data: {nome:nome},
+                dataType: "html",
+                success: function(data){
+                   $("#load_pessoas").html(data);
+                }
+            });
+        });
+    });
+</script>
+<form method="post" action="/sistema/usuario/inserir/" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#user" data-toggle="tab">Usuário</a></li>
+          <li><a href="#login" data-toggle="tab">Login</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right"  data-toggle="tooltip" href="/sistema/usuario/index/" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" data-toggle="tooltip" type="submit" class="btn btn-primary pull-right" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" data-toggle="tooltip" type="reset" class="btn btn-danger pull-right" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="user">
+                <div class="well-sm">
+                <div class="form-group " id="ftipo">
+                  <label for="id_pessoa" class="col-sm-3 control-label">Adicionar Pessoa Castrada:</label>
+                  <div class="col-sm-5">
+                    <div class="input-group input-group-sm">
+                        <input type="hidden" name="id_pessoa" id="id_orientador"/>
+                        <input type="text" class="form-control" id="show_id_orientador" disabled="">
+                        <span class="input-group-btn">
+                          <a href="#myModal" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-plus-square-o"></i></a>
+                        </span>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+            <div class="tab-pane" id="login" >
+                <div class="well-sm">
+                <div class="form-group">
+                    <label for="login" class="col-sm-2 control-label">Login:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="login" id="login" value="" placeholder="Login">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="senha" class="col-sm-2 control-label">Senha:</label> 
+                    <div class="col-sm-6">
+                      <input type="password" class="form-control" name="senha" id="senha" value="" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="senhaconf" class="col-sm-2 control-label">Confirmar Senha:</label> 
+                    <div class="col-sm-6">
+                      <input type="password" class="form-control" name="senhaconf" id="senhaconf" value="" placeholder="Confirmar Senha">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="habilitado" class="col-sm-2 control-label">Habilitar Usuário?</label> 
+                      <div class="radio">
+                        <label>
+                          <input type="radio" type="radio" name="habilitado" id="habilitado"  value="S">
+                          Sim
+                        </label>
+                        <label>
+                          <input type="radio" type="radio" name="habilitado" id="habilitado"  value="N">
+                          Não
+                        </label>
+                      </div>
+                </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Pessoa</h3>
+  </div>
+  <div class="modal-body">
+      <div class="form-group">
+        <label for="login" class="col-sm-3 control-label">Buscar Nome:</label>
+        <div class="col-sm-6">
+          <div class="input-group input-group-sm">
+              <input type="hidden" name="id_pessoa" id="id_orientador"/>
+              <input type="text" class="form-control" id="nome" type="text" placeholder="Digite um nome...">
+              <span class="input-group-btn">
+                <button class="btn btn-danger" id="btn_limpa" type="button"><i class="fa fa-trash-o"></i></button>
+              </span>
+          </div>
+        </div>
+        </div>
+        <table class="table table-bordered">
+            <tr class="titulo2">
+                <th></th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>RG</th>
+            </tr>
+            <tbody id="load_pessoas">
+            <?php foreach ($view_pes as $pes){
+            ?>
+            <tr>
+                <td><input type="radio" value="<?php echo $pes["id_pessoa"]; ?>" name="id_pessoa" class="modal_id_orientador" title="<?php echo $pes['nome']; ?>"  /></td>
+                <td><span class="badge badge-inverse"><?php echo $pes["id_pessoa"]; ?></span></td>
+                <td><?php echo $pes['nome']; ?></td>
+                <td><?php echo $pes['cpf']; ?></td>
+                <td><?php echo $pes['rg']; ?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+        </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <button class="btn btn-primary" id="modal_btn_salvar">Salvar</button>
+  </div>
+</div>
+</div>
+</div>
+</form>

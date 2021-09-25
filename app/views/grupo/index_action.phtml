@@ -1,0 +1,41 @@
+<div class="row">
+     <section class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-legal"></i>
+              <h3 class="box-title">Grupos</h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                    <a class="btn btn-default pesquisar" href="#" title="Pesquisar" data-toggle="tooltip"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default" href="/sistema/grupo/inserir/" data-toggle="tooltip" title="Adicionar"><i class="fa fa-plus-circle"></i></a>
+                    <a class="btn btn-default" href="/sistema/index/index/" data-toggle="tooltip" title="Voltar"> <i class="fa fa-reply"></i></a>
+              </div>
+            </div>
+            <div class="box-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr class="itemTitulo2">
+                        <td>ID</td>
+                        <td>Nome</td>
+                        <td>Operações</td>
+                    </tr>
+                    <?php foreach ($view_sql as $sql){ ?>
+                    <tr>
+                        <td><div class="badge badge-inverse"><?php echo $sql['id_grupo'];?></div></td>
+                        <td><?php echo $sql['nome'];?></td>
+                        <td>
+                            <div class="btn-group">
+                                 <a class="btn btn-default" href="<?php echo "/sistema/grupo/permissao/id/{$sql["id_grupo"]}";?>" title="Permissões"><i class="fa fa-lock"></i></a>
+                                <a class="btn btn-success" href="<?php echo "/sistema/grupo/visualizar/id/{$sql["id_grupo"]}";?>" title="Visualizar"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-warning" href="<?php echo "/sistema/grupo/editar/id/{$sql["id_grupo"]}";?>" title="Editar"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-danger" href="<?php echo "/sistema/grupo/excluir/id/{$sql["id_grupo"]}";?>" title="Excluir"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </section>
+</div>

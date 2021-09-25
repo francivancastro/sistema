@@ -1,0 +1,72 @@
+<?php 
+$protesto =  new ProtestoModel($view_sql['id_protesto']);
+$respon = new ResponsavelModel($protesto->id_responsavel);
+$p_resp = new PessoaModel($respon->id_pessoa);
+?>
+<form method="post" action="/sistema/recibo/editar/id/<?php echo $view_sql['id_recibo'];?>" class="form-horizontal" name="form1"  enctype="multipart/form-data" id="form1" runat="server">
+<div class="row">
+    <section class="col-md-12">
+    <div class="nav-tabs-custom">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs ui-sortable-handle">
+          <li class="active"><a href="#user" data-toggle="tab">Recibo</a></li>
+          <a style="margin: 5px" class="btn btn-default pull-right"  data-toggle="tooltip" href="/sistema/recibo/index/" title="Voltar"><i class="fa fa-reply"></i></a>
+          <button style="margin: 5px" data-toggle="tooltip" type="submit" class="btn btn-primary pull-right" title="Salvar"><i class="fa fa-save"></i></button>
+          <button style="margin: 5px" data-toggle="tooltip" type="reset" class="btn btn-danger pull-right" title="Limpar"><i class="fa fa-trash-o"></i></button>
+        </ul>
+    </div>
+        <div class="tab-content no-padding">
+            <div class="tab-pane active" id="user">
+                <div class="box box-info">
+            <div class="box-header ui-sortable-handle" >
+              <i class="fa fa-list"></i>
+              <h3 class="box-title"></h3>
+              <!-- tools box -->
+              <div class="pull-right box-tools">
+                
+              </div><!-- /. tools -->
+            </div>
+            <div class="box-body">
+                <div class="form-group " id="ftipo">
+                  <label for="id_pessoa" class="col-sm-3 control-label">Adicionar Protesto:</label>
+                  <div class="col-sm-6">
+                    <div class="input-group input-group-sm">
+                        <input type="hidden" name="id_recibo" value="<?php echo $view_sql['id_recibo'];?>"/>
+                        <input type="hidden" name="id_protesto" value="<?php echo $view_sql['id_protesto'];?>"/>
+                        <input type="hidden" name="data_inclusao" value="<?php echo $view_sql['data_inclusao'];?>"/>
+                        <input type="text" class="form-control" value="<?php echo $p_resp->nome;?>" disabled="">
+                        <span class="input-group-btn">
+                          <a role="button" class="btn btn-info active" data-toggle="modal"><i class="fa fa-plus-square-o"></i></a>
+                        </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Taxa:</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="id_taxas">
+                            <?php foreach ($view_txs as $tx){ ?>
+                            <option value="<?php echo $tx['id_taxas'];?>" <?php ($view_sql['id_taxas'] == $tx['id_taxas']) ? print "selected" : print ""; ?>><?php echo $tx['descricao'];?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="valor" class="col-sm-3 control-label">Valor:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control moeda" name="valor" value="<?php echo UtilHelper::formatoRs($view_sql['valor']);?>" placeholder="0,00">
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Descrição:</label>
+                  <div class="col-sm-6">
+                      <textarea name="descricao" class="form-control" rows="3" placeholder=""><?php echo $view_sql['descricao']?></textarea>
+                  </div>
+                </div>
+            </div>
+            </div>
+            </div>            
+        </div>
+    </section>
+</div>
+</form>

@@ -1,0 +1,25 @@
+<div class="navbar span6">
+    <div class="navbar-inner">
+        <div class="">
+        <a class="btn" href="/sistema/funcao/index/" title="Voltar"> Voltar <i class="icon-circle-arrow-left"></i></a>
+    </div>
+    </div>
+</div>
+
+<div class="well span10">
+    
+    <form method="post" action="/sistema/funcao/editar/id/<?php echo $view_sql['id_funcao'];?>">
+            <legend>Cadastro de Função</legend>
+            Função<br>
+            <input type="text" name="descricao" value="<?php echo $view_sql["descricao"]; ?>"><br>
+
+            Salario<br>
+            <input type="text" name="salario" value="<?php echo $view_sql["salario"]; ?>"><br>
+
+           Carga Horária<br>
+           <input type="text" name="carga_horaria" value="<?php echo $view_sql["carga_horaria"]; ?>"><br>
+            <button title="submit" class="btn btn-primary">Enviar</button>
+            <button title="reset" class="btn btn-danger">Limpar</button>
+    </form>
+
+</div>
